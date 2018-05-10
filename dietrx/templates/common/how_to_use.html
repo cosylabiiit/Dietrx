@@ -1,0 +1,132 @@
+{% extends 'common/index.html' %}
+{% load staticfiles %}
+
+
+{% block body %}
+
+<div class="container">
+	
+	<div class="jumbotron text-center" style="margin: 0.80em; padding: 0.80em;">
+		<h3><strong>SpiceRx 101</strong></h3>
+		<p>A guide to using this resource and its features</p>
+	</div>
+	<hr />
+
+
+	<div class="container">
+	<div class="row">
+		<div class="col-3">
+			<div class="list-group" id="list-tab" role="tablist">
+				<a class="list-group-item list-group-item-action active" data-toggle="list" href="#1" role="tab">SpiceRx Overview</a>
+				<a class="list-group-item list-group-item-action" data-toggle="list" href="#2" role="tab">Spice Search</a>
+				<a class="list-group-item list-group-item-action" data-toggle="list" href="#3" role="tab">Disease Search</a>
+				<a class="list-group-item list-group-item-action" data-toggle="list" href="#4" role="tab">Phytochemical Search</a>
+			</div>
+		</div>
+		<div class="col-9">
+			<div class="tab-content" id="nav-tabContent">
+				<div class="tab-pane fade show active" id="1" role="tabpanel" aria-labelledby="list-home-list">
+
+
+					<h4><strong>SpiceRx Overview</strong></h4><br><br>
+					<div>
+						<img src="{% static 'images/workflow.jpg' %}" height=450 width=600 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+					</div>
+					<br><br>
+					<p>
+						Spices and herbs are key dietary ingredients in cuisines across the world. They have been reported to be of medicinal value for a wide variety of diseases through a large body of biomedical investigations. Their therapeutic potential as well as adverse effects could be pinned down to their phytochemicals. A systematic compilation of empirical data involving these aspects of culinary herbs and spices could help unravel molecular mechanisms underlying their health impact. 
+						<br><br>
+						SpiceRx provides a platform for exploring the potential health impact of spices and herbs used in food preparations through an exhaustive and structured database of tripartite associations between spices/herbs, their phytochemicals and diseases. Starting with an exhaustive dictionary of culinary herbs and spices, their disease associations were text mined from MEDLINE literature spanning over decades using a natural language processing protocol. These data were further integrated with evidence linking spices to their phytochemicals which were mapped back to diseases. We used Medical Subject Headings (MeSH) as the basis for ontological classification of disease terms. Thus SpiceRx provides a insights into therapeutic effects of culinary herbs and spices and facilitates exploration of underlying molecular mechanisms.
+						<br><br>
+						SpiceRx provides a platform for exploring the potential health impact of spices and herbs used in food preparations through an exhaustive and structured database of tripartite associations between spices/herbs, their phytochemicals and diseases. Starting with an exhaustive dictionary of culinary herbs and spices, their disease associations were text mined from MEDLINE literature spanning over decades using a natural language processing protocol. These data were further integrated with evidence linking spices to their phytochemicals which were mapped back to diseases. We used Medical Subject Headings (MeSH) as the basis for ontological classification of disease terms. Thus SpiceRx provides a insights into therapeutic effects of culinary herbs and spices and facilitates exploration of underlying molecular mechanisms.
+					</p>	
+				</div>
+				<div class="tab-pane fade" id="2" role="tabpanel" aria-labelledby="list-profile-list">
+					<h4><strong>Spice Search</strong></h4>
+					<br>
+						<h5><strong> Search by Spice Name </strong></h5><br>
+						<div>
+							<img src="{% static 'images/spice-search.png' %}" style="width: 400px; display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div><br>
+							<p>
+								Spice search can be performed using the common name, scientific name as well as NCBI taxonomy ID of the spice/herb. For example a user can search with the common name ‘saffron’, scientific name ‘saffron crocus’ or NCBI Tax ID ‘82528’. The search box comes with an autocomplete option to assist you with any spice/herb name containing a string matching with two or more characters typed, greatly enabling the user’s ability to navigate the database.
+							</p>
+					<br>
+						<h5><strong>Spice Results Page</strong></h5><br>
+						<div>
+							<img src="{% static 'images/spice-diseases.png' %}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div><br>
+						<p>
+							The search directs the user to the results for the spice ‘saffron’. It displays number of disease associations found for ‘saffron’, both positive and negative obtained through text mining PubMed abstracts. By clicking on the ‘Details’ tab, the user will be able to see the diseases with which ‘saffron’ is associated with. For each disease association, link to the relevant PubMed article is provided.
+						</p>
+
+					<br>
+						<h5><strong>Phytochemicals in Spice</strong></h5>
+						<br><div>
+							<img src="{% static 'images/spice-phytochemicals.png' %}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div><br>
+						<p>
+							The phytochemicals present in a spice (for example ‘saffron’) is displayed in this panel. User can click on the ‘Explore’ button present against each phytochemical to obtain the its profile including chemical identifiers, 2D and 3D structure, Spices/Herbs containing the molecule and association with diseases. The ‘Phytochemical Profile’ window also facilitates finding similar molecules within SpiceRx as well as identification of those from commercially available from external resources (ZINC).
+						</p>
+				</div>
+				<div class="tab-pane fade" id="3" role="tabpanel" aria-labelledby="list-profile-list">
+					<h4><strong>Disease Search</strong></h4>
+					<br>
+						<h5><strong> Search by Disease Name </strong></h5>
+						<br><div>
+							<img src="{% static 'images/disease-search.png' %}" width=400 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div><br>
+
+							<p>
+								Disease search in SpiceRx is integrated with MeSH hierarchical structure for diseases. Four types of search options are available in the disease search panel: MeSH Disease ID, MeSH Disease Category, MeSH Disease Sub Category, and MeSH Disease Title. The MeSH Disease category represents a broad classification of diseases such as ‘Cardiovascular Diseases’, ‘Endocrine System Diseases’ or ‘Neoplasms’. The option ‘Disease Sub Category” represents further refined categories of diseases such as ‘Heart Diseases’, ‘Metabolic Diseases”, ‘Liver Diseases’ etc. The option “MeSH Disease Title’ can be used to perform search for more specific disease types such as ‘Heart Attack’, ‘Diabetes Mellitus Type 1’ etc. Users can search for disease using its corresponding MeSH ID as well. For Example searching with MeSH ID ‘D003922’ will provide the disease information of Diabetes Mellitus, Type 1. The user can also perform a ‘null search’ which will display all diseases listed in the database.
+							</p>
+					<br>
+						<h5><strong>Disease Results Page</strong></h5>
+						<br><div>
+							<img src="{% static 'images/disease-results.png' %}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div><br>
+						<p>
+							By searching any disease qualifier, the results for the disease will appear to the right of the search page. By default the first 10 results will be displayed. By clicking on the respective MeSH ID, for instance ‘D00487’, you will be redirected to the results page for that disease, in this case ‘edema’. The results page for ‘edema’ contains the details of the disease such as its MeSH category as well subcategory information. By clicking on the MeSH ID, the user can navigate to the MeSH webpage of the particular disease.
+						</p>
+					<br>
+						<h5><strong>Spices/Herbs associated with Disease panel</strong></h5>
+						<br><div>
+							<img src="{% static 'images/disease-spice.png' %}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div><br>
+						<p>
+							This Panel provides the list of spices which are associated with the searched disease. The positive and negative associations are shown in green and red respectively. By clicking on the ‘Details’ tab, the details of relevant references for the association will be listed.
+						</p>
+					<br>
+						<h5><strong>Linked Phytochemicals</strong></h5>
+						<br><div>
+							<img src="{% static 'images/disease-phyto.png' %}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div><br>
+						<p>
+							The phytochemicals which are associated with the disease will be displayed here along with the references from PubMed. User can click on ‘Explore’ tab present against each phytochemical name to obtain the phytochemical profile and identifiers of each phytochemical.
+						</p>
+				</div>
+				<div class="tab-pane fade" id="4" role="tabpanel" aria-labelledby="list-settings-list">
+					<h4><strong>Phytochemical Search</strong></h4>
+					<br>
+						<h5><strong> Search by Phytochemical </strong></h5>
+						<br><div>
+							<img src="{% static 'images/phyto-search.png' %}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div><br>
+							<p>
+								Phytochemicals search is facilitated through various options. User can search a phytochemical with its common name, for example, ‘Piperene’, its IUPAC name, ‘(2E,4E)-5- (1,3-benzodioxol- 5-yl)- 1-piperidin- 1-ylpenta- 2,4-dien- 1-one’ or its PubChem ID ‘638024’. The query will display the page for searched phytochemical. Users can use the ‘Explore’ tab to obtain full phytochemical profile. You may also search for spice phytochemicals molecular weight, hydrogen bond donors/acceptors or partition coefficient (ALogP). If the user does not have any particular phytochemical to search, they can perform a null search which will display a list of all available phytochemicals in the database.
+							</p>
+					<br>
+						<h5><strong>Phytochemical Profile Panel</strong></h5>
+						<br><div>
+							<img src="{% static 'images/phyto-panel.png' %}" width=400 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div><br>
+						<p>
+							This panel provides the complete ‘Phytochemical Profile’ of the molecule searched. This includes molecular identities such as MeSH ID, PubChem ID, IUPAC Name, Canonical and Isomeric SMILES and the Molecular Formula. Using JSmol applet, the panel also provides 2D image of the molecule, which transforms into 3D view upon clicking ‘View JSmol’ button. Importantly, using structural similarity search one could either explore similar molecules within SpiceRx, or could identify commercially available molecules from ZINC. Further, an option is provided to download the molecule data in Mol2, SDF, 2D image, and JSON format. Below the ‘Downloads’ button, clicking the ‘Spice/Herb’ button will provide a list of spices/herbs in which the phytochemical is present. ‘Disease’ button will provide the list of all diseases with which the given phytochemical is linked. Physicochemical as well as ADMET properties of the compound can also be obtained by clicking respective tabs.
+						</p>
+				</div>
+			</div>
+		</div>
+	</div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'common/index.html' %}
+
+
+{% block body %}
+
+
+<div class="container pt-4">
+	
+	<hr />
+	<h5 class="container"><strong>{{ disease.disease_name }}</strong></h5>
+	<hr />
+	<div class="row">
+		<div class="col-md-12">
+			
+		<p class="card-text">
+            <span class="text-danger">Disease Name: </span> {{ disease.disease_name }}<br> 
+            <span class="text-danger">Synonyms: </span> {{ disease.disease_synonyms | replace('|', ', ') | title}}<br> 
+	    	<span class="text-danger">Category: </span> <span style="font-style: italic;">{{ disease.disease_category| replace('|', ', ')}}</span><br> 
+	    </p>	
+
+		</div>
+	</div>
+
+
+
+	<div class="row pt-4">
+		<div class="col-md-12">
+			
+		<ul class="nav nav-tabs" id="myTab" role="tablist">
+			
+
+			{% if subcategory == 'food' %}
+			<li class="nav-item">
+				<a class="nav-link active" id="food-tab" data-toggle="tab" href="#food" role="tab" aria-controls="food" aria-selected="true">Food</a>
+			</li>
+			{% else %}
+			<li class="nav-item">
+				<a class="nav-link" id="disease-tab" href="{{url_for('get_disease', disease_id=disease.disease_id ,subcategory='food')}}">Food</a>
+			</li>
+			{% endif %}
+
+			
+			
+			{% if subcategory == 'gene' %}
+			<li class="nav-item">
+				<a class="nav-link active" id="gene-tab" data-toggle="tab" href="#gene" role="tab" aria-controls="gene" aria-selected="true">Gene</a>
+			</li>
+			{% else %}
+			<li class="nav-item">
+				<a class="nav-link" id="gene-tab" href="{{url_for('get_disease', disease_id=disease.disease_id ,subcategory='gene')}}">Gene</a>
+			</li>
+			{% endif %}
+			
+			
+			
+		</ul>
+
+
+		<div class="tab-content" id="myTabContent">
+			{% if subcategory == 'food' %}
+			<div class="tab-pane fade show active" id="food" role="tabpanel" aria-labelledby="food-tab">
+				{% include 'disease/disease_food.html' %}
+				
+			</div>
+			{% elif subcategory == 'gene' %}
+			<div class="tab-pane fade show active" id="gene" role="tabpanel" aria-labelledby="gene-tab">
+
+				{% include 'disease/disease_gene.html' %}
+
+			</div>
+			{% endif %}
+
+
+		</div>
+
+		{% include 'common/pagination_links.html' %}
+		</div>
+	</div>
+	
+ 	
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,343 @@
+{% extends 'common/index.html' %}
+{% load staticfiles %}
+
+{% block body %}
+<div class="container">
+	<div class="jumbotron text-center" style="margin: 0.80em; padding: 0.80em;">
+		<h3><strong>SpiceRx FAQs</strong></h3>
+		<p>Contact us if you have more questions</p>
+	</div>
+	<hr />
+
+
+<div id="accordion">
+
+
+
+  <div class="card">
+    <div class="card-header" id="headingOne">
+      <h5 class="mb-0">
+        <button class="btn btn-link" data-toggle="collapse" data-target="#1" aria-expanded="true">
+          Q1: What type of queries are processed by SpiceRx?
+        </button>
+      </h5>
+    </div>
+    <div id="1" class="collapse show" data-parent="#accordion">
+      <div class="card-body">
+        SpiceRx is a resource of triangular relationships among Spices/Herbs, their Phytochemicals and Disease associations. It facilitates three types of queries, based on spices/herbs, diseases and phytochemicals. Given one of these, SpiceRx displays relationships with the remaining two.
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  <div class="card">
+    <div class="card-header" id="headingTwo">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#2" aria-expanded="false">
+          Q2: How many spices are there in SpiceRx repository?
+        </button>
+      </h5>
+    </div>
+    <div id="2" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+        SpiceRx contains a total of 188 culinary spices and herbs out of which 152 have been found to have disease mappings in the reported literature.
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <div class="card-header" id="headingThree">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#3" aria-expanded="false">
+          Q3: What is the source of empirical evidence presented in SpiceRx?
+        </button>
+      </h5>
+    </div>
+    <div id="3" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+        Associations are textmined from 23 million published abstracts indexed by PubMed till the time period of July 2017.
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <div class="card-header" id="headingFour">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#4" aria-expanded="false">
+          Q4: How was the data on spices compiled?
+        </button>
+      </h5>
+    </div>
+    <div id="4" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+        A dictionary of culinary herbs and spices were compiled for different sources such as FooDB (<a href="http://foodb.ca" target="_blank">http://foodb.ca</a>) Wikipedia (<a href="https://en.wikipedia.org/wiki/List_of_culinary_herbs_and_spices" target="_blank">https://en.wikipedia.org/wiki/List_of_culinary_herbs_and_spices</a>) PFAF (Plants For A Future, (<a href="http://www.pfaf.org/user/Default.aspx" target="_blank">http://www.pfaf.org/user/Default.aspx</a>), FPI (Food Plants International,  <a href="http://foodplantsinternational.com" target="_blank">http://foodplantsinternational.com</a> ) and FlavorDB (<a href="http://cosylab.iiitd.edu.in/flavordb" target="_blank">http://cosylab.iiitd.edu.in/flavordb</a>).
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <div class="card-header" id="headingFive">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#5" aria-expanded="false">
+          Q5: What is MeSH? What are the disease categories?
+        </button>
+      </h5>
+    </div>
+    <div id="5" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+        MeSH is a controlled vocabulary of biomedical terms curated and developed by National Library of Medicine. MeSH classifies diseases into a logical hierarchy of Disease Categories, Disease Subcategories and Diseases. 
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <div class="card-header" id="headingSix">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#6" aria-expanded="false">
+          Q6: What is the source of phytochemical data?
+        </button>
+      </h5>
+    </div>
+    <div id="6" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+        Data of phytochemicals was compiled from two databases; PhenolExlorer and KNApSAcK. The phytochemicals data comprised of 866 chemical compounds for 142 culinary spices from our dictionary and consisted of 2042 spice-phytochemical associations. Out of these, 570 of them were found to be bioactive.
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <div class="card-header" id="headingSeven">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#7" aria-expanded="false">
+          Q7: How are the relations between spices and diseases obtained?
+        </button>
+      </h5>
+    </div>
+    <div id="7" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+        We text mined the data by applying a relationship extraction algorithm on PubMed abstracts. 
+        <div><img src="{% static 'images/workflow.jpg' %}" height=450 width=600></div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <div class="card-header" id="headingEight">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#8" aria-expanded="false">
+          Q8: What browsers does SpiceRX support?
+        </button>
+      </h5>
+    </div>
+    <div id="8" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+        SpiceRx supports all modern web browsers. 
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <div class="card-header" id="headingNine">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#9" aria-expanded="false">
+          Q9: What is the tech stack used to build SpiceRx?
+        </button>
+      </h5>
+    </div>
+    <div id="9" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+        Front End: HTML, CSS, JavaScript, AJAX, jQuery(v1.12.4), Bootstrap(v3.3.7), DataTables(<a href="https://datatables.net" target="_blank">https://datatables.net/</a>), Google Charts(<a href="https://developers.google.com/chart/" target="_blank">https://developers.google.com/chart/</a>) ,D3.js
+			JSME Molecular Editor(<a href="http://peter-ertl.com/jsme/" target="_blank">http://peter-ertl.com/jsme/</a>), Jmol: an open-source Java viewer for chemical structures in 3D. <a target="_blank" href="http://www.jmol.org/">http://www.jmol.org/</a>
+			Back End: Python, Django, Mysql, OpenBabel(v2.4.0)
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <div class="card-header" id="headingTen">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#10" aria-expanded="false">
+          Q10: What are the prerequisites needed to run SpiceRx?
+        </button>
+      </h5>
+    </div>
+    <div id="10" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+        A modern web browser with JavaScript enabled.
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <div class="card-header" id="headingEleven">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#11" aria-expanded="false">
+          Q11: Does SpiceRx use cookies?
+        </button>
+      </h5>
+    </div>
+    <div id="11" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+        We use cookies to provide the statistics that help us give the best experience for our site.
+      </div>
+    </div>
+  </div>
+
+
+
+<div class="card">
+    <div class="card-header" id="headingTwelve">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#12" aria-expanded="false">
+          Q12: How can I download the data in SpiceRx?
+        </button>
+      </h5>
+    </div>
+    <div id="12" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+        The data of SpiceRx is available for download as CSV files from downloads tab.
+      </div>
+    </div>
+  </div>
+
+
+<div class="card">
+    <div class="card-header" id="headingThirteen">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#13" aria-expanded="false">
+          Q13: What is Jmol?
+        </button>
+      </h5>
+    </div>
+    <div id="13" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+        Jmol: an open-source Java viewer for chemical structures in 3D. <a target="_blank" href="http://www.jmol.org/">http://www.jmol.org/</a><br>
+      Jmol does not require 3D acceleration plugins. Jmol returns a 3D representation of a molecule that may be used as a teaching tool, or for research e.g. in chemistry and biochemistry. It is free and open source software, written in Java and so it runs on Windows, Mac OS X, Linux and Unix systems.
+
+      Few technical advantages of Jmol are:
+      <ul>
+        <li>Molecular 3D visualisation</li>
+        <li>Zooming facilities</li>
+        <li>Provision to download the viewed molecule in mol2 format</li>
+      </ul>
+      For further information please visit the Jmol website: <a target="_blank" href="http://jmol.sourceforge.net/">here</a>
+      </div>
+    </div>
+  </div>
+
+
+<div class="card">
+    <div class="card-header" id="headingFourteen">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#14" aria-expanded="false">
+          Q14: What do I need to have the Jmol files to render properly?
+        </button>
+      </h5>
+    </div>
+    <div id="14" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+        A modern web browser with JavaScript enabled.
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <div class="card-header" id="headingFifteen">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#15" aria-expanded="false">
+          Q15: Under what license is SpiceRx available?
+        </button>
+      </h5>
+    </div>
+    <div id="15" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" /></a><br />This work is licensed under a <a style="font-weight: bold;" rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" id="headingSixteen">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#16" aria-expanded="false">
+          Q16: General Disclaimer
+        </button>
+      </h5>
+    </div>
+    <div id="16" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+        All material on this website is a product of research and is provided for your information only and may not be construed as medical advice or instruction. No action or inaction should be taken based solely on the contents of this information; instead, readers should consult appropriate health professionals on any matter relating to their health and well-being.
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <div class="card-header" id="headingSeventeen">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#17" aria-expanded="false">
+          Q17: Who is the team behind SpiceRx?
+        </button>
+      </h5>
+    </div>
+    <div id="17" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+        <table class="table table-striped">
+        <thead>
+          <th>Name</th>
+          <th>Position</th>
+          <th>Affiliation</th>
+          <th>Contribution</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td><a href="{% url 'contact' %}">Ganesh Bagler</a></td>
+            <td>Project Head</td>
+            <td>Center for Computational Biology, Indraprastha Institute of Information Technology (IIIT-Delhi), New Delhi</td>
+            <td>Idea conception, Project design and management, Database design and implementation   </td>
+          </tr>
+          <tr>
+            <td>Rakhi N K</td>
+            <td>PhD Research Scholar</td>
+            <td>Department of Bioscience and Bioengineering, Indian Institute of Technology Jodhpur, Jodhpur</td>
+            <td>Manual data compilation, Annotation and curation, Quality Check, Analysis</td>
+            
+          </tr>
+          <tr>
+            <td>Rudraksh Tuwani</td>
+            <td>Research Assistant</td>
+            <td>Center for Computational Biology, Indraprastha Institute of Information Technology</td>
+            <td>Natural Language Processing, Text Mining, Feature extraction, Data Mining and Data Analytics </td>
+          </tr>
+          <tr>
+            <td>Neelansh Garg</td>
+            <td>Summer Research Intern</td>
+            <td>USICT, Guru Gobind Singh Indraprastha University, New Delhi</td>
+            <td>Database design, Development of SpiceRx Web Resource, Data Visualisation and Data Analytics </td>
+          </tr>
+          <tr>
+            <td>Jagriti Mukherjee</td>
+            <td>M.Tech student</td>
+            <td>Center for Computational Biology, Indraprastha Institute of Information Technology (IIIT-Delhi), New Delhi</td>
+            <td>Annotations</td>
+          </tr>
+        </tbody>
+      </table>.
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
