@@ -9,14 +9,14 @@ NUM_PER_PAGE = 10
 
 
 
-@app.route('/', methods=['GET'])
-@app.route('/index', methods=['GET'])
+@app.route('/dietrx/', methods=['GET'])
+@app.route('/dietrx/index', methods=['GET'])
 def index():
     return render_template('search/search.html')
 
 
 
-@app.route('/search', methods=['GET'])
+@app.route('/dietrx/search', methods=['GET'])
 def search():
 	table = request.args.get('table')
 	query = request.args.get('query')
@@ -49,7 +49,7 @@ def search():
 							total_pages=page_data.pages)
 	
 
-@app.route('/autocomplete', methods=['GET'])
+@app.route('/dietrx/autocomplete', methods=['GET'])
 def autocomplete():
 	query = request.args.get('query')
 	table = str(request.args.get('table'))
@@ -80,7 +80,7 @@ def autocomplete():
 	return jsonify(json.dumps(results))
 
 	
-@app.route('/get_food', methods=['GET'])
+@app.route('/dietrx/get_food', methods=['GET'])
 def get_food():
 	if not request.args.get('food_id'):
 		return redirect(url_for('index'))
@@ -168,7 +168,7 @@ def get_food():
 
 
 
-@app.route('/get_disease', methods=['GET'])
+@app.route('/dietrx/get_disease', methods=['GET'])
 def get_disease():
 	if not request.args.get('disease_id'):
 		return redirect(url_for('index'))
@@ -256,7 +256,7 @@ def get_disease():
 
 
 
-@app.route('/get_gene', methods=['GET'])
+@app.route('/dietrx/get_gene', methods=['GET'])
 def get_gene():
 	if not request.args.get('gene_id'):
 		return redirect(url_for('index'))
