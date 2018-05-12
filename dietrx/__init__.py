@@ -6,7 +6,7 @@ from elasticsearch import Elasticsearch
 
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/dietrx/static', static_folder='static')
 app.config.from_object(Config)
 
 db = SQLAlchemy(app)
