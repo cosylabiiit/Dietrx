@@ -1,29 +1,23 @@
 #!/bin/bash
 
 NAME="dietrx"                                  # Name of the application
-DJANGODIR=/home/iiitd/SpiceRx/spicedb             # Django project directory
-SOCKFILE=/home/iiitd/SpiceRx/bin/gunicorn.sock  # we will communicte using this unix socket
-#USER=hello                                        # the user to run as
-#GROUP=webapps                                     # the group to run as
+SOCKFILE=/home/iiitd/Dietrx/bin/gunicorn.sock  # we will communicte using this unix socket
 NUM_WORKERS=3                                     # how many worker processes should Gunicorn spawn
-DJANGO_SETTINGS_MODULE=spicedb.settings             # which settings file should Django use
-DJANGO_WSGI_MODULE=spicedb.wsgi                     # WSGI module name
+FLASK_DIR=/home/iiitd/Dietrx
 
-echo "Starting $NAME as spicedb"
+echo "Starting $NAME"
 
 # Activate the virtual environment
-cd $DJANGODIR
-source activate spicerx
-export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
-export PYTHONPATH=$DJANGODIR:$PYTHONPATH
+cd $FLASK_DIR
+source activate dietrx
 
 # Create the run directory if it doesn't exist
 RUNDIR=$(dirname $SOCKFILE)
 test -d $RUNDIR || mkdir -p $RUNDIR
 
-# Start your Django Unicorn
+# Start your Flask Unicorn
 # Programs meant to be run under supervisor should not daemonize themselves (do not use --daemon)
-exec /home/iiitd/miniconda3/envs/spicerx/bin/gunicorn ${DJANGO_WSGI_MODULE}:application \
+exec /home/iiitd/miniconda3/envs/dietrx/bin/gunicorn app:app \
   --name $NAME \
   --workers $NUM_WORKERS \
   --bind=unix:$SOCKFILE \
