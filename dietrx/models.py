@@ -91,12 +91,12 @@ class Gene(SearchableMixin, db.Model):
         return '<Gene {}>'.format(self.gene_id)
 
 
-db.event.listen(db.session, 'before_commit', Food.before_commit)
-db.event.listen(db.session, 'after_commit', Food.after_commit)
-db.event.listen(db.session, 'before_commit', Disease.before_commit)
-db.event.listen(db.session, 'after_commit', Disease.after_commit)
-db.event.listen(db.session, 'before_commit', Gene.before_commit)
-db.event.listen(db.session, 'after_commit', Gene.after_commit)
+# db.event.listen(db.session, 'before_commit', Food.before_commit)
+# db.event.listen(db.session, 'after_commit', Food.after_commit)
+# db.event.listen(db.session, 'before_commit', Disease.before_commit)
+# db.event.listen(db.session, 'after_commit', Disease.after_commit)
+# db.event.listen(db.session, 'before_commit', Gene.before_commit)
+# db.event.listen(db.session, 'after_commit', Gene.after_commit)
 
 
 class Food_disease(db.Model):
