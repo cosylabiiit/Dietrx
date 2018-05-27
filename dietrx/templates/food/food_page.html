@@ -50,6 +50,17 @@
 				<a class="nav-link" id="gene-tab" href="{{url_for('get_food', food_id=food.food_id ,subcategory='gene')}}">Gene</a>
 			</li>
 			{% endif %}
+
+
+			{% if subcategory == 'chemical' %}
+			<li class="nav-item">
+				<a class="nav-link active" id="chemical-tab" data-toggle="tab" href="#chemical" role="tab" aria-controls="chemical" aria-selected="true">Chemical</a>
+			</li>
+			{% else %}
+			<li class="nav-item">
+				<a class="nav-link" id="chemical-tab" href="{{url_for('get_food', food_id=food.food_id ,subcategory='chemical')}}">Chemical</a>
+			</li>
+			{% endif %}
 			
 			
 			
@@ -67,6 +78,12 @@
 
 				{% include 'food/food_gene.html' %}
 
+			</div>
+			{% elif subcategory == 'chemical' %}
+			<div class="tab-pane fade show active" id="chemical" role="tabpanel" aria-labelledby="chemical-tab">
+			
+				{% include 'food/food_chemical.html' %}
+			
 			</div>
 			{% endif %}
 

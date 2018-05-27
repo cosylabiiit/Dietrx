@@ -115,20 +115,6 @@ def get_food():
 
 			results.items = temp
 			
-
-			return render_template('food/food_page.html', 
-									subcategory=subcategory,
-									food=food, 
-									results=results.items,
-									next_url=results.next_url,
-									last_url=results.last_url,
-									prev_url=results.prev_url,
-									first_url=results.first_url,
-									has_next=results.has_next,
-									has_prev=results.has_prev,
-									page_number=results.page,
-									total_pages=results.pages)
-
 		elif(subcategory == 'gene'):
 
 			results = db.session.query(Food_gene.gene_id, 
@@ -148,21 +134,41 @@ def get_food():
 
 			results.items = temp
 			
+		elif(subcategory == 'chemical'):
 
-			return render_template('food/food_page.html', 
-									subcategory = subcategory,
-									food=food, 
-									results=results.items,
-									next_url=results.next_url,
-									last_url=results.last_url,
-									prev_url=results.prev_url,
-									first_url=results.first_url,
-									has_next=results.has_next,
-									has_prev=results.has_prev,
-									page_number=results.page,
-									total_pages=results.pages)
+			results = db.session.query(Food_chemical.pubchem_id,
+                              db.func.count(Food_chemical.pubchem_id).label('total'))\
+                            .filter_by(food_id=food_id).group_by(Food_chemical.pubchem_id)\
+                     							.order_by('total DESC').all()
+
+			results = Pagination(page, NUM_PER_PAGE, results, request, 'get_food')
+
+			temp = []
+
+			for res in results.items:
+				associations = Food_chemical.query.filter_by(
+				    pubchem_id=res.pubchem_id, food_id=food_id)
+				temp.append({'chemical': Chemical.query.filter_by(pubchem_id=res.pubchem_id).first(),
+                                    'associations': associations.all()})
+
+			results.items = temp
+
+			
 		else:
 			abort(404)
+
+		return render_template('food/food_page.html',
+                         subcategory=subcategory,
+                         food=food,
+                         results=results.items,
+                         next_url=results.next_url,
+                         last_url=results.last_url,
+                         prev_url=results.prev_url,
+                         first_url=results.first_url,
+                         has_next=results.has_next,
+                         has_prev=results.has_prev,
+                         page_number=results.page,
+                         total_pages=results.pages)
 	else:
 		abort(404)
 
