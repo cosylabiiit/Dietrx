@@ -13,34 +13,34 @@ class SearchableMixin(object):
     #     return cls.query.filter(cls.id.in_(ids)).order_by(
     #         db.case(when, value=cls.id)), total
 
-    @classmethod
-    def before_commit(cls, session):
-        session._changes = {
-            'add': [obj for obj in session.new if isinstance(obj, cls)],
-            'update': [obj for obj in session.dirty if isinstance(obj, cls)],
-            'delete': [obj for obj in session.deleted if isinstance(obj, cls)]
-        }
+    # @classmethod
+    # def before_commit(cls, session):
+    #     session._changes = {
+    #         'add': [obj for obj in session.new if isinstance(obj, cls)],
+    #         'update': [obj for obj in session.dirty if isinstance(obj, cls)],
+    #         'delete': [obj for obj in session.deleted if isinstance(obj, cls)]
+    #     }
 
-    @classmethod
-    def after_commit(cls, session):
-        id = ''
-        if(cls.__tablename__ == 'food'):
-            id = 'food_id'
-        elif(cls.__tablename__ == 'disease'):
-            id = 'disease_id'
-        elif(cls.__tablename__ == 'gene'):
-            id = 'gene_id'
-        else:
-            print('wrong table');
-            return;
+    # @classmethod
+    # def after_commit(cls, session):
+    #     id = ''
+    #     if(cls.__tablename__ == 'food'):
+    #         id = 'food_id'
+    #     elif(cls.__tablename__ == 'disease'):
+    #         id = 'disease_id'
+    #     elif(cls.__tablename__ == 'gene'):
+    #         id = 'gene_id'
+    #     else:
+    #         print('wrong table')
+    #         return
 
-        for obj in session._changes['add']:
-            add_to_index(cls.__tablename__, obj, id)
-        for obj in session._changes['update']:
-            add_to_index(cls.__tablename__, obj, id)
-        for obj in session._changes['delete']:
-            remove_from_index(cls.__tablename__, obj, id)
-        session._changes = None
+    #     for obj in session._changes['add']:
+    #         add_to_index(cls.__tablename__, obj, id)
+    #     for obj in session._changes['update']:
+    #         add_to_index(cls.__tablename__, obj, id)
+    #     for obj in session._changes['delete']:
+    #         remove_from_index(cls.__tablename__, obj, id)
+    #     session._changes = None
 
     @classmethod
     def reindex(cls, id):
@@ -89,14 +89,6 @@ class Gene(SearchableMixin, db.Model):
 
     def __repr__(self):
         return '<Gene {}>'.format(self.gene_id)
-
-
-# db.event.listen(db.session, 'before_commit', Food.before_commit)
-# db.event.listen(db.session, 'after_commit', Food.after_commit)
-# db.event.listen(db.session, 'before_commit', Disease.before_commit)
-# db.event.listen(db.session, 'after_commit', Disease.after_commit)
-# db.event.listen(db.session, 'before_commit', Gene.before_commit)
-# db.event.listen(db.session, 'after_commit', Gene.after_commit)
 
 
 class Food_disease(db.Model):
