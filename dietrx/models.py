@@ -158,3 +158,36 @@ class References(db.Model):
 
 #     def __repr__(self):
 #         return '<Disease {}>'.format(self.chemical_id)
+
+class Molecules(db.Model):
+    mol_id = db.Column(db.Integer, primary_key=True)
+    pubchem_id = db.Column(db.Integer, nullable=True, index=True)
+    common_name = db.Column(db.Text, nullable=True, index=True)
+    database = db.Column(db.Text, nullable=True, index=True)
+    reference = db.Column(db.Text, nullable=True, index=True)
+    iupac_name = db.Column(db.Text, nullable=True, index=True)
+    functional_group = db.Column(db.Text, nullable=True, index=True)
+    functional_group_idx = db.Column(db.Text, nullable=True, index=True)
+    bitter_taste = db.Column(db.Boolean, index=True)
+    sweet_taste = db.Column(db.Boolean, index=True)
+    tasteless_taste = db.Column(db.Boolean, index=True)
+    predicted = db.Column(db.Boolean, index=True)
+    taste = db.Column(db.Text, index=False)
+    smiles = db.Column(db.Text, index=False)
+    molecular_weight = db.Column(db.Float, index=False,
+                                 nullable=True)
+    num_hydrogen_atoms = db.Column(db.Integer, index=False, nullable=True)
+    num_heavy_atoms = db.Column(db.Integer, index=False, nullable=True)
+    num_rings = db.Column(db.Integer, index=False, nullable=True)
+    num_rotatablebonds = db.Column(db.Integer, index=False, nullable=True)
+    number_of_aromatic_bonds = db.Column(db.Integer, index=False,
+                                         nullable=True)
+    num_atoms = db.Column(db.Integer, index=False, nullable=True)
+    hba_count = db.Column(db.Integer, index=False, nullable=True)
+    hbd_count = db.Column(db.Integer, index=False, nullable=True)
+    hyrophilic_index = db.Column(db.Float, index=False,
+                                 nullable=True)
+    alogp = db.Column(db.Float, index=False, nullable=True)
+
+    def __repr__(self):
+        return '<Molecule {}>'.format(self.mol_id)
