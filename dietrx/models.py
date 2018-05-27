@@ -91,6 +91,39 @@ class Gene(SearchableMixin, db.Model):
         return '<Gene {}>'.format(self.gene_id)
 
 
+class Chemical(db.Model):
+    pubchem_id = db.Column(db.Integer, primary_key=True)
+    common_name = db.Column(db.Text, nullable=True, index=True)
+    database = db.Column(db.Text, nullable=True, index=True)
+    reference = db.Column(db.Text, nullable=True, index=True)
+    iupac_name = db.Column(db.Text, nullable=True, index=True)
+    functional_group = db.Column(db.Text, nullable=True, index=True)
+    functional_group_idx = db.Column(db.Text, nullable=True, index=True)
+    bitter_taste = db.Column(db.Boolean, index=True)
+    sweet_taste = db.Column(db.Boolean, index=True)
+    tasteless_taste = db.Column(db.Boolean, index=True)
+    predicted = db.Column(db.Boolean, index=True)
+    taste = db.Column(db.Text, index=False)
+    smiles = db.Column(db.Text, index=False)
+    molecular_weight = db.Column(db.Float, index=False,
+                                 nullable=True)
+    num_hydrogen_atoms = db.Column(db.Integer, index=False, nullable=True)
+    num_heavy_atoms = db.Column(db.Integer, index=False, nullable=True)
+    num_rings = db.Column(db.Integer, index=False, nullable=True)
+    num_rotatablebonds = db.Column(db.Integer, index=False, nullable=True)
+    number_of_aromatic_bonds = db.Column(db.Integer, index=False,
+                                         nullable=True)
+    num_atoms = db.Column(db.Integer, index=False, nullable=True)
+    hba_count = db.Column(db.Integer, index=False, nullable=True)
+    hbd_count = db.Column(db.Integer, index=False, nullable=True)
+    hyrophilic_index = db.Column(db.Float, index=False,
+                                 nullable=True)
+    alogp = db.Column(db.Float, index=False, nullable=True)
+
+    def __repr__(self):
+        return '<Molecule {}>'.format(self.mol_id)
+
+
 class Food_disease(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     pmid = db.Column(db.Integer, db.ForeignKey('references.pmid'))
@@ -139,47 +172,26 @@ class References(db.Model):
     def __repr__(self):
         return '<References {}>'.format(self.pmid)
 
-# class Molecule(db.model):
-#     chemical_id = db.Column()
-#     pubchem_id = db.Column(db.Integer)
-#     cononical_smile = db.Column(db.Text)
-#     isomeric_smile = db.Column(db.Text)
-#     common_name = db.Column(db.Text)
-#     iupac_name = db.Column(db.Text)
-#     inchi = db.Column(db.Text)
 
-#     def __repr__(self):
-#         return '<Disease {}>'.format(self.chemical_id)
-
-class Molecules(db.Model):
-    mol_id = db.Column(db.Integer, primary_key=True)
-    pubchem_id = db.Column(db.Integer, nullable=True, index=True)
-    common_name = db.Column(db.Text, nullable=True, index=True)
-    database = db.Column(db.Text, nullable=True, index=True)
-    reference = db.Column(db.Text, nullable=True, index=True)
-    iupac_name = db.Column(db.Text, nullable=True, index=True)
-    functional_group = db.Column(db.Text, nullable=True, index=True)
-    functional_group_idx = db.Column(db.Text, nullable=True, index=True)
-    bitter_taste = db.Column(db.Boolean, index=True)
-    sweet_taste = db.Column(db.Boolean, index=True)
-    tasteless_taste = db.Column(db.Boolean, index=True)
-    predicted = db.Column(db.Boolean, index=True)
-    taste = db.Column(db.Text, index=False)
-    smiles = db.Column(db.Text, index=False)
-    molecular_weight = db.Column(db.Float, index=False,
-                                 nullable=True)
-    num_hydrogen_atoms = db.Column(db.Integer, index=False, nullable=True)
-    num_heavy_atoms = db.Column(db.Integer, index=False, nullable=True)
-    num_rings = db.Column(db.Integer, index=False, nullable=True)
-    num_rotatablebonds = db.Column(db.Integer, index=False, nullable=True)
-    number_of_aromatic_bonds = db.Column(db.Integer, index=False,
-                                         nullable=True)
-    num_atoms = db.Column(db.Integer, index=False, nullable=True)
-    hba_count = db.Column(db.Integer, index=False, nullable=True)
-    hbd_count = db.Column(db.Integer, index=False, nullable=True)
-    hyrophilic_index = db.Column(db.Float, index=False,
-                                 nullable=True)
-    alogp = db.Column(db.Float, index=False, nullable=True)
+class Chemical_disease(db.Model):
+    pubchem_id = db.Column(db.String(128), db.ForeignKey('chemical.pubchem_id'), primary_key=True)
+    disease_id = db.Column(db.String(128), db.ForeignKey('disease.disease_id'), primary_key=True)
+    chemical = db.relationship("Chemical", backref=db.backref('chemical_disease'))
+    disease = db.relationship("Disease", backref=db.backref('chemical_disease'))
 
     def __repr__(self):
-        return '<Molecule {}>'.format(self.mol_id)
+        return '<Chemical Disease {}>'.format(self.pubchem_id)
+
+
+class Food_chemical(db.Model):
+    food_id = db.Column(db.String(128), db.ForeignKey(
+        'food.food_id'), primary_key=True)
+    pubchem_id = db.Column(db.String(128), db.ForeignKey(
+        'chemical.pubchem_id'), primary_key=True)
+    references = db.Column(db.Text)
+    food = db.relationship("Food", backref=db.backref('food_chemical'))
+    chemical = db.relationship(
+        "Chemical", backref=db.backref('food_chemical'))
+
+    def __repr__(self):
+        return '<Food Chemical {}>'.format(self.food_id)
