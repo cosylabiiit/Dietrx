@@ -91,7 +91,8 @@ class Gene(SearchableMixin, db.Model):
         return '<Gene {}>'.format(self.gene_id)
 
 
-class Chemical(db.Model):
+class Chemical(SearchableMixin, db.Model):
+    __searchable__ = ['pubchem_id', 'common_name', 'iupac_name']
     pubchem_id = db.Column(db.Integer, primary_key=True)
     common_name = db.Column(db.Text, nullable=True, index=True)
     database = db.Column(db.Text, nullable=True, index=True)
@@ -121,7 +122,7 @@ class Chemical(db.Model):
     alogp = db.Column(db.Float, index=False, nullable=True)
 
     def __repr__(self):
-        return '<Molecule {}>'.format(self.mol_id)
+        return '<Molecule {}>'.format(self.pubchem_id)
 
 
 class Food_disease(db.Model):

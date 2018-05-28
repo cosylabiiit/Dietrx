@@ -1,0 +1,92 @@
+{% extends 'common/index.html' %}
+
+
+{% block body %}
+
+
+<div class="container pt-4">
+	
+	<hr />
+	<h5 class="container"><strong>{{ chemical.common_name }}</strong></h5>
+	<hr />
+	<div class="row">
+		<div class="col-md-12">
+			
+		<p class="card-text">
+	    	<span class="text-danger">PubChem ID:</span> <a target="_blank" href="#">{{ chemical.pubchem_id|upper }}</a><br> 
+	    	<span class="text-danger">Common Name: </span> {{ chemical.common_name | title }}<br> 
+	    	<span class="text-danger">IUPAC Name: </span> <span style="font-style: italic;">{{ chemical.iupac_name|title }}</span><br> 
+	    </p>
+
+		</div>
+	</div>
+
+
+
+	<div class="row pt-4">
+		<div class="col-md-12">
+			
+		<ul class="nav nav-tabs" id="myTab" role="tablist">
+			
+
+			{% if subcategory == 'disease' %}
+			<li class="nav-item">
+				<a class="nav-link active" id="disease-tab" data-toggle="tab" href="#disease" role="tab" aria-controls="disease" aria-selected="true">Disease</a>
+			</li>
+			{% elif not 'disease' in subcategory_that_exist %}
+			<li class="nav-item">
+				<a class="nav-link text-secondary">Disease associations does NOT exist</a>
+			</li>
+			{% else %}
+			<li class="nav-item">
+				<a class="nav-link" id="disease-tab" href="{{url_for('get_chemical', pubchem_id=chemical.pubchem_id ,subcategory='disease')}}">Disease</a>
+			</li>
+			{% endif %}
+
+
+			{% if subcategory == 'food' %}
+			<li class="nav-item">
+				<a class="nav-link active" id="food-tab" data-toggle="tab" href="#food" role="tab" aria-controls="food" aria-selected="true">Food</a>
+			</li>
+			{% elif not 'food' in subcategory_that_exist %}
+			<li class="nav-item">
+				<a class="nav-link text-secondary">Food associations does NOT exist</a>
+			</li>
+			{% else %}
+			<li class="nav-item">
+				<a class="nav-link" id="food-tab" href="{{url_for('get_chemical', pubchem_id=chemical.pubchem_id ,subcategory='food')}}">Food</a>
+			</li>
+			{% endif %}
+			
+			
+			
+		</ul>
+
+
+		<div class="tab-content" id="myTabContent">
+			{% if subcategory == 'disease' %}
+			<div class="tab-pane fade show active" id="disease" role="tabpanel" aria-labelledby="disease-tab">
+				{% include 'chemical/chemical_disease.html' %}
+				
+			</div>
+			{% elif subcategory == 'food' %}
+			<div class="tab-pane fade show active" id="food" role="tabpanel" aria-labelledby="food-tab">
+			
+				{% include 'chemical/chemical_food.html' %}
+			
+			</div>
+			{% endif %}
+
+
+		</div>
+
+		{% include 'common/pagination_links.html' %}
+		</div>
+	</div>
+	
+ 	
+
+</div>
+
+
+{% endblock %}
