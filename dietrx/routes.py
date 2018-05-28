@@ -185,43 +185,36 @@ def get_disease():
 	page = request.args.get('page', 1, type=int)
 
 
-	if (disease is not None):
-
-		subcategory = request.args.get('subcategory', 'food')
+	if(disease is not None):
+		subcategory_that_exist = []
+		if(len(disease.food_disease) != 0):
+			subcategory_that_exist.append('food')
+		if(len(disease.disease_gene) != 0):
+			subcategory_that_exist.append('gene')
+		if(len(disease.chemical_disease) != 0):
+			subcategory_that_exist.append('chemical')
+		subcategory = request.args.get('subcategory', subcategory_that_exist[0])
 
 		if(subcategory == 'food'):
-
+			
 			results = db.session.query(Food_disease.food_id, 
 							db.func.count(Food_disease.food_id).label('total'))\
 							.filter_by(disease_id=disease_id).group_by(Food_disease.food_id)\
 							.order_by('total DESC').all()
-
+			
 			results = Pagination(page, NUM_PER_PAGE, results, request, 'get_disease')
 
 			temp = []
 
+			
 			for res in results.items:
 				associations = Food_disease.query.filter_by(food_id = res.food_id, disease_id=disease_id)
 				temp.append({'food': Food.query.filter_by(food_id = res.food_id).first(), 
 							'positive_associations': associations.filter_by(association = 'positive').all(),
 							'negative_associations': associations.filter_by(association = 'negative').all()})
 
-
-			results.items = temp
 			
-
-			return render_template('disease/disease_page.html', 
-									subcategory=subcategory,
-									disease=disease, 
-									results=results.items,
-									next_url=results.next_url,
-									last_url=results.last_url,
-									prev_url=results.prev_url,
-									first_url=results.first_url,
-									has_next=results.has_next,
-									has_prev=results.has_prev,
-									page_number=results.page,
-									total_pages=results.pages)
+			results.items = temp
 
 		elif(subcategory == 'gene'):
 
@@ -239,24 +232,44 @@ def get_disease():
 				temp.append({'gene': Gene.query.filter_by(gene_id = res.gene_id).first(), 
 							'associations': associations.all()})
 
+			results.items = temp
+
+		elif(subcategory == 'chemical'):
+
+			results = db.session.query(Chemical_disease.pubchem_id,
+                              db.func.count(Chemical_disease.pubchem_id).label('total'))\
+                            .filter_by(disease_id=disease_id).group_by(Chemical_disease.pubchem_id)\
+                      						.order_by('total DESC').all()
+
+			results = Pagination(page, NUM_PER_PAGE, results, request, 'get_disease')
+			temp = []
+
+			for res in results.items:
+				associations = Chemical_disease.query.filter_by(
+				    pubchem_id=res.pubchem_id, disease_id=disease_id)
+				temp.append({'chemical': Chemical.query.filter_by(pubchem_id=res.pubchem_id).first(),
+                                    'associations': associations.all()})
 
 			results.items = temp
-			
 
-			return render_template('disease/disease_page.html', 
-									subcategory = subcategory,
-									disease=disease, 
-									results=results.items,
-									next_url=results.next_url,
-									last_url=results.last_url,
-									prev_url=results.prev_url,
-									first_url=results.first_url,
-									has_next=results.has_next,
-									has_prev=results.has_prev,
-									page_number=results.page,
-									total_pages=results.pages)
+			
 		else:
 			abort(404)
+		
+		
+		return render_template('disease/disease_page.html',
+                         subcategory=subcategory,
+						 subcategory_that_exist=subcategory_that_exist,
+                         disease=disease,
+                         results=results.items,
+                         next_url=results.next_url,
+                         last_url=results.last_url,
+                         prev_url=results.prev_url,
+                         first_url=results.first_url,
+                         has_next=results.has_next,
+                         has_prev=results.has_prev,
+                         page_number=results.page,
+                         total_pages=results.pages)
 	else:
 		abort(404)
 

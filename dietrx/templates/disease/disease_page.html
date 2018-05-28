@@ -33,6 +33,10 @@
 			<li class="nav-item">
 				<a class="nav-link active" id="food-tab" data-toggle="tab" href="#food" role="tab" aria-controls="food" aria-selected="true">Food</a>
 			</li>
+			{% elif not 'food' in subcategory_that_exist %}
+			<li class="nav-item">
+				<a class="nav-link text-secondary">Food associations does NOT exist</a>
+			</li>
 			{% else %}
 			<li class="nav-item">
 				<a class="nav-link" id="disease-tab" href="{{url_for('get_disease', disease_id=disease.disease_id ,subcategory='food')}}">Food</a>
@@ -45,9 +49,27 @@
 			<li class="nav-item">
 				<a class="nav-link active" id="gene-tab" data-toggle="tab" href="#gene" role="tab" aria-controls="gene" aria-selected="true">Gene</a>
 			</li>
+			{% elif not 'gene' in subcategory_that_exist %}
+			<li class="nav-item">
+				<a class="nav-link text-secondary">Gene associations does NOT exist</a>
+			</li>
 			{% else %}
 			<li class="nav-item">
 				<a class="nav-link" id="gene-tab" href="{{url_for('get_disease', disease_id=disease.disease_id ,subcategory='gene')}}">Gene</a>
+			</li>
+			{% endif %}
+
+			{% if subcategory == 'chemical' %}
+			<li class="nav-item">
+				<a class="nav-link active" id="chemical-tab" data-toggle="tab" href="#chemical" role="tab" aria-controls="chemical" aria-selected="true">Chemical</a>
+			</li>
+			{% elif not 'chemical' in subcategory_that_exist %}
+			<li class="nav-item">
+				<a class="nav-link text-secondary">Chemical associations does NOT exist</a>
+			</li>
+			{% else %}
+			<li class="nav-item">
+				<a class="nav-link" id="chemical-tab" href="{{url_for('get_disease', disease_id=disease.disease_id ,subcategory='chemical')}}">Chemical</a>
 			</li>
 			{% endif %}
 			
@@ -67,6 +89,12 @@
 
 				{% include 'disease/disease_gene.html' %}
 
+			</div>
+			{% elif subcategory == 'chemical' %}
+			<div class="tab-pane fade show active" id="chemical" role="tabpanel" aria-labelledby="chemical-tab">
+			
+				{% include 'disease/disease_chemical.html' %}
+			
 			</div>
 			{% endif %}
 
