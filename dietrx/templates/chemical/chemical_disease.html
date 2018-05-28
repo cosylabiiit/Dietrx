@@ -7,7 +7,7 @@
 			{% for result in results %}
 			<tr>
 				<td>
-					{{ result.disease.disease_name }}
+					<a target="_blank" href="{{url_for('get_disease', disease_id=result.disease.disease_id)}}">{{result.disease.disease_name}}</a>
 				</td>
 			</tr>
 

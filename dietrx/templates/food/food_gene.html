@@ -2,63 +2,18 @@
 	<table class="table table-hover">
 		<thead>
 			<th>Gene</th>
-			<th>Details</th>
+			<th>Disease categories</th>
 		</thead>
 		<tbody>
 			{% for result in results %}
 			<tr>
 				<td>
-					{{ result.gene.gene_id }}
+					<a target="_blank" href="{{url_for('get_gene', gene_id=result.gene.gene_id)}}">{{result.gene.gene_id}}</a> 
 				</td>
 				<td>
-					<a class="btn btn-primary" data-toggle="collapse" href="#{{ loop.index }}" role="button" aria-expanded="false" aria-controls="{{ loop.index }}">
-						Details
-					</a>
+					{{result.associations.disease_categories}}
 				</td>
 			</tr>
-
-
-
-			<tr class="collapse" id="{{ loop.index }}">
-				<td colspan="5">
-					<div>
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<th colspan="5">Associations of {{food.display_name}} with {{result.gene.gene_id}}</th>
-								</tr>
-								<tr>
-									<th>Gene</th>
-									<th>Disease category</th>
-								</tr>
-							</thead>
-							<tbody>
-
-								{% for association in result.associations %}
-
-								<tr>
-									<td><a href="#">{{result.gene.gene_id}}</a></td>
-									<td data-toggle="tooltip" data-placement="bottom" title="{{ association.disease_categories }}">{{ association.disease_categories }}</td>
-								</tr>
-
-								{% else %}
-								<tr>
-									<td colspan="10">
-										No associations were obtained for {{food.display_name}} with {{result.gene.gene_id}}.
-									</td>
-								</tr>
-
-								{% endfor %}
-
-							</tbody>
-						</table>
-
-					</div>
-				</td>
-			</tr>
-
-
-
 
 			{% endfor %}
 		</tbody>

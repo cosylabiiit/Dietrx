@@ -8,10 +8,10 @@
             {% for result in results %}
             <tr>
                 <td>
-                    {{ result.food.display_name }}
+                    <a target="_blank" href="{{url_for('get_food', food_id=result.food.food_id)}}"> {{ result.food.display_name }}</a>
                 </td>
                 <td>
-                    {{ result.references }}
+                    {{ result.associations.references }}
                 </td>
             </tr>
             {% endfor %}

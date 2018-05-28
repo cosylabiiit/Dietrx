@@ -9,60 +9,15 @@
             {% for result in results %}
             <tr>
                 <td>
-                    {{ result.disease.disease_name }}
+                    <a target="_blank" href="{{url_for('get_disease', disease_id=result.disease.disease_id)}}">{{result.disease.disease_name}}</a> 
                 </td>
                 <td>
                     {{ result.disease.disease_category }}
                 </td>
                 <td>
-                    <a class="btn btn-primary" data-toggle="collapse" href="#{{ loop.index }}" role="button" aria-expanded="false" aria-controls="{{ loop.index }}">
-                        Details
-                    </a>
+                    {{ result.associations.reference }}
                 </td>
             </tr>
-
-
-
-            <tr class="collapse" id="{{ loop.index }}">
-                <td colspan="5">
-                    <div>
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th colspan="5">Associations of {{gene.gene_id}} with {{result.disease.disease_name}}</th>
-                                </tr>
-                                <tr>
-                                    <th>Disease</th>
-                                    <th>Reference</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                {% for association in result.associations %}
-
-                                <tr>
-                                    <td><a href="#">{{result.disease.disease_name}}</a></td>
-                                    <td data-toggle="tooltip" data-placement="bottom" title="{{ association.reference }}">{{ association.reference|truncate(100) }}</td>
-                                </tr>
-
-                                {% else %}
-                                <tr>
-                                    <td colspan="10">
-                                        No associations were obtained for {{gene.gene_id}} with {{result.disease.disease_name}}.
-                                    </td>
-                                </tr>
-
-                                {% endfor %}
-
-                            </tbody>
-                        </table>
-
-                    </div>
-                </td>
-            </tr>
-
-
-
 
             {% endfor %}
         </tbody>

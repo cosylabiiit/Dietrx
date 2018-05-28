@@ -139,7 +139,7 @@ def get_food():
 			for res in results.items:
 				associations = Food_gene.query.filter_by(gene_id = res.gene_id, food_id=food_id)
 				temp.append({'gene': Gene.query.filter_by(gene_id = res.gene_id).first(), 
-							'associations': associations.all()})
+							'associations': associations.first()})
 
 
 			results.items = temp
@@ -159,7 +159,7 @@ def get_food():
 				associations = Food_chemical.query.filter_by(
 				    pubchem_id=res.pubchem_id, food_id=food_id)
 				temp.append({'chemical': Chemical.query.filter_by(pubchem_id=res.pubchem_id).first(),
-                                    'associations': associations.all()})
+                            'associations': associations.first()})
 
 			results.items = temp
 
@@ -241,7 +241,7 @@ def get_disease():
 			for res in results.items:
 				associations = Disease_gene.query.filter_by(gene_id = res.gene_id, disease_id=disease_id)
 				temp.append({'gene': Gene.query.filter_by(gene_id = res.gene_id).first(), 
-							'associations': associations.all()})
+							'associations': associations.first()})
 
 			results.items = temp
 
@@ -259,7 +259,7 @@ def get_disease():
 				associations = Chemical_disease.query.filter_by(
 				    pubchem_id=res.pubchem_id, disease_id=disease_id)
 				temp.append({'chemical': Chemical.query.filter_by(pubchem_id=res.pubchem_id).first(),
-                                    'associations': associations.all()})
+                            'associations': associations.first()})
 
 			results.items = temp
 
@@ -319,7 +319,7 @@ def get_chemical():
 				associations = Food_chemical.query.filter_by(
 				    food_id=res.food_id, pubchem_id=pubchem_id)
 				temp.append({'food': Food.query.filter_by(food_id=res.food_id).first(),
-                                    'associations': associations.all()})
+                            'associations': associations.first()})
 
 			results.items = temp
 
@@ -337,7 +337,7 @@ def get_chemical():
 				associations = Chemical_disease.query.filter_by(
 				    disease_id=res.disease_id, pubchem_id=pubchem_id)
 				temp.append({'disease': Disease.query.filter_by(disease_id=res.disease_id).first(),
-                                    'associations': associations.all()})
+                            'associations': associations.first()})
 
 			results.items = temp
 
@@ -392,7 +392,7 @@ def get_gene():
 			for res in results.items:
 				associations = Food_gene.query.filter_by(food_id = res.food_id, gene_id=gene_id)
 				temp.append({'food': Food.query.filter_by(food_id = res.food_id).first(), 
-							'associations': associations.all()})
+							'associations': associations.first()})
 
 
 			results.items = temp
@@ -411,7 +411,7 @@ def get_gene():
 			for res in results.items:
 				associations = Disease_gene.query.filter_by(disease_id = res.disease_id, gene_id=gene_id)
 				temp.append({'disease': Disease.query.filter_by(disease_id = res.disease_id).first(), 
-							'associations': associations.all()})
+							'associations': associations.first()})
 
 
 			results.items = temp

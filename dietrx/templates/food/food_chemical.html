@@ -9,62 +9,15 @@
             {% for result in results %}
             <tr>
                 <td>
-                    {{ result.chemical.pubchem_id }}
+                    <a target="_blank" href="{{url_for('get_chemical', pubchem_id=result.chemical.pubchem_id)}}">{{ result.chemical.pubchem_id }}</a>
                 </td>
                 <td>
                     {{ result.chemical.common_name }}
                 </td>
                 <td>
-                    <a class="btn btn-primary" data-toggle="collapse" href="#{{ loop.index }}" role="button" aria-expanded="false" aria-controls="{{ loop.index }}">
-                        Details
-                    </a>
+                    {{ result.associations.references }}
                 </td>
             </tr>
-
-
-
-            <tr class="collapse" id="{{ loop.index }}">
-                <td colspan="5">
-                    <div>
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th colspan="5">Associations of {{food.display_name}} with {{result.chemical.pubchem_id}}</th>
-                                </tr>
-                                <tr>
-                                    <th>Chemical</th>
-                                    <th>References</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                {% for association in result.associations %}
-
-                                <tr>
-                                    <td>
-                                        <a href="#">{{result.chemical.pubchem_id}}</a>
-                                    </td>
-                                    <td data-toggle="tooltip" data-placement="bottom" title="{{ association.refences | replace('; ', ',') }}">{{ association.references | replace('; ', ',') }}</td>
-                                </tr>
-
-                                {% else %}
-                                <tr>
-                                    <td colspan="10">
-                                        No associations were obtained for {{food.display_name}} with {{result.chemical.pubchem_id}}.
-                                    </td>
-                                </tr>
-
-                                {% endfor %}
-
-                            </tbody>
-                        </table>
-
-                    </div>
-                </td>
-            </tr>
-
-
-
 
             {% endfor %}
         </tbody>
