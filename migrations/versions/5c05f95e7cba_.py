@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: d39327241339
+Revision ID: 5c05f95e7cba
 Revises: 
-Create Date: 2018-05-28 00:38:40.383626
+Create Date: 2018-06-09 14:36:25.380275
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'd39327241339'
+revision = '5c05f95e7cba'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -88,6 +88,10 @@ def upgrade():
     op.create_table('chemical_disease',
     sa.Column('pubchem_id', sa.String(length=128), nullable=False),
     sa.Column('disease_id', sa.String(length=128), nullable=False),
+    sa.Column('association', sa.String(length=100), nullable=True),
+    sa.Column('reference', sa.Text(), nullable=True),
+    sa.Column('type_relation', sa.String(length=100), nullable=True),
+    sa.Column('inference_network', sa.Text(), nullable=True),
     sa.ForeignKeyConstraint(['disease_id'], ['disease.disease_id'], ),
     sa.ForeignKeyConstraint(['pubchem_id'], ['chemical.pubchem_id'], ),
     sa.PrimaryKeyConstraint('pubchem_id', 'disease_id')
@@ -96,6 +100,8 @@ def upgrade():
     sa.Column('gene_id', sa.String(length=128), nullable=False),
     sa.Column('disease_id', sa.String(length=128), nullable=False),
     sa.Column('reference', sa.String(length=100), nullable=True),
+    sa.Column('type_relation', sa.String(length=100), nullable=True),
+    sa.Column('inference_network', sa.Text(), nullable=True),
     sa.ForeignKeyConstraint(['disease_id'], ['disease.disease_id'], ),
     sa.ForeignKeyConstraint(['gene_id'], ['gene.gene_id'], ),
     sa.PrimaryKeyConstraint('gene_id', 'disease_id')
@@ -103,7 +109,10 @@ def upgrade():
     op.create_table('food_chemical',
     sa.Column('food_id', sa.String(length=128), nullable=False),
     sa.Column('pubchem_id', sa.String(length=128), nullable=False),
+    sa.Column('content', sa.Text(), nullable=True),
     sa.Column('references', sa.Text(), nullable=True),
+    sa.Column('type_relation', sa.String(length=100), nullable=True),
+    sa.Column('inference_network', sa.Text(), nullable=True),
     sa.ForeignKeyConstraint(['food_id'], ['food.food_id'], ),
     sa.ForeignKeyConstraint(['pubchem_id'], ['chemical.pubchem_id'], ),
     sa.PrimaryKeyConstraint('food_id', 'pubchem_id')
@@ -122,7 +131,8 @@ def upgrade():
     op.create_table('food_gene',
     sa.Column('food_id', sa.String(length=128), nullable=False),
     sa.Column('gene_id', sa.String(length=128), nullable=False),
-    sa.Column('disease_categories', sa.Text(), nullable=True),
+    sa.Column('type_relation', sa.String(length=100), nullable=True),
+    sa.Column('inference_network', sa.Text(), nullable=True),
     sa.ForeignKeyConstraint(['food_id'], ['food.food_id'], ),
     sa.ForeignKeyConstraint(['gene_id'], ['gene.gene_id'], ),
     sa.PrimaryKeyConstraint('food_id', 'gene_id')

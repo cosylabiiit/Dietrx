@@ -2,46 +2,6 @@ from dietrx import db
 from dietrx.search import add_to_index, remove_from_index
 
 class SearchableMixin(object):
-    # @classmethod
-    # def search(cls, expression, page, per_page):
-    #     ids, total = query_index(cls.__tablename__, expression, page, per_page)
-    #     if total == 0:
-    #         return cls.query.filter_by(id=0), 0
-    #     when = []
-    #     for i in range(len(ids)):
-    #         when.append((ids[i], i))
-    #     return cls.query.filter(cls.id.in_(ids)).order_by(
-    #         db.case(when, value=cls.id)), total
-
-    # @classmethod
-    # def before_commit(cls, session):
-    #     session._changes = {
-    #         'add': [obj for obj in session.new if isinstance(obj, cls)],
-    #         'update': [obj for obj in session.dirty if isinstance(obj, cls)],
-    #         'delete': [obj for obj in session.deleted if isinstance(obj, cls)]
-    #     }
-
-    # @classmethod
-    # def after_commit(cls, session):
-    #     id = ''
-    #     if(cls.__tablename__ == 'food'):
-    #         id = 'food_id'
-    #     elif(cls.__tablename__ == 'disease'):
-    #         id = 'disease_id'
-    #     elif(cls.__tablename__ == 'gene'):
-    #         id = 'gene_id'
-    #     else:
-    #         print('wrong table')
-    #         return
-
-    #     for obj in session._changes['add']:
-    #         add_to_index(cls.__tablename__, obj, id)
-    #     for obj in session._changes['update']:
-    #         add_to_index(cls.__tablename__, obj, id)
-    #     for obj in session._changes['delete']:
-    #         remove_from_index(cls.__tablename__, obj, id)
-    #     session._changes = None
-
     @classmethod
     def reindex(cls, id):
         for obj in cls.query:
@@ -92,7 +52,11 @@ class Gene(SearchableMixin, db.Model):
 
 
 class Chemical(SearchableMixin, db.Model):
-    __searchable__ = ['pubchem_id', 'common_name', 'iupac_name']
+    __searchable__ = ['common_name', 'iupac_name']
+
+    diseases = db.relationship("Disease", secondary="chemical_disease")
+    foods = db.relationship("Food", secondary="food_chemical")
+
     pubchem_id = db.Column(db.Integer, primary_key=True)
     common_name = db.Column(db.Text, nullable=True, index=True)
     database = db.Column(db.Text, nullable=True, index=True)
@@ -136,13 +100,15 @@ class Food_disease(db.Model):
     disease = db.relationship("Disease", backref=db.backref('food_disease'))
 
     def __repr__(self):
-        return '<Food Disease {}>'.format(self.id)
+        return '<Food Disease {} {}>'.format(self.food_id, self.disease_id)
 
 
 class Disease_gene(db.Model):
     gene_id = db.Column(db.String(128), db.ForeignKey('gene.gene_id'), primary_key=True)
     disease_id = db.Column(db.String(128), db.ForeignKey('disease.disease_id'), primary_key=True)
     reference = db.Column(db.String(100))
+    type_relation = db.Column(db.String(100))
+    inference_network = db.Column(db.Text)
     disease = db.relationship("Disease", backref=db.backref('disease_gene'))
     gene = db.relationship("Gene", backref=db.backref('disease_gene'))
 
@@ -153,7 +119,8 @@ class Disease_gene(db.Model):
 class Food_gene(db.Model):
     food_id = db.Column(db.String(128), db.ForeignKey('food.food_id'), primary_key=True)
     gene_id = db.Column(db.String(128), db.ForeignKey('gene.gene_id'), primary_key=True)
-    disease_categories = db.Column(db.Text)
+    type_relation = db.Column(db.String(100))
+    inference_network = db.Column(db.Text)
     food = db.relationship("Food", backref=db.backref('food_gene'))
     gene = db.relationship("Gene", backref=db.backref('food_gene'))
 
@@ -177,6 +144,10 @@ class References(db.Model):
 class Chemical_disease(db.Model):
     pubchem_id = db.Column(db.String(128), db.ForeignKey('chemical.pubchem_id'), primary_key=True)
     disease_id = db.Column(db.String(128), db.ForeignKey('disease.disease_id'), primary_key=True)
+    association = db.Column(db.String(100))
+    reference = db.Column(db.Text)
+    type_relation = db.Column(db.String(100))
+    inference_network = db.Column(db.Text)
     chemical = db.relationship("Chemical", backref=db.backref('chemical_disease'))
     disease = db.relationship("Disease", backref=db.backref('chemical_disease'))
 
@@ -189,7 +160,10 @@ class Food_chemical(db.Model):
         'food.food_id'), primary_key=True)
     pubchem_id = db.Column(db.String(128), db.ForeignKey(
         'chemical.pubchem_id'), primary_key=True)
+    content = db.Column(db.Text)
     references = db.Column(db.Text)
+    type_relation = db.Column(db.String(100))
+    inference_network = db.Column(db.Text)
     food = db.relationship("Food", backref=db.backref('food_chemical'))
     chemical = db.relationship(
         "Chemical", backref=db.backref('food_chemical'))

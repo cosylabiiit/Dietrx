@@ -30,11 +30,21 @@
             
             <tr class="collapse" id="{{ loop.index }}">
                 <td colspan="5">
-                    <div>
+                    <div style="max-height: 600px; overflow: auto;">
+                        <div>
+                            <strong>Inference Network (Chemicals which effect {{disease.disease_name}} & {{result.food.display_name}})</strong>
+                            <br> 
+                            {% for molecule in result.inference_network %}
+                            <a target="_blank" href="{{url_for('get_chemical', pubchem_id=molecule.pubchem_id)}}">{{molecule.pubchem_id}}</a>| 
+                            {% else %}
+                            No Chemicals found which effect {{disease.disease_name}} & {{result.food.display_name}}
+                            {% endfor %}
+                        </div>
+                        <br>
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th colspan="5">Associations of {{disease.disease_name}} with {{result.food.display_name}}</th>
+                                    <th colspan="5">Curated associations of {{disease.disease_name}} with {{result.food.display_name}}</th>
                                 </tr>
                                 <tr>
                                     <th>PMID</th>

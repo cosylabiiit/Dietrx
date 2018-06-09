@@ -118,9 +118,15 @@ def get_food():
 
 			for res in results.items:
 				associations = Food_disease.query.filter_by(disease_id = res.disease_id, food_id=food_id)
+				q = db.session.query(Chemical)\
+					.filter(Food_chemical.food_id == food_id)\
+					.filter(Chemical_disease.disease_id == res.disease_id)\
+					.filter(Food_chemical.pubchem_id == Chemical.pubchem_id, 
+							Chemical_disease.pubchem_id == Chemical.pubchem_id)
 				temp.append({'disease': Disease.query.filter_by(disease_id = res.disease_id).first(), 
 							'positive_associations': associations.filter_by(association = 'positive').all(),
-							'negative_associations': associations.filter_by(association = 'negative').all()})
+							'negative_associations': associations.filter_by(association = 'negative').all(),
+							'inference_network': q.all()})
 
 
 			results.items = temp
@@ -220,9 +226,15 @@ def get_disease():
 			
 			for res in results.items:
 				associations = Food_disease.query.filter_by(food_id = res.food_id, disease_id=disease_id)
+				q = db.session.query(Chemical)\
+                                    .filter(Food_chemical.food_id == disease_id)\
+                                    .filter(Chemical_disease.disease_id == res.food_id)\
+                                    .filter(Food_chemical.pubchem_id == Chemical.pubchem_id,
+                                            Chemical_disease.pubchem_id == Chemical.pubchem_id)
 				temp.append({'food': Food.query.filter_by(food_id = res.food_id).first(), 
 							'positive_associations': associations.filter_by(association = 'positive').all(),
-							'negative_associations': associations.filter_by(association = 'negative').all()})
+							'negative_associations': associations.filter_by(association = 'negative').all(),
+							'inference_network': q.all()})
 
 			
 			results.items = temp

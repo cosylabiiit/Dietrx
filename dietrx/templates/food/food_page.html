@@ -31,7 +31,7 @@
 
 			{% if subcategory == 'disease' %}
 			<li class="nav-item">
-				<a class="nav-link active" id="disease-tab" data-toggle="tab" href="#disease" role="tab" aria-controls="disease" aria-selected="true">Disease</a>
+				<a class="nav-link active" id="disease-tab" data-toggle="tab" href="#disease" role="tab" aria-controls="disease" aria-selected="true">Associated diseases</a>
 			</li>
 			{% elif not 'disease' in subcategory_that_exist %}
 			<li class="nav-item">
@@ -39,7 +39,7 @@
 			</li>
 			{% else %}
 			<li class="nav-item">
-				<a class="nav-link" id="disease-tab" href="{{url_for('get_food', food_id=food.food_id ,subcategory='disease')}}">Disease</a>
+				<a class="nav-link" id="disease-tab" href="{{url_for('get_food', food_id=food.food_id ,subcategory='disease')}}">Associated diseases</a>
 			</li>
 			{% endif %}
 
@@ -47,11 +47,11 @@
 			
 			{% if subcategory == 'gene' %}
 			<li class="nav-item">
-				<a class="nav-link active" id="gene-tab" data-toggle="tab" href="#gene" role="tab" aria-controls="gene" aria-selected="true">Gene</a>
+				<a class="nav-link active" id="gene-tab" data-toggle="tab" href="#gene" role="tab" aria-controls="gene" aria-selected="true">Associated genes</a>
 			</li>
 			{% elif 'gene' in subcategory_that_exist %}
 			<li class="nav-item">
-				<a class="nav-link" id="gene-tab" href="{{url_for('get_food', food_id=food.food_id ,subcategory='gene')}}">Gene</a>
+				<a class="nav-link" id="gene-tab" href="{{url_for('get_food', food_id=food.food_id ,subcategory='gene')}}">Associated genes</a>
 			</li>
 			{% else %}
 			<li class="nav-item">
@@ -62,7 +62,7 @@
 
 			{% if subcategory == 'chemical' %}
 			<li class="nav-item">
-				<a class="nav-link active" id="chemical-tab" data-toggle="tab" href="#chemical" role="tab" aria-controls="chemical" aria-selected="true">Chemical</a>
+				<a class="nav-link active" id="chemical-tab" data-toggle="tab" href="#chemical" role="tab" aria-controls="chemical" aria-selected="true">Associated Chemical</a>
 			</li>
 			{% elif not 'chemical' in subcategory_that_exist %}
 			<li class="nav-item">
@@ -70,7 +70,7 @@
 			</li>
 			{% else %}
 			<li class="nav-item">
-				<a class="nav-link" id="chemical-tab" href="{{url_for('get_food', food_id=food.food_id ,subcategory='chemical')}}">Chemical</a>
+				<a class="nav-link" id="chemical-tab" href="{{url_for('get_food', food_id=food.food_id ,subcategory='chemical')}}">Associated Chemical</a>
 			</li>
 			{% endif %}
 			
