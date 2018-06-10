@@ -1,0 +1,105 @@
+<div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" style="z-index: 99999;">
+    
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-capitalize" id="myModalLabel">Associations between {{result.food.display_name}} & {{result.disease.disease_name}}</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+                <div>
+                    <strong>Chemical linking {{result.food.display_name}} & {{result.disease.disease_name}}</strong>
+                    <br> 
+                    
+                    <div style="max-height: 400px; overflow: auto;">
+                        <table class="table table-hover" >
+                            <thead>
+                                <tr>
+                                    <th>PubChem ID</th>
+                                    <th>Common Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                {% for molecule in result.inference_network %}
+                                <tr>
+                                    <td><a target="_blank" href="{{url_for('get_chemical', pubchem_id=molecule.pubchem_id)}}">{{molecule.pubchem_id}}</a></td>
+                                    <td>{{molecule.common_name}}</td>
+                                </tr>
+                                {% else %} 
+                                No Chemical found linking {{result.food.display_name}} & {{result.disease.disease_name}} 
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                </div>
+                
+                <hr />
+                <strong colspan="5">Text-mined Positive and Negative associations of {{result.food.display_name}} with {{result.disease.disease_name}}</strong>
+                <hr />
+
+                <div style="max-height: 400px; overflow: auto;">
+                    <br>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>PMID</th>
+                                <th>Title</th>
+                                <th>Journal</th>
+                                <th>Year</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            {% for association in result.positive_associations %}
+                            
+                            <tr style="background-color: #bfffbf;">
+                                <td>
+                                    <a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/{{ association.pmid }}">{{ association.pmid }}</a>
+                                </td>
+                                <td data-toggle="tooltip" data-placement="bottom" title="{{ association.reference.title }}">{{ association.reference.title|truncate(40) }}</td>
+                                <td data-toggle="tooltip" data-placement="bottom" title="{{ association.reference.journal_name }}">{{ association.reference.journal_name_abbr }}</td>
+                                <td>{{ association.reference.date }}</td>
+                            </tr>
+                            
+                            {% else %}
+                            <tr style="background-color: #bfffbf;">
+                                <td colspan="10">
+                                    No positive associations were obtained for {{result.food.display_name}} with {{result.disease.disease_name}}.
+                                </td>
+                            </tr>
+                            
+                            {% endfor %} {% for association in result.negative_associations %}
+                            
+                            <tr style="background-color: #ffbfc5;">
+                                <td>
+                                    <a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/{{ association.pmid }}">{{ association.pmid }}</a>
+                                </td>
+                                <td data-toggle="tooltip" data-placement="bottom" title="{{ association.reference.title }}">{{ association.reference.title|truncate(40) }}</td>
+                                <td data-toggle="tooltip" data-placement="bottom" title="{{ association.reference.journal_name }}">{{ association.reference.journal_name_abbr }}</td>
+                                <td>{{ association.reference.date }}</td>
+                            </tr>
+                            
+                            {% else %}
+                            <tr style="background-color: #ffbfc5;">
+                                <td colspan="10">
+                                    No negative associations were obtained for {{result.food.display_name}} with {{result.disease.disease_name}}.
+                                </td>
+                            </tr>
+                            
+                            {% endfor %}
+                            
+                        </tbody>
+                    </table>
+                    
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+</div>

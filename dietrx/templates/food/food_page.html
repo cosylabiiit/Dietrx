@@ -15,7 +15,8 @@
 		<p class="card-text">
 	    	<span class="text-danger">NCBI Taxonomy ID:</span> <a target="_blank" href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{food.tax_id}}">{{ food.tax_id|upper }}</a><br> 
 	    	<span class="text-danger">Common Names: </span> {{ food.common_names | replace(';', ',') | title }}<br> 
-	    	<span class="text-danger">Scientific Name: </span> <span style="font-style: italic;">{{ food.scientific_name|title }}</span><br> 
+	    	<span class="text-danger">Scientific Name: </span> <span style="font-style: italic;">{{ food.scientific_name }}</span><br> 
+	    	<span class="text-danger">Category: </span> <span>{{ food.food_category|title }}</span><br> 
 	    </p>
 
 		</div>
@@ -31,49 +32,36 @@
 
 			{% if subcategory == 'disease' %}
 			<li class="nav-item">
-				<a class="nav-link active" id="disease-tab" data-toggle="tab" href="#disease" role="tab" aria-controls="disease" aria-selected="true">Associated diseases</a>
+				<a class="nav-link active" id="disease-tab" data-toggle="tab" href="#disease" role="tab" aria-controls="disease" aria-selected="true">Associated Diseases</a>
 			</li>
 			{% elif not 'disease' in subcategory_that_exist %}
-			<li class="nav-item">
-				<a class="nav-link text-secondary">Disease associations does NOT exist</a>
-			</li>
 			{% else %}
 			<li class="nav-item">
-				<a class="nav-link" id="disease-tab" href="{{url_for('get_food', food_id=food.food_id ,subcategory='disease')}}">Associated diseases</a>
+				<a class="nav-link" id="disease-tab" href="{{url_for('get_food', food_id=food.food_id ,subcategory='disease')}}">Associated Diseases</a>
 			</li>
 			{% endif %}
-
-			
-			
-			{% if subcategory == 'gene' %}
-			<li class="nav-item">
-				<a class="nav-link active" id="gene-tab" data-toggle="tab" href="#gene" role="tab" aria-controls="gene" aria-selected="true">Associated genes</a>
-			</li>
-			{% elif 'gene' in subcategory_that_exist %}
-			<li class="nav-item">
-				<a class="nav-link" id="gene-tab" href="{{url_for('get_food', food_id=food.food_id ,subcategory='gene')}}">Associated genes</a>
-			</li>
-			{% else %}
-			<li class="nav-item">
-				<a class="nav-link text-secondary">Gene associations does NOT exist</a>
-			</li>
-			{% endif %}
-
 
 			{% if subcategory == 'chemical' %}
 			<li class="nav-item">
-				<a class="nav-link active" id="chemical-tab" data-toggle="tab" href="#chemical" role="tab" aria-controls="chemical" aria-selected="true">Associated Chemical</a>
+				<a class="nav-link active" id="chemical-tab" data-toggle="tab" href="#chemical" role="tab" aria-controls="chemical" aria-selected="true">Constituent Chemicals</a>
 			</li>
 			{% elif not 'chemical' in subcategory_that_exist %}
-			<li class="nav-item">
-				<a class="nav-link text-secondary">Chemical associations does NOT exist</a>
-			</li>
 			{% else %}
 			<li class="nav-item">
-				<a class="nav-link" id="chemical-tab" href="{{url_for('get_food', food_id=food.food_id ,subcategory='chemical')}}">Associated Chemical</a>
+				<a class="nav-link" id="chemical-tab" href="{{url_for('get_food', food_id=food.food_id ,subcategory='chemical')}}">Constituent Chemicals</a>
 			</li>
 			{% endif %}
 			
+			{% if subcategory == 'gene' %}
+			<li class="nav-item">
+				<a class="nav-link active" id="gene-tab" data-toggle="tab" href="#gene" role="tab" aria-controls="gene" aria-selected="true">Infered Gene Associations</a>
+			</li>
+			{% elif 'gene' in subcategory_that_exist %}
+			<li class="nav-item">
+				<a class="nav-link" id="gene-tab" href="{{url_for('get_food', food_id=food.food_id ,subcategory='gene')}}">Infered Gene Associations</a>
+			</li>
+			{% else %}
+			{% endif %}		
 			
 			
 		</ul>

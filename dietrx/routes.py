@@ -79,6 +79,37 @@ def autocomplete():
 	results = list(set(results))
 	return jsonify(json.dumps(results))
 
+
+@app.route('/dietrx/get_associations', methods=['GET'])
+def get_associations():
+	if (not request.args.get('food_id')) or (not request.args.get('disease_id')):
+		return redirect(url_for('index'))
+	
+	food_id = request.args.get('food_id')
+	disease_id = request.args.get('disease_id')
+
+	food = Food.query.filter_by(food_id=food_id).first()
+	disease = Disease.query.filter_by(disease_id=disease_id).first()
+
+	if (food is None) or (disease is None):
+		abort(404)
+	
+	associations = Food_disease.query.filter_by(disease_id=disease_id, food_id=food_id)
+	
+	q = db.session.query(Chemical)\
+				.filter(Food_chemical.food_id == food_id)\
+				.filter(Chemical_disease.disease_id == disease_id)\
+				.filter(Food_chemical.pubchem_id == Chemical.pubchem_id,
+						Chemical_disease.pubchem_id == Chemical.pubchem_id)
+	result = {'disease': disease,
+			'food': food,
+			'positive_associations': associations.filter_by(association='positive').all(),
+			'negative_associations': associations.filter_by(association='negative').all(),
+			'inference_network': q.all()}
+
+	return render_template('common/associations_popup.html', result = result)
+
+
 	
 @app.route('/dietrx/get_food', methods=['GET'])
 def get_food():
@@ -103,7 +134,6 @@ def get_food():
 		if(len(subcategory_that_exist)==0):
 			abort(404)
 		subcategory = request.args.get('subcategory', subcategory_that_exist[0])
-		print(subcategory_that_exist)
 
 		if(subcategory == 'disease'):
 
@@ -117,35 +147,35 @@ def get_food():
 			temp = []
 
 			for res in results.items:
-				associations = Food_disease.query.filter_by(disease_id = res.disease_id, food_id=food_id)
-				q = db.session.query(Chemical)\
-					.filter(Food_chemical.food_id == food_id)\
-					.filter(Chemical_disease.disease_id == res.disease_id)\
-					.filter(Food_chemical.pubchem_id == Chemical.pubchem_id, 
-							Chemical_disease.pubchem_id == Chemical.pubchem_id)
-				temp.append({'disease': Disease.query.filter_by(disease_id = res.disease_id).first(), 
-							'positive_associations': associations.filter_by(association = 'positive').all(),
-							'negative_associations': associations.filter_by(association = 'negative').all(),
-							'inference_network': q.all()})
+				temp.append({'disease': Disease.query.filter_by(disease_id = res.disease_id).first(),
+                            'positive_associations': Food_disease.query.filter_by(food_id=food_id, disease_id=res.disease_id, association='positive').all(),
+							'negative_associations': Food_disease.query.filter_by(food_id=food_id, disease_id=res.disease_id, association='negative').all()})
 
 
 			results.items = temp
 			
 		elif(subcategory == 'gene'):
 
-			results = db.session.query(Food_gene.gene_id, 
-							db.func.count(Food_gene.gene_id).label('total'))\
-							.filter_by(food_id=food_id).group_by(Food_gene.gene_id)\
-							.order_by('total DESC').all()
+			results = Food_gene.query.filter_by(food_id=food_id).all()
 
+			temp = []
+			for res in results:
+				temp.append({'association': res,
+                            'count': len(res.inference_network.split('|'))})
+			
+			results = sorted(temp, key=lambda x:x['count'], reverse=True)
 			results = Pagination(page, NUM_PER_PAGE, results, request, 'get_food')
 
 			temp = []
 
 			for res in results.items:
-				associations = Food_gene.query.filter_by(gene_id = res.gene_id, food_id=food_id)
-				temp.append({'gene': Gene.query.filter_by(gene_id = res.gene_id).first(), 
-							'associations': associations.first()})
+				association = res['association']
+				ids = association.inference_network.split('|')
+				diseases = Disease.query.filter(Disease.disease_id.in_(ids)).all()
+				temp.append({'gene': association.gene, 
+							'associations': association,
+                            'diseases': diseases,
+							'num_of_diseases': res['count']})
 
 
 			results.items = temp
@@ -215,26 +245,19 @@ def get_disease():
 		if(subcategory == 'food'):
 			
 			results = db.session.query(Food_disease.food_id, 
-							db.func.count(Food_disease.food_id).label('total'))\
-							.filter_by(disease_id=disease_id).group_by(Food_disease.food_id)\
-							.order_by('total DESC').all()
+						db.func.count(Food_disease.food_id).label('total'))\
+						.filter_by(disease_id=disease_id).group_by(Food_disease.food_id)\
+						.order_by('total DESC').all()
 			
 			results = Pagination(page, NUM_PER_PAGE, results, request, 'get_disease')
 
 			temp = []
 
-			
 			for res in results.items:
-				associations = Food_disease.query.filter_by(food_id = res.food_id, disease_id=disease_id)
-				q = db.session.query(Chemical)\
-                                    .filter(Food_chemical.food_id == disease_id)\
-                                    .filter(Chemical_disease.disease_id == res.food_id)\
-                                    .filter(Food_chemical.pubchem_id == Chemical.pubchem_id,
-                                            Chemical_disease.pubchem_id == Chemical.pubchem_id)
-				temp.append({'food': Food.query.filter_by(food_id = res.food_id).first(), 
-							'positive_associations': associations.filter_by(association = 'positive').all(),
-							'negative_associations': associations.filter_by(association = 'negative').all(),
-							'inference_network': q.all()})
+				temp.append({'food': Food.query.filter_by(food_id=res.food_id).first(),
+							'positive_associations': Food_disease.query.filter_by(food_id=res.food_id, disease_id=disease_id, association='positive').all(),
+							'negative_associations': Food_disease.query.filter_by(food_id=res.food_id, disease_id=disease_id, association='negative').all()})
+
 
 			
 			results.items = temp

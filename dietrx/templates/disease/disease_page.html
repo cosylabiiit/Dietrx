@@ -15,7 +15,7 @@
 		<p class="card-text">
             <span class="text-danger">Disease Name: </span> {{ disease.disease_name }}<br> 
             <span class="text-danger">Synonyms: </span> {{ disease.disease_synonyms | replace('|', ', ') | title}}<br> 
-	    	<span class="text-danger">Category: </span> <span style="font-style: italic;">{{ disease.disease_category| replace('|', ', ')}}</span><br> 
+	    	<span class="text-danger">Category: </span> <span>{{ disease.disease_category| replace('|', ', ')}}</span><br> 
 	    </p>	
 
 		</div>
@@ -34,9 +34,6 @@
 				<a class="nav-link active" id="food-tab" data-toggle="tab" href="#food" role="tab" aria-controls="food" aria-selected="true">Associated Foods</a>
 			</li>
 			{% elif not 'food' in subcategory_that_exist %}
-			<li class="nav-item">
-				<a class="nav-link text-secondary">Food associations does NOT exist</a>
-			</li>
 			{% else %}
 			<li class="nav-item">
 				<a class="nav-link" id="disease-tab" href="{{url_for('get_disease', disease_id=disease.disease_id ,subcategory='food')}}">Associated Foods</a>
@@ -50,9 +47,6 @@
 				<a class="nav-link active" id="gene-tab" data-toggle="tab" href="#gene" role="tab" aria-controls="gene" aria-selected="true">Associated Genes</a>
 			</li>
 			{% elif not 'gene' in subcategory_that_exist %}
-			<li class="nav-item">
-				<a class="nav-link text-secondary">Gene associations does NOT exist</a>
-			</li>
 			{% else %}
 			<li class="nav-item">
 				<a class="nav-link" id="gene-tab" href="{{url_for('get_disease', disease_id=disease.disease_id ,subcategory='gene')}}">Associated Genes</a>
@@ -64,9 +58,6 @@
 				<a class="nav-link active" id="chemical-tab" data-toggle="tab" href="#chemical" role="tab" aria-controls="chemical" aria-selected="true">Associated Chemicals</a>
 			</li>
 			{% elif not 'chemical' in subcategory_that_exist %}
-			<li class="nav-item">
-				<a class="nav-link text-secondary">Chemical associations does NOT exist</a>
-			</li>
 			{% else %}
 			<li class="nav-item">
 				<a class="nav-link" id="chemical-tab" href="{{url_for('get_disease', disease_id=disease.disease_id ,subcategory='chemical')}}">Associated Chemicals</a>

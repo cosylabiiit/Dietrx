@@ -1,0 +1,16 @@
+<div id="associations_details_modal">
+
+</div>
+
+<script type="text/javascript">
+    $('.associations_details').click(function (event) {
+        $.ajax({
+            url: "{{url_for('get_associations')}}?" + this.id,
+            dataType: "html",
+            success: function (data) {
+                $('#associations_details_modal').html(data);
+                $('#modal').modal('show')
+            }
+        });
+    });
+</script>
