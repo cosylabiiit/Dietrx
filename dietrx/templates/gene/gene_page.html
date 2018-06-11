@@ -7,13 +7,14 @@
 <div class="container pt-4">
 	
 	<hr />
-	<h5 class="container"><strong>{{ gene.gene_id }}</strong></h5>
+	<h5 class="container"><strong>Gene Name</strong></h5>
 	<hr />
 	<div class="row">
 		<div class="col-md-12">
 			
 		<p class="card-text">
-            <span class="text-danger">Gene Name: </span> {{ gene.gene_id }}<br> 
+            <span class="text-danger">Gene ID: </span> {{ gene.gene_id }}<br> 
+            <span class="text-danger">Gene Name: </span> Gene Name<br> 
 	    </p>	
 
 		</div>
@@ -26,31 +27,27 @@
 			
 		<ul class="nav nav-tabs" id="myTab" role="tablist">
 			
-
 			{% if subcategory == 'food' %}
 			<li class="nav-item">
-				<a class="nav-link active" id="food-tab" data-toggle="tab" href="#food" role="tab" aria-controls="food" aria-selected="true">Food</a>
+				<a class="nav-link active" id="food-tab" data-toggle="tab" href="#food" role="tab" aria-controls="food" aria-selected="true">Associated Foods</a>
 			</li>
-			{% else %}
+			{% elif not 'food' in subcategory_that_exist %} {% else %}
 			<li class="nav-item">
-				<a class="nav-link" id="disease-tab" href="{{url_for('get_gene', gene_id=gene.gene_id ,subcategory='food')}}">Food</a>
+				<a class="nav-link" id="food-tab" href="{{url_for('get_gene', gene_id=gene.gene_id ,subcategory='food')}}">Associated Foods</a>
 			</li>
 			{% endif %}
 
-			
-			
 			{% if subcategory == 'disease' %}
 			<li class="nav-item">
-				<a class="nav-link active" id="disease-tab" data-toggle="tab" href="#disease" role="tab" aria-controls="disease" aria-selected="true">Disease</a>
+				<a class="nav-link active" id="disease-tab" data-toggle="tab" href="#disease" role="tab" aria-controls="disease" aria-selected="true">Associated Diseases</a>
 			</li>
+			{% elif not 'disease' in subcategory_that_exist %}
 			{% else %}
 			<li class="nav-item">
-				<a class="nav-link" id="disease-tab" href="{{url_for('get_gene', gene_id=gene.gene_id ,subcategory='disease')}}">Disease</a>
+				<a class="nav-link" id="disease-tab" href="{{url_for('get_gene', gene_id=gene.gene_id ,subcategory='disease')}}">Associated Diseases</a>
 			</li>
-			{% endif %}
-			
-			
-			
+			{% endif %} 
+
 		</ul>
 
 

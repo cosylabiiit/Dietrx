@@ -40,7 +40,15 @@
 			</li>
 			{% endif %}
 
-			
+			{% if subcategory == 'chemical' %}
+			<li class="nav-item">
+				<a class="nav-link active" id="chemical-tab" data-toggle="tab" href="#chemical" role="tab" aria-controls="chemical" aria-selected="true">Associated Chemicals</a>
+			</li>
+			{% elif not 'chemical' in subcategory_that_exist %} {% else %}
+			<li class="nav-item">
+				<a class="nav-link" id="chemical-tab" href="{{url_for('get_disease', disease_id=disease.disease_id ,subcategory='chemical')}}">Associated Chemicals</a>
+			</li>
+			{% endif %}
 			
 			{% if subcategory == 'gene' %}
 			<li class="nav-item">
@@ -53,18 +61,6 @@
 			</li>
 			{% endif %}
 
-			{% if subcategory == 'chemical' %}
-			<li class="nav-item">
-				<a class="nav-link active" id="chemical-tab" data-toggle="tab" href="#chemical" role="tab" aria-controls="chemical" aria-selected="true">Associated Chemicals</a>
-			</li>
-			{% elif not 'chemical' in subcategory_that_exist %}
-			{% else %}
-			<li class="nav-item">
-				<a class="nav-link" id="chemical-tab" href="{{url_for('get_disease', disease_id=disease.disease_id ,subcategory='chemical')}}">Associated Chemicals</a>
-			</li>
-			{% endif %}
-			
-			
 			
 		</ul>
 
