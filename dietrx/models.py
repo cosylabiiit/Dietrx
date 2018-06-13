@@ -155,6 +155,22 @@ class Chemical_disease(db.Model):
         return '<Chemical Disease {}>'.format(self.pubchem_id)
 
 
+class Chemical_gene(db.Model):
+    pubchem_id = db.Column(db.String(128), db.ForeignKey(
+        'chemical.pubchem_id'), primary_key=True)
+    gene_id = db.Column(db.String(128), db.ForeignKey(
+        'gene.gene_id'), primary_key=True)
+    interaction_actions = db.Column(db.Text)
+    source = db.Column(db.String(256))
+    chemical = db.relationship(
+        "Chemical", backref=db.backref('chemical_gene'))
+    gene = db.relationship(
+        "Gene", backref=db.backref('chemical_gene'))
+
+    def __repr__(self):
+        return '<Chemical Gene {}>'.format(self.pubchem_id)
+
+
 class Food_chemical(db.Model):
     food_id = db.Column(db.String(128), db.ForeignKey(
         'food.food_id'), primary_key=True)
