@@ -265,7 +265,7 @@ def get_disease():
 		elif(subcategory == 'gene'):
 
 			results = db.session.query(Disease_gene.gene_id)\
-						.filter_by(disease_id=disease_id)
+						.filter_by(disease_id=disease_id).all()
 
 			results = Pagination(page, NUM_PER_PAGE, results, request, 'get_disease')
 			temp = []
