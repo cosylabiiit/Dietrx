@@ -1,146 +1,167 @@
 {% extends 'common/index.html' %}
-
-
 {% block extra_head %}
-<script type="application/javascript" src="{{ url_for('static', filename='jsme/jsme.nocache.js') }}"></script>
-<script type="text/javascript">
-	function autocomplete(field_id, table){
-		$( "#"+field_id ).autocomplete({
-			minLength: 3,
-			source: function( request, response ) {
-				$.ajax( {
-					url: "{{ url_for('autocomplete') }}?table="+table+"&query="+request.term,
-					dataType: "json",
-					success: function( data ) {
-						data = JSON.parse(data);
-						var newData = [];
-						for(var i=0; i<data.length ; ++i){
-							newData.push({'value': data[i]})
+	<script type="application/javascript" src="{{ url_for('static', filename='jsme/jsme.nocache.js') }}"></script>
+	<script type="text/javascript">
+		function autocomplete(field_id, table){
+			$( "#"+field_id ).autocomplete({
+				minLength: 3,
+				source: function( request, response ) {
+					$.ajax( {
+						url: "{{ url_for('autocomplete') }}?table="+table+"&query="+request.term,
+						dataType: "json",
+						success: function( data ) {
+							data = JSON.parse(data);
+							var newData = [];
+							for(var i=0; i<data.length ; ++i){
+								newData.push({'value': data[i]})
+							}
+							response(Array.from(newData));
 						}
-						response(Array.from(newData));
-					}
-				} );
-			}
-		} );
-	}
-	function search(form_id, table){
-		$('#'+form_id).on('submit', function(event) {
-			event.preventDefault();
-			$.get("{{ url_for('search') }}?table="+table+"&query="+$('#'+form_id).serialize(), function(data){
-				$('#results').html(data);
+					} );
+				}
+			} );
+		}
+		function search(form_id, table){
+			$('#'+form_id).on('submit', function(event) {
+				event.preventDefault();
+				$.get("{{ url_for('search') }}?table="+table+"&query="+$('#'+form_id).serialize(), function(data){
+					$('#results').html(data);
+				});
+			});
+		}
+		$(document).ready(function(){
+			autocomplete('food_query', 'food')
+			search('food_search', 'food')
+			autocomplete('disease_query', 'disease')
+			search('disease_search', 'disease')
+			autocomplete('gene_query', 'gene')
+			search('gene_search', 'gene')
+		});
+		$(document).ready(function(){
+			$(document).on('click', '.page-link', function(event){
+				event.preventDefault();
+				$.get($(this).attr('href'), function(data){
+					$('#results').html(data);
+				});
 			});
 		});
-	}
-	$(document).ready(function(){
-		autocomplete('food_query', 'food')
-		search('food_search', 'food')
-		autocomplete('disease_query', 'disease')
-		search('disease_search', 'disease')
-		autocomplete('gene_query', 'gene')
-		search('gene_search', 'gene')
-	});
+	</script>
 
-	$(document).ready(function(){
-		$(document).on('click', '.page-link', function(event){
-			event.preventDefault();
-			$.get($(this).attr('href'), function(data){
-				$('#results').html(data);
-			});
+
+
+
+
+
+
+<script type="text/javascript">
+	function submit_molecules() {
+
+		e.preventDefault();
+		$('#smiles').attr('value', jsmeAppletSearch.smiles());
+
+		document.getElementById("chemical-search-form").submit();
+
+	}
+	$(document).ready(function() {
+		$("#chemical-search-form").submit(function(e){
+			e.preventDefault(e);
+			$('#smiles').attr('value', jsmeAppletSearch.smiles());
+			document.getElementById("chemical-search-form").submit();
 		});
 	});
 </script>
-{% endblock %}
-
-
-{% block body %}
-<style>
-	.ui-autocomplete-loading {
-		background: white url("{{url_for('static',filename='images/ui-anim_basic_16x16.gif') }}") right center no-repeat;
+<script type="text/javascript">
+	function jsmeOnLoad() {
+		var width = 500;
+		var height = 360;
+		if(height > 350){
+			height = 350;
+		}
+		// console.log(height, width)
+		jsmeAppletSearch = new JSApplet.JSME("jsme_container_search", Math.abs(width).toString()+'px', Math.abs(height).toString()+'px');
 	}
-	.ui-autocomplete {
-		max-height: 200px;
-		overflow-y: auto;
-		overflow-x: hidden;
-	} 
-</style>
+</script>
+<script type="text/javascript">
+	$(document).ready(function() {
+  		$('#alogp').removeClass('active');
+  		$('#hbd').removeClass('active');
+  		$('#hba').removeClass('active');
+	});
+</script>
 
 
-
-<div class="container pt-4">
-	<div class="row">
-		<div class="col-md-12">
-			<div class="jumbotron text-center pt-3">
-				<h1>DietRx</h1>
-				<p>A resource to explore Diseases, Food, Genes, Phytochemicals and their Relationships.</p>
-				<div class="row text-center btn-group btn-block pt-3 mb-0 pb-0">
-					<a href="#search" class="col-xs-12 col-md-3 btn btn-primary" role="button">Search</a>
-					<a href="#stats" class="col-xs-12 col-md-3 btn btn-primary" role="button">Statistics</a>
-					<a href="{{ url_for('index') }}" class="col-xs-12 col-md-3 btn btn-primary" role="button">How to Use</a>
-					<a href="{{ url_for('index') }}" class="col-xs-12 col-md-3 btn btn-primary" role="button">FAQs</a>
+{% endblock %}
+{% block body %}
+	<style>
+		.ui-autocomplete-loading {
+			background: white url("{{url_for('static',filename='images/ui-anim_basic_16x16.gif') }}") right center no-repeat;
+		}
+		.ui-autocomplete {
+			max-height: 200px;
+			overflow-y: auto;
+			overflow-x: hidden;
+		}
+	</style>
+	<div class="container pt-4">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="jumbotron text-center pt-3">
+					<h1>DietRx</h1>
+					<p>A resource to explore Diseases, Food, Genes, Phytochemicals and their Relationships.</p>
+					<div class="row text-center btn-group btn-block pt-3 mb-0 pb-0">
+						<a href="#search" class="col-xs-12 col-md-3 btn btn-primary" role="button">Search</a>
+						<a href="#stats" class="col-xs-12 col-md-3 btn btn-primary" role="button">Statistics</a>
+						<a href="{{ url_for('index') }}" class="col-xs-12 col-md-3 btn btn-primary" role="button">How to Use</a>
+						<a href="{{ url_for('index') }}" class="col-xs-12 col-md-3 btn btn-primary" role="button">FAQs</a>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<hr />
-	<h5 class="container"><strong>DietRx Summary</strong></h5>
-	<hr />
-	<div class="row">
-		<div class="col-md-12 vcenter">
-			<blockquote class="blockquote">
-				Spices and herbs are key dietary ingredients in cuisines across the world. They have been shown to be of medicinal value for a wide variety of diseases through a large body of biomedical investigations, beyond their utility as flavoring and coloring agents. DietRx provides a platform for exploring the potential health impact of culinary spices and herbs via an exhaustive and systematic compilation of tripartite associations between spices/herbs, their phytochemicals and diseases. DietRx could be used for identification of suitable herbs/spices for potential culinary inteventions as well as for unearthing potential molecular mechanisms involved in their therapeutic effects.			
-			</blockquote>
-		</div>
-	</div>
-	<div id="search" class="pt-4">
 		<hr />
-		<h5 class="container"><span><img src="static/images/search_logo.png" class="d-inline-block align-top" width="30" height="30"></span></span><strong>&nbsp;&nbsp;DietRx Search</strong></h5>
-		<hr />	
-
-
-		<ul class="nav nav-tabs" id="myTab" role="tablist">
-			<li class="nav-item">
-				<a class="nav-link active" id="food-tab" data-toggle="tab" href="#food" role="tab" aria-controls="food" aria-selected="true">Food</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" id="diseases-tab" data-toggle="tab" href="#diseases" role="tab" aria-controls="diseases" aria-selected="false">Disease</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" id="gene-tab" data-toggle="tab" href="#gene" role="tab" aria-controls="gene" aria-selected="false">Gene</a>
-			</li>
-		</ul>
-
-
-
-		<div class="tab-content" id="myTabContent">
-			<div class="tab-pane fade show active" id="food" role="tabpanel" aria-labelledby="food-tab">
-
-				{% include 'food/food_search.html' %}
-
+		<h5 class="container"><strong>DietRx Summary</strong></h5>
+		<hr />
+		<div class="row">
+			<div class="col-md-12 vcenter">
+				<blockquote class="blockquote">
+					Spices and herbs are key dietary ingredients in cuisines across the world. They have been shown to be of medicinal value for a wide variety of diseases through a large body of biomedical investigations, beyond their utility as flavoring and coloring agents. DietRx provides a platform for exploring the potential health impact of culinary spices and herbs via an exhaustive and systematic compilation of tripartite associations between spices/herbs, their phytochemicals and diseases. DietRx could be used for identification of suitable herbs/spices for potential culinary inteventions as well as for unearthing potential molecular mechanisms involved in their therapeutic effects.
+				</blockquote>
 			</div>
-
-			<div class="tab-pane fade show" id="diseases" role="tabpanel" aria-labelledby="diseases-tab">
-
-				{% include 'disease/disease_search.html' %}
-
-			</div>
-
-			<div class="tab-pane fade show" id="gene" role="tabpanel" aria-labelledby="gene-tab">
-
-				{% include 'gene/gene_search.html' %}
-
-			</div>
-
 		</div>
-
-
-		<div id="results">
-			
+		<div id="search" class="pt-4">
+			<hr />
+			<h5 class="container"><span><img src="static/images/search_logo.png" class="d-inline-block align-top" width="30" height="30"></span></span><strong>&nbsp;&nbsp;DietRx Search</strong></h5>
+			<hr />
+			<ul class="nav nav-tabs" id="myTab" role="tablist">
+				<li class="nav-item">
+					<a class="nav-link active" id="food-tab" data-toggle="tab" href="#food" role="tab" aria-controls="food" aria-selected="true">Food</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="diseases-tab" data-toggle="tab" href="#diseases" role="tab" aria-controls="diseases" aria-selected="false">Disease</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="gene-tab" data-toggle="tab" href="#gene" role="tab" aria-controls="gene" aria-selected="false">Gene</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="chemical-tab" data-toggle="tab" href="#chemical" role="tab" aria-controls="chemical" aria-selected="false">Chemical</a>
+				</li>
+			</ul>
+			<div class="tab-content" id="myTabContent">
+				<div class="tab-pane fade show active" id="food" role="tabpanel" aria-labelledby="food-tab">
+					{% include 'food/food_search.html' %}
+				</div>
+				<div class="tab-pane fade show" id="diseases" role="tabpanel" aria-labelledby="diseases-tab">
+					{% include 'disease/disease_search.html' %}
+				</div>
+				<div class="tab-pane fade show" id="gene" role="tabpanel" aria-labelledby="gene-tab">
+					{% include 'gene/gene_search.html' %}
+				</div>
+				<div class="tab-pane fade show" id="chemical" role="tabpanel" aria-labelledby="chemical-tab">
+					{% include 'chemical/chemical_search.html' %}
+				</div>
+			</div>
+			<div id="results">
+			</div>
 		</div>
-
- 	</div>
- 	
-
-</div>
-
-
+		
+	</div>
 {% endblock %}
