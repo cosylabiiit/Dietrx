@@ -52,24 +52,21 @@ class Gene(SearchableMixin, db.Model):
 
 
 class Chemical(SearchableMixin, db.Model):
-    __searchable__ = ['common_name', 'iupac_name']
+    __searchable__ = ['common_name', 'iupac_name', 'synonyms']
 
     diseases = db.relationship("Disease", secondary="chemical_disease")
     foods = db.relationship("Food", secondary="food_chemical")
 
     pubchem_id = db.Column(db.Integer, primary_key=True)
     common_name = db.Column(db.Text, nullable=True, index=True)
+    synonyms = db.Column(db.Text, nullable=True, index=True)
     database = db.Column(db.Text, nullable=True, index=True)
-    reference = db.Column(db.Text, nullable=True, index=True)
     iupac_name = db.Column(db.Text, nullable=True, index=True)
+    molecular_formula = db.Column(db.Text, index=False)
     functional_group = db.Column(db.Text, nullable=True, index=True)
     functional_group_idx = db.Column(db.Text, nullable=True, index=True)
-    bitter_taste = db.Column(db.Boolean, index=True)
-    sweet_taste = db.Column(db.Boolean, index=True)
-    tasteless_taste = db.Column(db.Boolean, index=True)
-    predicted = db.Column(db.Boolean, index=True)
-    taste = db.Column(db.Text, index=False)
     smiles = db.Column(db.Text, index=False)
+    isomeric_smiles = db.Column(db.Text, index=False)
     molecular_weight = db.Column(db.Float, index=False,
                                  nullable=True)
     num_hydrogen_atoms = db.Column(db.Integer, index=False, nullable=True)
@@ -90,12 +87,12 @@ class Chemical(SearchableMixin, db.Model):
 
 
 class Food_disease(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    pmid = db.Column(db.Integer, db.ForeignKey('references.pmid'))
-    reference = db.relationship('References', backref=db.backref('food_disease'))
-    food_id = db.Column(db.String(128), db.ForeignKey('food.food_id'))
-    disease_id = db.Column(db.String(128), db.ForeignKey('disease.disease_id'))
-    association = db.Column(db.String(100))
+    food_id = db.Column(db.String(128), db.ForeignKey('food.food_id'), primary_key=True)
+    disease_id = db.Column(db.String(128), db.ForeignKey('disease.disease_id'), primary_key=True)
+    positive_pmid = db.Column(db.String(512), index=False)
+    negative_pmid = db.Column(db.String(512), index=False)
+    pubchem_id = db.Column(db.String(512), index=False)
+    weight = db.Column(db.Integer, index=True)
     food = db.relationship("Food", backref=db.backref('food_disease'))
     disease = db.relationship("Disease", backref=db.backref('food_disease'))
 
@@ -107,8 +104,7 @@ class Disease_gene(db.Model):
     gene_id = db.Column(db.String(128), db.ForeignKey('gene.gene_id'), primary_key=True)
     disease_id = db.Column(db.String(128), db.ForeignKey('disease.disease_id'), primary_key=True)
     reference = db.Column(db.String(100))
-    type_relation = db.Column(db.String(100))
-    inference_network = db.Column(db.Text)
+    via_chemicals = db.Column(db.String(512), index=False)
     disease = db.relationship("Disease", backref=db.backref('disease_gene'))
     gene = db.relationship("Gene", backref=db.backref('disease_gene'))
 
@@ -119,8 +115,8 @@ class Disease_gene(db.Model):
 class Food_gene(db.Model):
     food_id = db.Column(db.String(128), db.ForeignKey('food.food_id'), primary_key=True)
     gene_id = db.Column(db.String(128), db.ForeignKey('gene.gene_id'), primary_key=True)
-    type_relation = db.Column(db.String(100))
-    inference_network = db.Column(db.Text)
+    via_diseases = db.Column(db.String(512), index=False)
+    via_chemicals = db.Column(db.String(512), index=False)
     food = db.relationship("Food", backref=db.backref('food_gene'))
     gene = db.relationship("Gene", backref=db.backref('food_gene'))
 
@@ -144,10 +140,8 @@ class References(db.Model):
 class Chemical_disease(db.Model):
     pubchem_id = db.Column(db.String(128), db.ForeignKey('chemical.pubchem_id'), primary_key=True)
     disease_id = db.Column(db.String(128), db.ForeignKey('disease.disease_id'), primary_key=True)
-    association = db.Column(db.String(100))
-    reference = db.Column(db.Text)
-    type_relation = db.Column(db.String(100))
-    inference_network = db.Column(db.Text)
+    type_relation = db.Column(db.String(512))
+    via_genes = db.Column(db.String(512), index=False)
     chemical = db.relationship("Chemical", backref=db.backref('chemical_disease'))
     disease = db.relationship("Disease", backref=db.backref('chemical_disease'))
 
@@ -161,7 +155,7 @@ class Chemical_gene(db.Model):
     gene_id = db.Column(db.String(128), db.ForeignKey(
         'gene.gene_id'), primary_key=True)
     interaction_actions = db.Column(db.Text)
-    source = db.Column(db.String(256))
+    via_diseases = db.Column(db.String(512), index=False)
     chemical = db.relationship(
         "Chemical", backref=db.backref('chemical_gene'))
     gene = db.relationship(

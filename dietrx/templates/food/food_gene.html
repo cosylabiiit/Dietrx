@@ -4,6 +4,7 @@
 			<th>Gene ID</th>
 			<th>Gene Name</th>
 			<th>Number of diseases</th>
+			<th>Number of chemicals</th>
 			<th>Details</th>
 		</thead>
 		<tbody>
@@ -16,38 +17,21 @@
 					Gene Name
 				</td>
 				<td>
-					{{result.num_of_diseases}}
+					{{result.via_diseases|length}}
 				</td>
 				<td>
-					<a class="btn btn-primary" data-toggle="collapse" href="#{{ loop.index }}" role="button" aria-expanded="false" aria-controls="{{ loop.index }}">
+					{{result.via_chemicals|length}}
+				</td>
+				<td>
+					<button class="btn btn-primary associations_details" role="button" id="type=food_gene&food_id={{food.food_id}}&gene_id={{result.gene.gene_id}}"
+					 data-toggle="modal" data-target="#associations_details_modal">
 						Details
-					</a>				
+					</button>
 				</td>
-			</tr>
-			<tr class="collapse" id="{{ loop.index }}">
-				
-				<td colspan="5">
-				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th>MESH Disease ID</th>
-							<th>Disease Name</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for disease in result.diseases %} 
-						<tr>
-							<td>{{disease.disease_id}}</td>
-							<td>{{disease.disease_name}}</td>
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-				</td>
-				
-			</tr>
-				
+			</tr>				
 			{% endfor %}
 			</tbody>
 		</table>
+
+		 {% include 'common/associations_details_ajax.html' %}
 	</div>

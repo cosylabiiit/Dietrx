@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 5c05f95e7cba
+Revision ID: 30fd042d27a8
 Revises: 
-Create Date: 2018-06-09 14:36:25.380275
+Create Date: 2018-06-15 23:16:29.460241
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '5c05f95e7cba'
+revision = '30fd042d27a8'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,17 +21,14 @@ def upgrade():
     op.create_table('chemical',
     sa.Column('pubchem_id', sa.Integer(), nullable=False),
     sa.Column('common_name', sa.Text(), nullable=True),
+    sa.Column('synonyms', sa.Text(), nullable=True),
     sa.Column('database', sa.Text(), nullable=True),
-    sa.Column('reference', sa.Text(), nullable=True),
     sa.Column('iupac_name', sa.Text(), nullable=True),
+    sa.Column('molecular_formula', sa.Text(), nullable=True),
     sa.Column('functional_group', sa.Text(), nullable=True),
     sa.Column('functional_group_idx', sa.Text(), nullable=True),
-    sa.Column('bitter_taste', sa.Boolean(), nullable=True),
-    sa.Column('sweet_taste', sa.Boolean(), nullable=True),
-    sa.Column('tasteless_taste', sa.Boolean(), nullable=True),
-    sa.Column('predicted', sa.Boolean(), nullable=True),
-    sa.Column('taste', sa.Text(), nullable=True),
     sa.Column('smiles', sa.Text(), nullable=True),
+    sa.Column('isomeric_smiles', sa.Text(), nullable=True),
     sa.Column('molecular_weight', sa.Float(), nullable=True),
     sa.Column('num_hydrogen_atoms', sa.Integer(), nullable=True),
     sa.Column('num_heavy_atoms', sa.Integer(), nullable=True),
@@ -45,16 +42,12 @@ def upgrade():
     sa.Column('alogp', sa.Float(), nullable=True),
     sa.PrimaryKeyConstraint('pubchem_id')
     )
-    op.create_index(op.f('ix_chemical_bitter_taste'), 'chemical', ['bitter_taste'], unique=False)
     op.create_index(op.f('ix_chemical_common_name'), 'chemical', ['common_name'], unique=False)
     op.create_index(op.f('ix_chemical_database'), 'chemical', ['database'], unique=False)
     op.create_index(op.f('ix_chemical_functional_group'), 'chemical', ['functional_group'], unique=False)
     op.create_index(op.f('ix_chemical_functional_group_idx'), 'chemical', ['functional_group_idx'], unique=False)
     op.create_index(op.f('ix_chemical_iupac_name'), 'chemical', ['iupac_name'], unique=False)
-    op.create_index(op.f('ix_chemical_predicted'), 'chemical', ['predicted'], unique=False)
-    op.create_index(op.f('ix_chemical_reference'), 'chemical', ['reference'], unique=False)
-    op.create_index(op.f('ix_chemical_sweet_taste'), 'chemical', ['sweet_taste'], unique=False)
-    op.create_index(op.f('ix_chemical_tasteless_taste'), 'chemical', ['tasteless_taste'], unique=False)
+    op.create_index(op.f('ix_chemical_synonyms'), 'chemical', ['synonyms'], unique=False)
     op.create_table('disease',
     sa.Column('disease_id', sa.String(length=128), nullable=False),
     sa.Column('disease_name', sa.Text(), nullable=True),
@@ -88,20 +81,26 @@ def upgrade():
     op.create_table('chemical_disease',
     sa.Column('pubchem_id', sa.String(length=128), nullable=False),
     sa.Column('disease_id', sa.String(length=128), nullable=False),
-    sa.Column('association', sa.String(length=100), nullable=True),
-    sa.Column('reference', sa.Text(), nullable=True),
-    sa.Column('type_relation', sa.String(length=100), nullable=True),
-    sa.Column('inference_network', sa.Text(), nullable=True),
+    sa.Column('type_relation', sa.String(length=512), nullable=True),
+    sa.Column('via_genes', sa.String(length=512), nullable=True),
     sa.ForeignKeyConstraint(['disease_id'], ['disease.disease_id'], ),
     sa.ForeignKeyConstraint(['pubchem_id'], ['chemical.pubchem_id'], ),
     sa.PrimaryKeyConstraint('pubchem_id', 'disease_id')
+    )
+    op.create_table('chemical_gene',
+    sa.Column('pubchem_id', sa.String(length=128), nullable=False),
+    sa.Column('gene_id', sa.String(length=128), nullable=False),
+    sa.Column('interaction_actions', sa.Text(), nullable=True),
+    sa.Column('via_diseases', sa.String(length=512), nullable=True),
+    sa.ForeignKeyConstraint(['gene_id'], ['gene.gene_id'], ),
+    sa.ForeignKeyConstraint(['pubchem_id'], ['chemical.pubchem_id'], ),
+    sa.PrimaryKeyConstraint('pubchem_id', 'gene_id')
     )
     op.create_table('disease_gene',
     sa.Column('gene_id', sa.String(length=128), nullable=False),
     sa.Column('disease_id', sa.String(length=128), nullable=False),
     sa.Column('reference', sa.String(length=100), nullable=True),
-    sa.Column('type_relation', sa.String(length=100), nullable=True),
-    sa.Column('inference_network', sa.Text(), nullable=True),
+    sa.Column('via_chemicals', sa.String(length=512), nullable=True),
     sa.ForeignKeyConstraint(['disease_id'], ['disease.disease_id'], ),
     sa.ForeignKeyConstraint(['gene_id'], ['gene.gene_id'], ),
     sa.PrimaryKeyConstraint('gene_id', 'disease_id')
@@ -118,21 +117,22 @@ def upgrade():
     sa.PrimaryKeyConstraint('food_id', 'pubchem_id')
     )
     op.create_table('food_disease',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('pmid', sa.Integer(), nullable=True),
-    sa.Column('food_id', sa.String(length=128), nullable=True),
-    sa.Column('disease_id', sa.String(length=128), nullable=True),
-    sa.Column('association', sa.String(length=100), nullable=True),
+    sa.Column('food_id', sa.String(length=128), nullable=False),
+    sa.Column('disease_id', sa.String(length=128), nullable=False),
+    sa.Column('positive_pmid', sa.String(length=512), nullable=True),
+    sa.Column('negative_pmid', sa.String(length=512), nullable=True),
+    sa.Column('pubchem_id', sa.String(length=512), nullable=True),
+    sa.Column('weight', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['disease_id'], ['disease.disease_id'], ),
     sa.ForeignKeyConstraint(['food_id'], ['food.food_id'], ),
-    sa.ForeignKeyConstraint(['pmid'], ['references.pmid'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('food_id', 'disease_id')
     )
+    op.create_index(op.f('ix_food_disease_weight'), 'food_disease', ['weight'], unique=False)
     op.create_table('food_gene',
     sa.Column('food_id', sa.String(length=128), nullable=False),
     sa.Column('gene_id', sa.String(length=128), nullable=False),
-    sa.Column('type_relation', sa.String(length=100), nullable=True),
-    sa.Column('inference_network', sa.Text(), nullable=True),
+    sa.Column('via_diseases', sa.String(length=512), nullable=True),
+    sa.Column('via_chemicals', sa.String(length=512), nullable=True),
     sa.ForeignKeyConstraint(['food_id'], ['food.food_id'], ),
     sa.ForeignKeyConstraint(['gene_id'], ['gene.gene_id'], ),
     sa.PrimaryKeyConstraint('food_id', 'gene_id')
@@ -143,23 +143,21 @@ def upgrade():
 def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
     op.drop_table('food_gene')
+    op.drop_index(op.f('ix_food_disease_weight'), table_name='food_disease')
     op.drop_table('food_disease')
     op.drop_table('food_chemical')
     op.drop_table('disease_gene')
+    op.drop_table('chemical_gene')
     op.drop_table('chemical_disease')
     op.drop_table('references')
     op.drop_table('gene')
     op.drop_table('food')
     op.drop_table('disease')
-    op.drop_index(op.f('ix_chemical_tasteless_taste'), table_name='chemical')
-    op.drop_index(op.f('ix_chemical_sweet_taste'), table_name='chemical')
-    op.drop_index(op.f('ix_chemical_reference'), table_name='chemical')
-    op.drop_index(op.f('ix_chemical_predicted'), table_name='chemical')
+    op.drop_index(op.f('ix_chemical_synonyms'), table_name='chemical')
     op.drop_index(op.f('ix_chemical_iupac_name'), table_name='chemical')
     op.drop_index(op.f('ix_chemical_functional_group_idx'), table_name='chemical')
     op.drop_index(op.f('ix_chemical_functional_group'), table_name='chemical')
     op.drop_index(op.f('ix_chemical_database'), table_name='chemical')
     op.drop_index(op.f('ix_chemical_common_name'), table_name='chemical')
-    op.drop_index(op.f('ix_chemical_bitter_taste'), table_name='chemical')
     op.drop_table('chemical')
     # ### end Alembic commands ###

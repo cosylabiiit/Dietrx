@@ -4,9 +4,8 @@
             <th>Pubchem ID</th>
             <th>Common Name</th>
             <th>Type</th>
-            <th>Infered Foods</th>
-            <th>Association</th>
-            <th>Source</th>
+            <th>Number Of Genes</th>
+            <th>Details</th>
         </thead>
         <tbody>
             {% for result in results %}
@@ -18,20 +17,21 @@
                     {{ result.chemical.common_name }}
                 </td>
                 <td>
-                    {{ result.type }}
+                    {{ result.association.type_relation }}
                 </td>
                 <td>
-                    {{ result.infered_food }}
+                    {{ result.via_genes }}
                 </td>
                 <td>
-                    {{ result.association|title }}
-                </td>
-                <td>
-                    {{ result.reference }}
+                    <button class="btn btn-primary associations_details" role="button" id="type=chemical_disease&pubchem_id={{result.chemical.pubchem_id}}&disease_id={{disease.disease_id}}"
+                        data-toggle="modal" data-target="#associations_details_modal">
+                        Details
+                    </button>
                 </td>
             </tr>
 
             {% endfor %}
         </tbody>
     </table>
+     {% include 'common/associations_details_ajax.html' %}
 </div>

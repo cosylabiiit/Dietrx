@@ -1,0 +1,49 @@
+<div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" style="z-index: 99999;">
+
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-capitalize" id="myModalLabel">Associations between {{result.disease.disease_name}} & {{result.gene.gene_id}}</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div>
+                    <strong>Chemicals linking {{result.disease.disease_name}} & {{result.gene.gene_id}}</strong>
+                    <br>
+
+                    <div style="max-height: 400px; overflow: auto;">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>PubChem ID</th>
+                                    <th>Common Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                {% for chemical in result.via_chemicals %}
+                                <tr>
+                                    <td>
+                                        <a target="_blank" href="{{url_for('get_chemical', pubchem_id=chemical.pubchem_id)}}">{{chemical.pubchem_id}}</a>
+                                    </td>
+                                    <td>{{chemical.common_name}}</td>
+                                </tr>
+                                {% else %} No chemical found linking  {{result.disease.disease_name}} & {{result.gene.gene_id}}
+                                <hr />   
+                                {% endfor %}
+                                {% if result.association.reference %}
+                                This association was curated from {{result.association.reference}}
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

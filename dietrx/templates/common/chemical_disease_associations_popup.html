@@ -1,0 +1,48 @@
+<div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" style="z-index: 99999;">
+
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-capitalize" id="myModalLabel">Associations between {{result.disease.disease_name}} & {{result.chemical.common_name}}</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div>
+                    <strong>Genes linking {{result.disease.disease_name}} & {{result.chemical.common_name}}</strong>
+                    <br>
+
+                    <div style="max-height: 400px; overflow: auto;">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Gene ID</th>
+                                    <th>Gene Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                {% for gene in result.via_genes %}
+                                <tr>
+                                    <td>
+                                        <a target="_blank" href="{{url_for('get_genes', gene_id=gene.gene_id)}}">{{gene.gene_id}}</a>
+                                    </td>
+                                    <td>Gene Name</td>
+                                </tr>
+                                {% else %} 
+                                No Gene found linking {{result.disease.disease_name}} & {{result.chemical.common_name}} 
+                                <hr />
+                                This Association Was Curated from CTD
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
