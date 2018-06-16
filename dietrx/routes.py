@@ -487,10 +487,10 @@ def get_disease():
 
 			for res in results.items:
 				association = res['association']
-				# if(len(res['via_genes']) == 1 and res['via_genes'][0] == ''):
-				# 	res['via_genes'] = 0
-				# else:
-				# 	res['via_genes'] = len(res['via_genes'])
+				if(len(res['via_chemicals']) == 1 and res['via_chemicals'][0] == ''):
+					res['via_chemicals'] = 0
+				else:
+					res['via_chemicals'] = len(res['via_chemicals'])
 				temp.append({'gene': association.gene,
 							'association': association,
 							'via_chemicals': res['via_chemicals'],

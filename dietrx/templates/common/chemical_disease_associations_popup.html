@@ -27,7 +27,7 @@
                                 {% for gene in result.via_genes %}
                                 <tr>
                                     <td>
-                                        <a target="_blank" href="{{url_for('get_genes', gene_id=gene.gene_id)}}">{{gene.gene_id}}</a>
+                                        <a target="_blank" href="{{url_for('get_gene', gene_id=gene.gene_id)}}">{{gene.gene_id}}</a>
                                     </td>
                                     <td>Gene Name</td>
                                 </tr>
