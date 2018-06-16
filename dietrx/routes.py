@@ -356,9 +356,14 @@ def get_food():
 			temp = []
 
 			for res in results.items:
+				positive_associations = 0 if res.positive_pmid == '' else len(res.positive_pmid.split('|'))
+				negative_associations = 0 if res.negative_pmid == '' else len(res.negative_pmid.split('|'))
+				via_chemicals = 0 if res.pubchem_id == '' else len(res.pubchem_id.split('|'))
 				temp.append({'disease': Disease.query.filter_by(disease_id = res.disease_id).first(),
-							'positive_associations':res.positive_pmid.split('|'),
-							'negative_associations':res.negative_pmid.split('|')})
+							'positive_associations':positive_associations,
+							'negative_associations':negative_associations,
+							'via_chemicals': via_chemicals
+							})
 
 
 			results.items = temp
@@ -464,9 +469,15 @@ def get_disease():
 			temp = []
 
 			for res in results.items:
+				positive_associations = 0 if res.positive_pmid == '' else len(res.positive_pmid.split('|'))
+				negative_associations = 0 if res.negative_pmid == '' else len(res.negative_pmid.split('|'))
+				via_chemicals = 0 if res.pubchem_id == '' else len(res.pubchem_id.split('|'))
+
 				temp.append({'food': Food.query.filter_by(food_id=res.food_id).first(),
-							'positive_associations': res.positive_pmid.split('|'),
-							'negative_associations': res.negative_pmid.split('|')})
+                                    'positive_associations': positive_associations,
+                                    'negative_associations': negative_associations,
+                                    'via_chemicals': via_chemicals
+                })
 
 			results.items = temp
 

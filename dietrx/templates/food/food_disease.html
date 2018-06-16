@@ -3,7 +3,8 @@
 		<thead>
 			<th>Disease Name</th>
 			<th>Disease Category</th>
-			<th>Associations</th>
+			<th>(Positive, Neagtive, Chemical)
+				<br> associations</th>
 			<th>Details</th>
 		</thead>
 		<tbody>
@@ -16,8 +17,9 @@
 					{{ result.disease.disease_category | replace('|', ', ') }}
 				</td>
 				<td>
-					(<strong style="color: green">{{result.positive_associations | length}}</strong>, 
-					<strong style="color: red">{{result.negative_associations | length}}</strong>)
+					 (<strong style="color: green">{{result.positive_associations}}</strong>,
+					<strong style="color: red">{{result.negative_associations}}</strong>,
+					<strong>{{result.via_chemicals}}</strong>)
 				</td>
 				<td>
 					<button class="btn btn-primary associations_details" role="button" id="type=food_disease&food_id={{food.food_id}}&disease_id={{result.disease.disease_id}}" data-toggle="modal" data-target="#associations_details_modal">
