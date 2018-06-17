@@ -3,7 +3,7 @@ from flask import request, render_template, url_for, redirect, abort, Response, 
 from pybel import readstring
 from .models import *
 import json
-from .util import Pagination, autocomplete_search, search_elastic
+from .util import *
 from .forms import ChemicalSearchForm
 from subprocess import check_call
 from pybel import readfile
@@ -316,6 +316,32 @@ def get_associations():
             	}
 
 		return render_template('common/disease_gene_associations_popup.html', result=result)
+	
+	elif(type_association == 'chemical_gene'):
+
+		if (not request.args.get('gene_id')) or (not request.args.get('pubchem_id')):
+			return redirect(url_for('index'))
+
+		gene_id = request.args.get('gene_id')
+		pubchem_id = request.args.get('pubchem_id')
+
+		gene = Gene.query.filter_by(gene_id=gene_id).first()
+		chemical = Chemical.query.filter_by(pubchem_id=pubchem_id).first()
+
+		if (chemical is None) or (gene is None):
+			abort(404)
+
+		association = Chemical_gene.query.filter_by(
+			pubchem_id=pubchem_id, gene_id=gene_id).first()
+		via_diseases = association.via_diseases.split('|')
+		
+		result = {'chemical': chemical,
+                    'gene': gene,
+                    'association': association,
+                    'via_diseases': Disease.query.filter(Disease.disease_id.in_(via_diseases)).all()
+            	}
+		
+		return render_template('common/chemical_gene_associations_popup.html', result=result)
 
 	else:
 		abort(404)
@@ -369,54 +395,13 @@ def get_food():
 			results.items = temp
 			
 		elif(subcategory == 'gene'):
-
-			results = Food_gene.query.filter_by(food_id=food_id).all()
-
-			temp = []
-			for res in results:
-				disease_ids = res.via_diseases.split('|')
-				pubchem_ids = res.via_chemicals.split('|')
-				temp.append({'association': res,
-							'via_diseases': disease_ids,
-							'via_chemicals': pubchem_ids,
-							'count': len(disease_ids)+len(pubchem_ids)})
-			
-			results = sorted(temp, key=lambda x:x['count'], reverse=True)
-			results = Pagination(page, NUM_PER_PAGE, results, request, 'get_food')
-
-			temp = []
-
-			for res in results.items:
-				association = res['association']
-				temp.append({'gene': association.gene, 
-							'associations': association,
-							'via_diseases': res['via_diseases'],
-							'via_chemicals': res['via_chemicals'],
-							})
-
-
-			results.items = temp
+			results = food_gene(
+				request, NUM_PER_PAGE, page, 'get_food', food_id=food_id, gene_id=None)
 			
 		elif(subcategory == 'chemical'):
+			results = food_chemical(
+				request, NUM_PER_PAGE, page, 'get_food',food_id=food_id, pubchem_id=None)
 
-			results = db.session.query(Food_chemical.pubchem_id,
-							  db.func.count(Food_chemical.pubchem_id).label('total'))\
-							.filter_by(food_id=food_id).group_by(Food_chemical.pubchem_id)\
-												.order_by('total DESC').all()
-
-			results = Pagination(page, NUM_PER_PAGE, results, request, 'get_food')
-
-			temp = []
-
-			for res in results.items:
-				associations = Food_chemical.query.filter_by(
-					pubchem_id=res.pubchem_id, food_id=food_id)
-				temp.append({'chemical': Chemical.query.filter_by(pubchem_id=res.pubchem_id).first(),
-							'associations': associations.first()})
-
-			results.items = temp
-
-			
 		else:
 			abort(404)
 
@@ -483,61 +468,13 @@ def get_disease():
 
 		elif(subcategory == 'gene'):
 
-			results = Disease_gene.query.filter_by(disease_id=disease_id).all()
-
-			temp = []
-			for res in results:
-				via_chemicals = res.via_chemicals.split('|')
-				temp.append({'association': res,
-							'via_chemicals': via_chemicals,
-							'count': len(via_chemicals)})
-			results = sorted(temp, key=lambda x: x['count'], reverse=True)
-			results = Pagination(page, NUM_PER_PAGE, results, request, 'get_disease')
-
-			temp = []
-
-			for res in results.items:
-				association = res['association']
-				if(len(res['via_chemicals']) == 1 and res['via_chemicals'][0] == ''):
-					res['via_chemicals'] = 0
-				else:
-					res['via_chemicals'] = len(res['via_chemicals'])
-				temp.append({'gene': association.gene,
-							'association': association,
-							'via_chemicals': res['via_chemicals'],
-                 })
-
-			results.items = temp
+			results = disease_gene(request, NUM_PER_PAGE, page,
+			                           'get_disease', disease_id=disease_id, gene_id=None)
 			
 		elif(subcategory == 'chemical'):
 
-			results = Chemical_disease.query.filter_by(disease_id=disease_id).all()
+			results = disease_chemical(request, NUM_PER_PAGE, page, 'get_disease', disease_id=disease_id, pubchem_id=None)
 
-			temp = []
-			for res in results:
-				via_genes = res.via_genes.split('|')
-				temp.append({'association': res,
-							'via_genes': via_genes,
-							'count': len(via_genes)})
-
-			results = sorted(temp, key=lambda x: x['count'], reverse=True)
-			results = Pagination(page, NUM_PER_PAGE, results, request, 'get_disease')
-
-			temp = []
-
-			for res in results.items:
-				association = res['association']
-				if(len(res['via_genes']) == 1 and res['via_genes'][0] == ''):
-					res['via_genes'] = 0
-				else:
-					res['via_genes'] = len(res['via_genes'])
-				temp.append({'chemical': association.chemical,
-							'association': association,
-							'via_genes': res['via_genes'],
-                 })
-
-			results.items = temp
-			
 		else:
 			abort(404)
 		
@@ -576,44 +513,23 @@ def get_chemical():
 			subcategory_that_exist.append('disease')
 		if(len(chemical.food_chemical) != 0):
 			subcategory_that_exist.append('food')
+		if(len(chemical.chemical_gene) != 0):
+			subcategory_that_exist.append('gene')
 		subcategory = request.args.get('subcategory', subcategory_that_exist[0])
 
 		if(subcategory == 'food'):
 
-			results = db.session.query(Food_chemical.food_id,
-							  db.func.count(Food_chemical.food_id).label('total'))\
-							.filter_by(pubchem_id=pubchem_id).group_by(Food_chemical.food_id)\
-												.order_by('total DESC').all()
-
-			results = Pagination(page, NUM_PER_PAGE, results, request, 'get_chemical')
-
-			temp = []
-
-			for res in results.items:
-				associations = Food_chemical.query.filter_by(
-					food_id=res.food_id, pubchem_id=pubchem_id)
-				temp.append({'food': Food.query.filter_by(food_id=res.food_id).first(),
-							'associations': associations.first()})
-
-			results.items = temp
+			results = food_chemical(
+				request, NUM_PER_PAGE, page, 'get_chemical',food_id=None, pubchem_id=pubchem_id)
 
 		elif(subcategory == 'disease'):
 
-			results = db.session.query(Chemical_disease.disease_id,
-							  db.func.count(Chemical_disease.disease_id).label('total'))\
-							.filter_by(pubchem_id=pubchem_id).group_by(Chemical_disease.disease_id)\
-											.order_by('total DESC').all()
+			results = disease_chemical(request, NUM_PER_PAGE, page,
+			                           'get_chemical', disease_id=None, pubchem_id=pubchem_id)
+		elif(subcategory == 'gene'):
 
-			results = Pagination(page, NUM_PER_PAGE, results, request, 'get_chemical')
-			temp = []
-
-			for res in results.items:
-				associations = Chemical_disease.query.filter_by(
-					disease_id=res.disease_id, pubchem_id=pubchem_id)
-				temp.append({'disease': Disease.query.filter_by(disease_id=res.disease_id).first(),
-							'associations': associations.first()})
-
-			results.items = temp
+			results = chemical_gene(request, NUM_PER_PAGE, page,
+			                           'get_chemical', gene_id=None, pubchem_id=pubchem_id)
 
 		else:
 			abort(404)
@@ -655,49 +571,22 @@ def get_gene():
 			subcategory_that_exist.append('food')
 		if(len(gene.disease_gene) != 0):
 			subcategory_that_exist.append('disease')
+		if(len(gene.chemical_gene) != 0):
+			subcategory_that_exist.append('chemical')
 		subcategory = request.args.get('subcategory', subcategory_that_exist[0])
-		print(subcategory_that_exist)
+		
+		
 		if(subcategory == 'food'):
-
-			results = Food_gene.query.filter_by(gene_id=gene_id).all()
-
-			temp = []
-			for res in results:
-				temp.append({'association': res,
-							'count': len(res.inference_network.split('|'))})
-
-			results = sorted(temp, key=lambda x: x['count'], reverse=True)
-			results = Pagination(page, NUM_PER_PAGE, results, request, 'get_gene')
-
-			temp = []
-
-			for res in results.items:
-				association = res['association']
-				ids = association.inference_network.split('|')
-				diseases = Disease.query.filter(Disease.disease_id.in_(ids)).all()
-				temp.append({'food': association.food,
-							'associations': association,
-							'diseases': diseases,
-							'num_of_diseases': res['count']})
-
-			results.items = temp
+			results = food_gene(request, NUM_PER_PAGE, page, 'get_gene', food_id=None, gene_id=gene_id)
 
 		elif(subcategory == 'disease'):
+			results = disease_gene(request, NUM_PER_PAGE, page,
+										'get_gene', disease_id=None, gene_id=gene_id)
+		
+		elif(subcategory == 'chemical'):
+			results = chemical_gene(request, NUM_PER_PAGE, page,
+                           'get_gene', gene_id=gene_id, pubchem_id=None)
 
-			results = db.session.query(Disease_gene.disease_id, 
-						db.func.count(Disease_gene.disease_id).label('total'))\
-						.filter_by(gene_id=gene_id).group_by(Disease_gene.disease_id)\
-						.order_by('total DESC').all()
-			
-
-			results = Pagination(page, NUM_PER_PAGE, results, request, 'get_gene')
-			temp = []
-
-			for res in results.items:
-				associations = Disease_gene.query.filter_by(disease_id = res.disease_id, gene_id=gene_id)
-				temp.append({'disease': Disease.query.filter_by(disease_id = res.disease_id).first(), 
-							'associations': associations.first()})
-			results.items = temp
 		else:
 			abort(404)
 		return render_template('gene/gene_page.html',

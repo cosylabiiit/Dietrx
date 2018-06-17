@@ -1,18 +1,36 @@
 <div class="pt-4">
     <table class="table table-hover">
         <thead>
+            {% if food %}
             <th>PubChem ID</th>
             <th>Common Name</th>
+            {% else %}
+            <th>Food Name</th>
+            <th>Food Category</th>
+            {% endif %}
+            <th>Content</th>
             <th>Source</th>
         </thead>
         <tbody>
             {% for result in results %}
             <tr>
+                 {% if food %}
                 <td>
                     <a target="_blank" href="{{url_for('get_chemical', pubchem_id=result.chemical.pubchem_id)}}">{{ result.chemical.pubchem_id }}</a>
                 </td>
                 <td>
                     {{ result.chemical.common_name }}
+                </td>
+                {% else %}
+                <td>
+                    <a target="_blank" href="{{url_for('get_food', food_id=result.food.food_id)}}"> {{ result.food.display_name }}</a>
+                </td>
+                <td>
+                    {{ result.food.food_category }}
+                </td>
+                {% endif %}
+                <td>
+                    {{ result.associations.content }}
                 </td>
                 <td>
                     {{ result.associations.references | replace(';', ', ') }}

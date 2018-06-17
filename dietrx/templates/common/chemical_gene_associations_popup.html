@@ -1,0 +1,52 @@
+<div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" style="z-index: 99999;">
+
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-capitalize" id="myModalLabel">Associations between {{result.chemical.common_name}} & {{result.gene.gene_id}}</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div>
+                    <strong>Disease linking {{result.chemical.common_name}} & {{result.gene.gene_id}}</strong>
+                    <br>
+
+                    <div style="max-height: 400px; overflow: auto;">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Disease Name</th>
+                                    <th>Disease Category</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                {% for disease in result.via_diseases %}
+                                <tr>
+                                    <td>
+                                        <a target="_blank" href="{{url_for('get_disease', disease_id=disease.disease_id)}}">{{disease.disease_id}}</a>
+                                    </td>
+                                    <td>{{disease.disease_name}}</td>
+                                </tr>
+                                {% else %} 
+                                No Disease found linking {{result.chemical.common_name}} & {{result.gene.gene_id}}
+                                <hr /> 
+                                {% endfor %} 
+                                
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                     {% if result.association.interaction_actions %} Interaction actions for this association are: {{result.association.interaction_actions
+                    | replace('|', ',') | replace('^', ' ') }} {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

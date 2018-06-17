@@ -1,8 +1,13 @@
 <div class="pt-4">
     <table class="table table-hover">
         <thead>
-            <th>Pubchem ID</th>
+            {% if disease %}
+            <th>PubChem ID</th>
             <th>Common Name</th>
+            {% else %}
+            <th>Disease Name</th>
+            <th>Disease Category</th>
+            {% endif %}
             <th>Type</th>
             <th>Number Of Genes</th>
             <th>Details</th>
@@ -10,12 +15,22 @@
         <tbody>
             {% for result in results %}
             <tr>
+                {% if disease %}
                 <td>
                     <a target="_blank" href="{{url_for('get_chemical', pubchem_id=result.chemical.pubchem_id)}}">{{result.chemical.pubchem_id }}</a>
                 </td>
                 <td>
                     {{ result.chemical.common_name }}
                 </td>
+                {% else %}
+                <td>
+                    <a target="_blank" href="{{url_for('get_disease', disease_id=result.disease.disease_id)}}">{{result.disease.disease_name}}</a>
+                </td>
+                <td>
+                    {{result.disease.disease_category}}
+                </td>
+                {% endif %}
+                
                 <td>
                     {{ result.association.type_relation }}
                 </td>
@@ -23,7 +38,7 @@
                     {{ result.via_genes }}
                 </td>
                 <td>
-                    <button class="btn btn-primary associations_details" role="button" id="type=chemical_disease&pubchem_id={{result.chemical.pubchem_id}}&disease_id={{disease.disease_id}}"
+                    <button class="btn btn-primary associations_details" role="button" id="type=chemical_disease&pubchem_id={{result.chemical.pubchem_id}}&disease_id={{result.disease.disease_id}}"
                         data-toggle="modal" data-target="#associations_details_modal">
                         Details
                     </button>

@@ -1,8 +1,13 @@
 <div class="pt-4">
 	<table class="table table-hover">
 		<thead>
+			{% if food %}
 			<th>Gene ID</th>
 			<th>Gene Name</th>
+			{% else %}
+			<th>Food Name</th>
+			<th>Food Category</th>
+			{% endif %}
 			<th>Number of diseases</th>
 			<th>Number of chemicals</th>
 			<th>Details</th>
@@ -10,12 +15,22 @@
 		<tbody>
 			{% for result in results %}
 			<tr>
+				{% if food %}
 				<td>
-					<a target="_blank" href="{{url_for('get_gene', gene_id=result.gene.gene_id)}}">{{result.gene.gene_id}}</a> 
+					<a target="_blank" href="{{url_for('get_gene', gene_id=result.gene.gene_id)}}">{{result.gene.gene_id}}</a>
 				</td>
 				<td>
 					Gene Name
 				</td>
+				{% else %}
+				<td>
+					<a target="_blank" href="{{url_for('get_food', food_id=result.food.food_id)}}"> {{ result.food.display_name }}</a>
+				</td>
+				<td>
+					{{ result.food.food_category }}
+				</td>
+				{% endif %}
+				
 				<td>
 					{{result.via_diseases|length}}
 				</td>
@@ -23,7 +38,7 @@
 					{{result.via_chemicals|length}}
 				</td>
 				<td>
-					<button class="btn btn-primary associations_details" role="button" id="type=food_gene&food_id={{food.food_id}}&gene_id={{result.gene.gene_id}}"
+					<button class="btn btn-primary associations_details" role="button" id="type=food_gene&food_id={{result.food.food_id}}&gene_id={{result.gene.gene_id}}"
 					 data-toggle="modal" data-target="#associations_details_modal">
 						Details
 					</button>

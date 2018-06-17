@@ -31,7 +31,8 @@
 			<li class="nav-item">
 				<a class="nav-link active" id="food-tab" data-toggle="tab" href="#food" role="tab" aria-controls="food" aria-selected="true">Associated Foods</a>
 			</li>
-			{% elif not 'food' in subcategory_that_exist %} {% else %}
+			{% elif not 'food' in subcategory_that_exist %} 
+			{% else %}
 			<li class="nav-item">
 				<a class="nav-link" id="food-tab" href="{{url_for('get_gene', gene_id=gene.gene_id ,subcategory='food')}}">Associated Foods</a>
 			</li>
@@ -46,7 +47,18 @@
 			<li class="nav-item">
 				<a class="nav-link" id="disease-tab" href="{{url_for('get_gene', gene_id=gene.gene_id ,subcategory='disease')}}">Associated Diseases</a>
 			</li>
-			{% endif %} 
+			{% endif %}
+			
+			{% if subcategory == 'chemical' %}
+			<li class="nav-item">
+				<a class="nav-link active" id="chemical-tab" data-toggle="tab" href="#chemical" role="tab" aria-controls="chemical" aria-selected="true">Associated Chemicals</a>
+			</li>
+			{% elif not 'chemical' in subcategory_that_exist %} 
+			{% else %}
+			<li class="nav-item">
+				<a class="nav-link" id="chemical-tab" href="{{url_for('get_gene', gene_id=gene.gene_id ,subcategory='chemical')}}">Associated Chemicals</a>
+			</li>
+			{% endif %}
 
 		</ul>
 
@@ -54,14 +66,20 @@
 		<div class="tab-content" id="myTabContent">
 			{% if subcategory == 'food' %}
 			<div class="tab-pane fade show active" id="food" role="tabpanel" aria-labelledby="food-tab">
-				{% include 'gene/gene_food.html' %}
+				{% include 'food/food_gene.html' %}
 				
 			</div>
 			{% elif subcategory == 'disease' %}
 			<div class="tab-pane fade show active" id="disease" role="tabpanel" aria-labelledby="disease-tab">
 
-				{% include 'gene/gene_disease.html' %}
+				{% include 'disease/disease_gene.html' %}
 
+			</div>
+			{% elif subcategory == 'chemical' %}
+			<div class="tab-pane fade show active" id="chemical" role="tabpanel" aria-labelledby="chemical-tab">
+			
+				{% include 'chemical/chemical_gene.html' %}
+			
 			</div>
 			{% endif %}
 
