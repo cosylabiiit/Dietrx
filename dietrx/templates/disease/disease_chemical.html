@@ -9,7 +9,7 @@
             <th>Disease Category</th>
             {% endif %}
             <th>Type</th>
-            <th>Number Of Genes</th>
+            <th>Via Genes</th>
             <th>Details</th>
         </thead>
         <tbody>
@@ -17,7 +17,7 @@
             <tr>
                 {% if disease %}
                 <td>
-                    <a target="_blank" href="{{url_for('get_chemical', pubchem_id=result.chemical.pubchem_id)}}">{{result.chemical.pubchem_id }}</a>
+                    <a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/compound/{{result.chemical.pubchem_id}}">{{result.chemical.pubchem_id }}</a>
                 </td>
                 <td>
                     {{ result.chemical.common_name }}

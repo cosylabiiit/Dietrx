@@ -13,7 +13,7 @@
 		<div class="col-md-12">
 			
 		<p class="card-text">
-            <span class="text-danger">Gene ID: </span> {{ gene.gene_id }}<br> 
+            <span class="text-danger">Entrez Gene ID: </span> {{ gene.gene_id }}<br> 
             <span class="text-danger">Gene Name: </span> Gene Name<br> 
 	    </p>	
 
@@ -29,12 +29,12 @@
 			
 			{% if subcategory == 'food' %}
 			<li class="nav-item">
-				<a class="nav-link active" id="food-tab" data-toggle="tab" href="#food" role="tab" aria-controls="food" aria-selected="true">Associated Foods</a>
+				<a class="nav-link active" id="food-tab" data-toggle="tab" href="#food" role="tab" aria-controls="food" aria-selected="true">Inferred Food Associations</a>
 			</li>
 			{% elif not 'food' in subcategory_that_exist %} 
 			{% else %}
 			<li class="nav-item">
-				<a class="nav-link" id="food-tab" href="{{url_for('get_gene', gene_id=gene.gene_id ,subcategory='food')}}">Associated Foods</a>
+				<a class="nav-link" id="food-tab" href="{{url_for('get_gene', gene_id=gene.gene_id ,subcategory='food')}}">Inferred Food Associations</a>
 			</li>
 			{% endif %}
 

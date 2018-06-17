@@ -11,7 +11,7 @@
             <div class="modal-body">
 
                 <div>
-                    <strong>Chemicals linking {{result.disease.disease_name}} & {{result.gene.gene_id}}</strong>
+                    <strong>{{result.via_chemicals|count}} chemical(s) linked with {{result.disease.disease_name}} & {{result.gene.gene_id}}</strong>
                     <br>
 
                     <div style="max-height: 400px; overflow: auto;">
@@ -31,7 +31,7 @@
                                     </td>
                                     <td>{{chemical.common_name}}</td>
                                 </tr>
-                                {% else %} No chemical found linking  {{result.disease.disease_name}} & {{result.gene.gene_id}}
+                                {% else %} No chemical(s) were found linked with {{result.disease.disease_name}} & {{result.gene.gene_id}}
                                 <hr />   
                                 {% endfor %}
                                 {% if result.association.reference %}

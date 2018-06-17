@@ -11,26 +11,31 @@
             <div class="modal-body">
                 
                 <div>
-                    <strong>Chemical linking {{result.food.display_name}} & {{result.gene.gene_id}}</strong>
+                    <strong>{{result.via_chemicals|count}} chemical(s) linked with {{result.food.display_name}} & {{result.gene.gene_id}}</strong>
                     <br> 
-                    
                     <div style="max-height: 400px; overflow: auto;">
                         <table class="table table-hover" >
                             <thead>
                                 <tr>
                                     <th>PubChem ID</th>
                                     <th>Common Name</th>
+                                    <th>Functional Group</th>
+                                    <th>Details</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 
                                 {% for molecule in result.via_chemicals %}
                                 <tr>
-                                    <td><a target="_blank" href="{{url_for('get_chemical', pubchem_id=molecule.pubchem_id)}}">{{molecule.pubchem_id}}</a></td>
+                                    <td><a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/compound/{{molecule.pubchem_id}}">{{molecule.pubchem_id}}</a></td>
                                     <td>{{molecule.common_name}}</td>
+                                    <td>{{molecule.functional_group}}</td>
+                                    <td><a target="_blank" href="{{url_for('get_chemical', pubchem_id=molecule.pubchem_id)}}" class="btn btn-primary">Details</a></td>
                                 </tr>
-                                {% else %} 
-                                No Chemical found linking {{result.food.display_name}} & {{result.gene.gene_id}} 
+                                {% else %}
+                                <td colspan="10">
+                                No chemical(s) were found linked with {{result.food.display_name}} & {{result.gene.gene_id}}.
+                                </td>
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -41,7 +46,7 @@
                 <hr />
 
                 <div>
-                    <strong>Disease linking {{result.food.display_name}} & {{result.gene.gene_id}}</strong>
+                    <strong>{{result.via_diseases|count}} disease(s) linked with {{result.food.display_name}} & {{result.gene.gene_id}}</strong>
                     <br>
                 
                     <div style="max-height: 400px; overflow: auto;">
@@ -51,6 +56,7 @@
                                     <th>Disease ID</th>
                                     <th>Disease Name</th>
                                     <th>Disease Category</th>
+                                    <th>Details</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -58,12 +64,19 @@
                                 {% for disease in result.via_diseases %}
                                 <tr>
                                     <td>
-                                        <a target="_blank" href="{{url_for('get_disease', disease_id=disease.disease_id)}}">{{disease.disease_id}}</a>
+                                        <a target="_blank" href="https://meshb.nlm.nih.gov/record/ui?ui={{disease.disease_id[5:]}}">{{disease.disease_id[5:]}}</a>
                                     </td>
                                     <td>{{disease.disease_name}}</td>
                                     <td>{{disease.disease_category}}</td>
+                                    <td>
+                                        <a target="_blank" href="{{url_for('get_disease', disease_id=disease.disease_id)}}" class="btn btn-primary">Details</a>
+                                    </td>
                                 </tr>
-                                {% else %} No Disease found linking {{result.food.display_name}} & {{result.gene.gene_id}} {% endfor %}
+                                {% else %} 
+                                <td colspan="10">
+                                    No disease(s) were found linked with {{result.food.display_name}} & {{result.gene.gene_id}}.
+                                </td>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>

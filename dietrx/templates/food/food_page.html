@@ -44,11 +44,11 @@
 					
 					{% if subcategory == 'gene' %}
 						<li class="nav-item">
-							<a class="nav-link active" id="gene-tab" data-toggle="tab" href="#gene" role="tab" aria-controls="gene" aria-selected="true">Infered Gene Associations</a>
+							<a class="nav-link active" id="gene-tab" data-toggle="tab" href="#gene" role="tab" aria-controls="gene" aria-selected="true">Inferred Gene Associations</a>
 						</li>
 						{% elif 'gene' in subcategory_that_exist %}
 						<li class="nav-item">
-							<a class="nav-link" id="gene-tab" href="{{url_for('get_food', food_id=food.food_id ,subcategory='gene')}}">Infered Gene Associations</a>
+							<a class="nav-link" id="gene-tab" href="{{url_for('get_food', food_id=food.food_id ,subcategory='gene')}}">Inferred Gene Associations</a>
 						</li>
 					{% else %}
 					{% endif %}

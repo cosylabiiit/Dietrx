@@ -192,7 +192,7 @@ def autocomplete():
 	elif(table == 'disease'):
 		for column in ['disease_name', 'disease_category', 'disease_synonyms']:
 			if(column in Disease.__separators__):
-				results = results + autocomplete_search(table, column, query, Disease.__separators__[column])
+				results = results + autocomplete_search(tablnote, column, query, Disease.__separators__[column])
 			else:               
 				results = results + autocomplete_search(table, column, query)
 	elif(table == 'gene'):
@@ -446,10 +446,9 @@ def get_disease():
 
 		if(subcategory == 'food'):
 			
-			results = Food_disease.query.filter_by(
-				disease_id=disease_id).order_by('weight DESC').all()
+			results = Food_disease.query.filter_by(disease_id=disease_id).order_by('weight DESC').all()
 
-			results = Pagination(page, NUM_PER_PAGE, results, request, 'get_food')
+			results = Pagination(page, NUM_PER_PAGE, results, request, 'get_disease')
 
 			temp = []
 
