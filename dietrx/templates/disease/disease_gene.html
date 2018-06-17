@@ -2,13 +2,14 @@
     <table class="table table-hover">
         <thead>
             {% if disease %}
-            <th>Gene ID</th>
+            <th>Entrez Gene ID</th>
             <th>Gene Name</th>
             {% else %}
+            <th>MeSH Disease ID</th>
             <th>Disease Name</th>
             <th>Disease Category</th>
             {% endif %}
-            <th>Number of Chemicals</th>
+            <th>Via Chemicals</th>
             <th>Details</th>
         </thead>
         <tbody>
@@ -16,17 +17,18 @@
             <tr>
                 {% if disease %}
                 <td>
-                    <a target="_blank" href="{{url_for('get_gene', gene_id=result.gene.gene_id)}}">{{ result.association.gene_id }}</a>
+                    <a target="_blank" href="https://www.ncbi.nlm.nih.gov/gene/{{result.gene.gene_id}}">{{result.gene.gene_id}}</a>
                 </td>
                 <td>
-                    Gene Name
+                    <a target="_blank" href="{{url_for('get_gene', gene_id=result.gene.gene_id)}}">Gene Name</a>
                 </td>
                 {% else %}
+<td><a href="https://meshb.nlm.nih.gov/record/ui?ui={{result.disease.disease_id[5:]}}" target="_blank">{{result.disease.disease_id[5:]}}</a></td>
                 <td>
                     <a target="_blank" href="{{url_for('get_disease', disease_id=result.disease.disease_id)}}">{{result.disease.disease_name}}</a>
                 </td>
                 <td>
-                    {{result.disease.disease_category | replace('|', ', ')}}
+                    {{result.disease.disease_category}}
                 </td>
                 {% endif %}
                 <td>

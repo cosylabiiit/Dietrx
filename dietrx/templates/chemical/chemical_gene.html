@@ -2,14 +2,15 @@
     <table class="table table-hover">
         <thead>
             {% if chemical %}
-            <th>Gene ID</th>
+            <th>Entrez Gene ID</th>
             <th>Gene Name</th>
             {% else %}
             <th>PubChem ID</th>
             <th>Common Name</th>
+            <th>Functional Group</th>
             {% endif %}
             <th>Interaction Actions</th>
-            <th>Number Of Diseases</th>
+            <th>Via Diseases</th>
             <th>Details</th>
         </thead>
         <tbody>
@@ -17,17 +18,19 @@
             <tr>
                 {% if chemical %}
                 <td>
-                    <a target="_blank" href="{{url_for('get_gene', gene_id=result.gene.gene_id)}}">{{ result.gene.gene_id }}</a>
+                    <a target="_blank" href="https://www.ncbi.nlm.nih.gov/gene/{{result.gene.gene_id}}">{{result.gene.gene_id}}</a>
                 </td>
                 <td>
-                    Gene Name
+                    <a target="_blank" href="{{url_for('get_gene', gene_id=result.gene.gene_id)}}">Gene Name</a>
                 </td>
                 {% else %}
                 <td>
-                    <a target="_blank" href="{{url_for('get_chemical', pubchem_id=result.chemical.pubchem_id)}}">{{result.chemical.pubchem_id }}</a>
+                    <a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/compound/{{result.chemical.pubchem_id}}">{{ result.chemical.pubchem_id }}</a>
+                </td>
+                <td><a target="_blank" href="{{url_for('get_chemical', pubchem_id=result.chemical.pubchem_id)}}">{{ result.chemical.common_name }}</a></td>
                 </td>
                 <td>
-                    {{ result.chemical.common_name }}
+                    {{ result.chemical.functional_group }}
                 </td>
                 {% endif %}
 

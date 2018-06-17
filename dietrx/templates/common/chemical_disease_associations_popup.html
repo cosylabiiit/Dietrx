@@ -11,7 +11,7 @@
             <div class="modal-body">
 
                 <div>
-                    <strong>Genes linking {{result.disease.disease_name}} & {{result.chemical.common_name}}</strong>
+                    <strong>{{result.via_genes|count}} gene(s) linked with {{result.disease.disease_name}} & {{result.chemical.common_name}}</strong>
                     <br>
 
                     <div style="max-height: 400px; overflow: auto;">
@@ -20,6 +20,7 @@
                                 <tr>
                                     <th>Entrez Gene ID</th>
                                     <th>Gene Name</th>
+                                    <th>Details</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -27,14 +28,18 @@
                                 {% for gene in result.via_genes %}
                                 <tr>
                                     <td>
-                                        <a target="_blank" href="{{url_for('get_gene', gene_id=gene.gene_id)}}">{{gene.gene_id}}</a>
+                                        <a target="_blank" href="https://www.ncbi.nlm.nih.gov/gene/{{gene.gene_id}}">{{gene.gene_id}}</a>
                                     </td>
-                                    <td>Gene Name</td>
+                                    <td>
+                                        Gene Name</a>
+                                    </td>
+                                    <td><a target="_blank" href="{{url_for('get_gene', gene_id=gene.gene_id)}}" class="btn btn-primary">Details</a></td>
+
                                 </tr>
                                 {% else %} 
-                                No Gene found linking {{result.disease.disease_name}} & {{result.chemical.common_name}} 
+                                No gene(s) were linked with {{result.disease.disease_name}} & {{result.chemical.common_name}} 
                                 <hr />
-                                This Association Was Curated from CTD
+                                This association was curated from CTD.
                                 {% endfor %}
                             </tbody>
                         </table>

@@ -4,7 +4,9 @@
             {% if disease %}
             <th>PubChem ID</th>
             <th>Common Name</th>
+            <th>Functional Group</th>
             {% else %}
+            <th>MeSH Disease ID</th>
             <th>Disease Name</th>
             <th>Disease Category</th>
             {% endif %}
@@ -17,12 +19,15 @@
             <tr>
                 {% if disease %}
                 <td>
-                    <a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/compound/{{result.chemical.pubchem_id}}">{{result.chemical.pubchem_id }}</a>
+                    <a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/compound/{{result.chemical.pubchem_id}}">{{ result.chemical.pubchem_id }}</a>
+                </td>
+                <td><a target="_blank" href="{{url_for('get_chemical', pubchem_id=result.chemical.pubchem_id)}}">{{ result.chemical.common_name }}</a></td>
                 </td>
                 <td>
-                    {{ result.chemical.common_name }}
+                    {{ result.chemical.functional_group }}
                 </td>
                 {% else %}
+                <td><a href="https://meshb.nlm.nih.gov/record/ui?ui={{result.disease.disease_id[5:]}}" target="_blank">{{result.disease.disease_id[5:]}}</a></td>
                 <td>
                     <a target="_blank" href="{{url_for('get_disease', disease_id=result.disease.disease_id)}}">{{result.disease.disease_name}}</a>
                 </td>

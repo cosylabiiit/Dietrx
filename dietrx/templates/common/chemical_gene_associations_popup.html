@@ -11,28 +11,34 @@
             <div class="modal-body">
 
                 <div>
-                    <strong>Disease linking {{result.chemical.common_name}} & {{result.gene.gene_id}}</strong>
+                    <strong>{{result.via_diseases|count}} disease(s) linked with {{result.chemical.common_name}} & {{result.gene.gene_id}}.</strong>
                     <br>
 
                     <div style="max-height: 400px; overflow: auto;">
                         <table class="table table-hover">
                             <thead>
                                 <tr>
+                                    <th>MeSH Disease ID</th>
                                     <th>Disease Name</th>
                                     <th>Disease Category</th>
+                                    <th>Details</th>
                                 </tr>
                             </thead>
                             <tbody>
 
                                 {% for disease in result.via_diseases %}
                                 <tr>
+                                    <td><a href="https://meshb.nlm.nih.gov/record/ui?ui={{disease.disease_id[5:]}}" target="_blank">{{disease.disease_id[5:]}}</a></td>
                                     <td>
-                                        <a target="_blank" href="{{url_for('get_disease', disease_id=disease.disease_id)}}">{{disease.disease_id}}</a>
+                                        {{disease.disease_name}}
                                     </td>
-                                    <td>{{disease.disease_name}}</td>
+                                    <td>
+                                        {{disease.disease_category}}
+                                    </td>
+                                    <td><a href="{{url_for('get_disease', disease_id=disease.disease_id)}}" target="_blank" class="btn btn-primary">Details</a>
                                 </tr>
                                 {% else %} 
-                                No Disease found linking {{result.chemical.common_name}} & {{result.gene.gene_id}}
+                                No disease(s) were linked with {{result.chemical.common_name}} & {{result.gene.gene_id}}.
                                 <hr /> 
                                 {% endfor %} 
                                 
