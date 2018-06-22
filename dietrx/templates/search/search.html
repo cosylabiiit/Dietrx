@@ -2,12 +2,13 @@
 {% block extra_head %}
 	<script type="application/javascript" src="{{ url_for('static', filename='jsme/jsme.nocache.js') }}"></script>
 	<script type="text/javascript">
-		function autocomplete(field_id, table){
-			$( "#"+field_id ).autocomplete({
+		function autocomplete(id){
+			$( id ).autocomplete({
 				minLength: 3,
 				source: function( request, response ) {
+					q = $(".query-field:visible")
 					$.ajax( {
-						url: "{{ url_for('autocomplete') }}?table="+table+"&query="+request.term,
+						url: "{{ url_for('autocomplete') }}?table="+ q.attr('table')+"&query="+request.term,
 						dataType: "json",
 						success: function( data ) {
 							data = JSON.parse(data);
@@ -21,21 +22,45 @@
 				}
 			} );
 		}
-		function search(form_id, table){
-			$('#'+form_id).on('submit', function(event) {
+		function search(){
+			$('#search_form').on('submit', function(event) {
 				event.preventDefault();
-				$.get("{{ url_for('search') }}?table="+table+"&query="+$('#'+form_id).serialize(), function(data){
+				q = $(".query-field:visible")
+				$.get("{{ url_for('search') }}?table="+q.attr('table')+"&query="+q.val(), function(data){
 					$('#results').html(data);
 				});
 			});
 		}
+		function search_loader(id){
+			$('.query-field').hide();
+			$('#food_query').show();
+		
+			$(id).on('change', function () {
+				if ($(this).val() === "food") {
+					$('.query-field').hide();
+					$('#food_query').show();
+				}
+				else if ($(this).val() === "disease") {
+					$('.query-field').hide();
+					$('#disease_query').show();
+				}
+				else if ($(this).val() === "gene") {
+					$('.query-field').hide();
+					$('#gene_query').show();
+				}
+				else if ($(this).val() === "chemical") {
+					$('.query-field').hide();
+					$('#chemical_query').show();
+				}
+			});
+		}
 		$(document).ready(function(){
-			autocomplete('food_query', 'food')
-			search('food_search', 'food')
-			autocomplete('disease_query', 'disease')
-			search('disease_search', 'disease')
-			autocomplete('gene_query', 'gene')
-			search('gene_search', 'gene')
+			search_loader('#search-options');
+			autocomplete('#food_query')
+			autocomplete('#disease_query')
+			autocomplete('#gene_query')
+			autocomplete('#chemical_query')
+			search()
 		});
 		$(document).ready(function(){
 			$(document).on('click', '.page-link', function(event){
@@ -102,6 +127,12 @@
 			overflow-x: hidden;
 		}
 	</style>
+	<style>
+		.search-options {
+			background-color: yellow;
+			font-weight: bold;
+		}
+	</style>
 	<div class="container pt-4">
 		<div class="row">
 			<div class="col-md-12">
@@ -129,9 +160,35 @@
 		</div>
 		<div id="search" class="pt-4">
 			<hr />
-			<h5 class="container"><span><img src="static/images/search_logo.png" class="d-inline-block align-top" width="30" height="30"></span></span><strong>&nbsp;&nbsp;DietRx Search</strong></h5>
+			<h5 class="container"><span><img src="static/images/search_logo.png" class="d-inline-block align-top" style="max-width: 1em; max-height: 1em;"></span></span><strong>&nbsp;&nbsp;DietRx Search</strong></h5>
 			<hr />
-			<ul class="nav nav-tabs" id="myTab" role="tablist">
+
+
+			<div>
+				<form id="search_form" class="input-group mb-3">
+					<div class="input-group-prepend">
+						<select id="search-options" class="search-options custom-select custom-select-lg">
+							<option class="search-options" selected value="food">Food</option>
+							<option class="search-options" value="disease">Disease</option>
+							<option class="search-options" value="gene">Gene</option>
+							<option class="search-options" value="chemical">Chemical</option>
+						</select>
+					</div>
+
+					<input table="food" type="text" name="query" class="form-control query-field" id="food_query" placeholder="Enter any Food's common or scientific name">
+					<input table="disease" type="text" name="query" class="form-control query-field" id="disease_query" placeholder="Enter any disease's name or category">
+					<input table="gene" type="text" name="query" class="form-control query-field" id="gene_query" placeholder="Enter any gene name">
+					<input table="chemical" type="text" name="query" class="form-control query-field" id="chemical_query" placeholder="Enter any chemical name">
+
+					<div class="input-group-btn input-group-append">
+						<input role="button" class="btn btn-primary" type="submit" type="submit">Search</input>
+					</div>
+
+				</form>
+				
+			</div>
+
+			<!-- <ul class="nav nav-tabs" id="myTab" role="tablist">
 				<li class="nav-item">
 					<a class="nav-link active" id="food-tab" data-toggle="tab" href="#food" role="tab" aria-controls="food" aria-selected="true">Food</a>
 				</li>
@@ -156,11 +213,24 @@
 					{% include 'gene/gene_search.html' %}
 				</div>
 				<div class="tab-pane fade show" id="chemical" role="tabpanel" aria-labelledby="chemical-tab">
-					{% include 'chemical/chemical_search.html' %}
+					
 				</div>
-			</div>
+			</div> -->
 			<div id="results">
 			</div>
+
+			<hr />
+			<h5 class="container">
+				<span>
+					<img src="static/images/search_logo.png" class="d-inline-block align-top" style="max-width: 1em; max-height: 1em;">
+				</span>
+				</span>
+				<strong>&nbsp;&nbsp;Advanced Chemical Search</strong>
+			</h5>
+			<hr />
+			{% include 'chemical/chemical_search.html' %}
+
+
 		</div>
 		
 	</div>

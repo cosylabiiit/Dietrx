@@ -11,6 +11,7 @@ class SearchableMixin(object):
 
 class Food(SearchableMixin, db.Model):
     __searchable__ = ['display_name', 'common_names', 'scientific_name', 'food_category']
+    __searchboost__ = ['display_name^4', 'common_names', 'scientific_name', 'food_category^3']
     __separators__ = {'common_names': '; '}
     food_id = db.Column(db.String(128), primary_key=True)
     display_name = db.Column(db.String(128))
@@ -28,6 +29,7 @@ class Food(SearchableMixin, db.Model):
 
 class Disease(SearchableMixin, db.Model):
     __searchable__ = ['disease_name', 'disease_synonyms', 'disease_category']
+    __searchboost__ = ['disease_name^4', 'disease_synonyms', 'disease_category^3']
     __separators__ = {'disease_synonyms': '|', 'disease_category': '|'}
     disease_id = db.Column(db.String(128), primary_key=True)
     disease_name = db.Column(db.Text)
@@ -42,6 +44,7 @@ class Disease(SearchableMixin, db.Model):
 
 class Gene(SearchableMixin, db.Model):
     __searchable__ = ['gene_id', 'gene_symbol', 'gene_name', 'other_symbols', 'synonyms']
+    __searchboost__ = ['gene_symbol', 'gene_name^3', 'other_symbols', 'synonyms^3']
     __separators__ = {'other_symbols': '|', 'synonyms': '|'}
     gene_id = db.Column(db.String(128), primary_key=True)
     gene_name = db.Column(db.Text)
@@ -58,7 +61,9 @@ class Gene(SearchableMixin, db.Model):
 
 class Chemical(SearchableMixin, db.Model):
     __searchable__ = ['common_name', 'iupac_name', 'synonyms']
-
+    __autocomplete__ = ['common_name', 'synonyms']
+    __searchboost__ = ['common_name^3', 'iupac_name', 'synonyms^2']
+    __separators__ = {'synonyms': '|'}
     diseases = db.relationship("Disease", secondary="chemical_disease")
     foods = db.relationship("Food", secondary="food_chemical")
 

@@ -28,14 +28,18 @@ def search():
 	page = request.args.get('page', 1, type=int)
 	template = ''
 	if(table == 'food'):
-		results = search_elastic(table, query, Food.__searchable__, page, NUM_PER_PAGE)
+		results = search_elastic(table, query, Food.__searchboost__, page, NUM_PER_PAGE)
 		template = 'food/search_results.html'
 	elif(table == 'disease'):
-		results = search_elastic(table, query, Disease.__searchable__, page, NUM_PER_PAGE)
+		results = search_elastic(table, query, Disease.__searchboost__, page, NUM_PER_PAGE)
 		template = 'disease/search_results.html'
 	elif(table == 'gene'):
-		results = search_elastic(table, query, Gene.__searchable__, page, NUM_PER_PAGE)
+		results = search_elastic(table, query, Gene.__searchboost__, page, NUM_PER_PAGE)
 		template = 'gene/search_results.html'
+	elif(table == 'chemical'):
+		results = search_elastic(
+			table, query, Chemical.__searchboost__, page, NUM_PER_PAGE)
+		template = 'chemical/search_results.html'
 	else:
 		abort(404)
 
@@ -190,9 +194,9 @@ def autocomplete():
 			else:               
 				results = results + autocomplete_search(table, column, query)
 	elif(table == 'disease'):
-		for column in ['disease_name', 'disease_category', 'disease_synonyms']:
+		for column in ['disease_name', 'disease_category']:
 			if(column in Disease.__separators__):
-				results = results + autocomplete_search(tablnote, column, query, Disease.__separators__[column])
+				results = results + autocomplete_search(table, column, query, Disease.__separators__[column])
 			else:               
 				results = results + autocomplete_search(table, column, query)
 	elif(table == 'gene'):
@@ -200,6 +204,13 @@ def autocomplete():
 			if(column in Gene.__separators__):
 				results = results + autocomplete_search(table, column, query, Gene.__separators__[column])
 			else:               
+				results = results + autocomplete_search(table, column, query)
+	elif(table == 'chemical'):
+		for column in Chemical.__autocomplete__:
+			if(column in Chemical.__separators__):
+				results = results + \
+					autocomplete_search(table, column, query, Chemical.__separators__[column])
+			else:
 				results = results + autocomplete_search(table, column, query)
 	else:
 		abort(404)
