@@ -25,8 +25,8 @@
                     <strong>{{result.via_chemicals}}</strong>)
                 </td>
                 <td>
-                    <button class="btn btn-primary btn-sm associations_details" role="button" id="type=food_disease&food_id={{result.food.food_id}}&disease_id={{disease.disease_id}}"
-                        data-toggle="modal" data-target="#associations_details_modal">
+                    <button href="{{url_for('get_associations', type='food_disease', food_id=result.food.food_id, disease_id=disease.disease_id)}}" class="btn
+                    btn-primary btn-sm" role="button" data-toggle="modal" data-target="#modal">
                         Details
                     </button>
                 </td>

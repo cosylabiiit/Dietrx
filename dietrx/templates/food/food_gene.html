@@ -46,8 +46,8 @@
 						{{result.via_chemicals|length}}
 					</td>
 					<td>
-						<button class="btn btn-primary btn-sm associations_details" role="button" id="type=food_gene&food_id={{result.food.food_id}}&gene_id={{result.gene.gene_id}}"
-						data-toggle="modal" data-target="#associations_details_modal">
+						<button href="{{url_for('get_associations', type='food_gene', food_id=result.food.food_id, gene_id=result.gene.gene_id)}}" class="btn
+						btn-primary btn-sm" role="button" data-toggle="modal" data-target="#modal">
 						Details
 						</button>
 					</td>
