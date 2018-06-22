@@ -28,7 +28,7 @@
     </div>
     {% include 'chemical/query_info.html' %}
     
-    <table class="table table-striped table-hover table-expandable dataTable no-footer" id="results_table" role="grid">
+    <table class="table table-striped table-hover table-expandable dataTable no-footer table-sm" id="results_table" role="grid">
         <thead class="thead">
             <tr>
                 <th>PubChem ID</th>
@@ -47,7 +47,7 @@
 				</a>
                 </td>
                 <td>
-                    {{ chemical.common_name }}
+                    {{ chemical.common_name or chemical.iupac_name }}
                 </td>
                 {% if search_by_smiles %}
                 <td>
@@ -56,7 +56,7 @@
                 {% endif %}
                 <td>
                     <a href={{ url_for('get_chemical', pubchem_id=chemical.pubchem_id) }} target="_blank">
-                        <button type="button" class="btn btn-info btn-xs molecules_details">
+                        <button type="button" class="btn btn-primary btn-xs molecules_details">
                             Details
                         </button>
                     </a>

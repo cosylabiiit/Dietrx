@@ -41,9 +41,14 @@ class Disease(SearchableMixin, db.Model):
 
 
 class Gene(SearchableMixin, db.Model):
-    __searchable__ = ['gene_id']
-    __separators__ = {}
+    __searchable__ = ['gene_id', 'gene_symbol', 'gene_name', 'other_symbols', 'synonyms']
+    __separators__ = {'other_symbols': '|', 'synonyms': '|'}
     gene_id = db.Column(db.String(128), primary_key=True)
+    gene_name = db.Column(db.Text)
+    gene_symbol = db.Column(db.String(128))
+    organism = db.Column(db.Text)
+    other_symbols = db.Column(db.Text)
+    synonyms = db.Column(db.Text)
     diseases = db.relationship('Disease', secondary='disease_gene')
     foods = db.relationship('Food', secondary='food_gene')
 

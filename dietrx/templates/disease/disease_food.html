@@ -1,5 +1,5 @@
 <div class="pt-4">
-    <table class="table table-hover">
+    <table class="table table-hover table-striped table-sm">
         <thead>
             <th>NCBI Taxonomy ID</th>
             <th>Food Name</th>
@@ -10,8 +10,8 @@
         <tbody>
             {% for result in results %}
             <tr>
-                <td>
-                    <a target="_blank" href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{result.food.tax_id}}"> {{ result.food.tax_id }}</a>
+                <td style="white-space:nowrap;">
+                    <a target="_blank" href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{result.food.tax_id}}"> {{result.food.tax_id}}<i class="fas fa-external-link-alt" style="vertical-align: top; font-size: 12px;"></i></a>
                 </td>
                 <td>
                     <a target="_blank" href="{{url_for('get_food', food_id=result.food.food_id)}}"> {{ result.food.display_name }}</a>                   
@@ -25,7 +25,7 @@
                     <strong>{{result.via_chemicals}}</strong>)
                 </td>
                 <td>
-                    <button class="btn btn-primary associations_details" role="button" id="type=food_disease&food_id={{result.food.food_id}}&disease_id={{disease.disease_id}}"
+                    <button class="btn btn-primary btn-sm associations_details" role="button" id="type=food_disease&food_id={{result.food.food_id}}&disease_id={{disease.disease_id}}"
                         data-toggle="modal" data-target="#associations_details_modal">
                         Details
                     </button>

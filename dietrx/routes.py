@@ -9,7 +9,7 @@ from subprocess import check_call
 from pybel import readfile
 import numpy as np
 
-NUM_PER_PAGE = 10
+NUM_PER_PAGE = 20
 NUM_PER_PAGE_CHEM = 100
 
 @app.route('/dietrx/', methods=['GET'])
@@ -357,12 +357,10 @@ def get_food():
 
 	food_id = request.args.get('food_id')
 	food = Food.query.filter_by(food_id=food_id).first()
-
 	page = request.args.get('page', 1, type=int)
 
 
 	if (food is not None):
-
 		subcategory_that_exist = []
 		if(len(food.food_disease) != 0):
 			subcategory_that_exist.append('disease')
@@ -371,9 +369,10 @@ def get_food():
 		if(len(food.food_chemical) != 0):
 			subcategory_that_exist.append('chemical')
 		if(len(subcategory_that_exist)==0):
+			return render_template('food/food_null_page.html', food=food)
 			abort(404)
-		subcategory = request.args.get('subcategory', subcategory_that_exist[0])
 
+		subcategory = request.args.get('subcategory', subcategory_that_exist[0])
 		if(subcategory == 'disease'):
 			results = Food_disease.query.filter_by(food_id=food_id).order_by('weight DESC').all()
 
@@ -382,8 +381,8 @@ def get_food():
 			temp = []
 
 			for res in results.items:
-				positive_associations = 0 if res.positive_pmid == '' else len(res.positive_pmid.split('|'))
-				negative_associations = 0 if res.negative_pmid == '' else len(res.negative_pmid.split('|'))
+				positive_associations = 0 if (res.positive_pmid == '') else len(res.positive_pmid.split('|'))
+				negative_associations = 0 if (res.negative_pmid == '') else len(res.negative_pmid.split('|'))
 				via_chemicals = 0 if res.pubchem_id == '' else len(res.pubchem_id.split('|'))
 				temp.append({'disease': Disease.query.filter_by(disease_id = res.disease_id).first(),
 							'positive_associations':positive_associations,
@@ -508,10 +507,10 @@ def get_chemical():
 	if (chemical is not None):
 
 		subcategory_that_exist = []
-		if(len(chemical.chemical_disease) != 0):
-			subcategory_that_exist.append('disease')
 		if(len(chemical.food_chemical) != 0):
 			subcategory_that_exist.append('food')
+		if(len(chemical.chemical_disease) != 0):
+			subcategory_that_exist.append('disease')
 		if(len(chemical.chemical_gene) != 0):
 			subcategory_that_exist.append('gene')
 		subcategory = request.args.get('subcategory', subcategory_that_exist[0])
@@ -603,3 +602,76 @@ def get_gene():
 							   total_pages=results.pages)
 	else:
 		abort(404)
+
+	return 
+
+@app.route('/dietrx/view_all', methods=['GET'])
+def view_all():
+	entity_type = request.args.get('type')
+
+	if entity_type == 'food':
+		res = Food.query.all()
+		fields = [
+			['NCBI TAX ID', 'tax_id'],
+			['Food Category', 'food_category'],
+			['Scientific Name', 'scientific_name'],
+			['Common Names', 'common_names'],
+			['Explore', 'food_id']
+		]
+		results = [[getattr(r, field) or 'None' for _, field in fields] for r in res]
+		for r in results: r[-1] = url_for('get_food', food_id=r[-1])
+		sortidx = 2
+	elif entity_type == 'disease':
+		res = Disease.query.all()
+		fields = [
+			['Disease ID', 'disease_id'],
+			['Disease Category', 'disease_category'],
+			['Disease Name', 'disease_name'],
+			['Disease Synonyms', 'disease_synonyms'],
+			['Explore', 'disease_id'],
+		]
+		results = [[getattr(r, field) or 'None' for _, field in fields] for r in res]
+		for r in results:
+			r[-1] = url_for('get_disease', disease_id=r[-1])
+		sortidx = 2
+	elif entity_type == 'chemical':
+		res = Chemical.query.all()
+		fields = [
+			['PubChem ID', 'pubchem_id'],
+			['Common Name', 'common_name'],
+			['Functional Group(s)', 'functional_group'],
+			['SMILES', 'smiles'],
+			['Explore', 'pubchem_id'],
+		]
+		results = [[getattr(r, field) or 'None' for _, field in fields] for r in res]
+		for r in results:
+			r[-1] = url_for('get_chemical', chemical_id=r[-1])
+		sortidx = 1
+	elif entity_type == 'gene':
+		res = Gene.query.all()
+		fields = [
+			['Entrez Gene ID', 'gene_id'],
+			['Gene Symbol', 'gene_symbol'],
+			['Gene Name', 'gene_name'],
+			['Gene Other Symbol', 'other_symbols'],
+			['Gene Synonyms', 'synonyms'],
+			['Explore', 'gene_id'],
+		]
+		results = [[getattr(r, field) or 'None' for _, field in fields] for r in res]
+		for r in results:
+			r[-1] = url_for('get_gene', gene_id=r[-1])
+		sortidx = 2
+	else:
+		abort(404)
+
+	return render_template('common/view_all.html', fields=fields, sortidx=sortidx,
+		         		   results=results, type=entity_type)
+
+@app.route('/dietrx/faq', methods=['GET'])
+def faq():
+	return render_template('common/faq.html')
+
+
+@app.route('/dietrx/contact_us', methods=['GET'])
+def contact_us():
+	return render_template('common/contact_us.html')

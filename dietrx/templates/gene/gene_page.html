@@ -13,12 +13,22 @@
 		<div class="col-md-12">
 			
 		<p class="card-text">
-            <span class="text-danger">Entrez Gene ID: </span> {{ gene.gene_id }}<br> 
-            <span class="text-danger">Gene Name: </span> Gene Name<br> 
+            <span class="text-danger">Entrez Gene ID: </i></span><a href="https://www.ncbi.nlm.nih.gov/gene/{{ gene.gene_id }}" target="_blank">{{ gene.gene_id }}<i class="fas fa-external-link-alt" style="vertical-align: top; font-size: 12px;"></i></a><br> 
+            <span class="text-danger">Official Gene Symbol: </span> {{ gene.gene_symbol }}<br> 
+            <span class="text-danger">Official Gene Name: </span> {{ gene.gene_name }}<br> 
+            <span class="text-danger">Organism: </span> {{ gene.organism }}<br> 
+            <span class="text-danger">Other Symbols: </span> {{ gene.other_symbols }}<br>
+            <span class="text-danger">Other Names: </span> {{ gene.synonyms }}<br>
 	    </p>	
 
 		</div>
 	</div>
+
+	<div class="mb-4"></div>
+	<hr />
+	<h5 class="container"><strong>Associations</strong></h5>
+	<hr />
+	<img src="{{ url_for('static', filename='images/illustrations/gene.JPG')}}" class="img-fluid mb-5 pt-4" alt="Responsive image">
 
 
 
@@ -40,23 +50,23 @@
 
 			{% if subcategory == 'disease' %}
 			<li class="nav-item">
-				<a class="nav-link active" id="disease-tab" data-toggle="tab" href="#disease" role="tab" aria-controls="disease" aria-selected="true">Associated Diseases</a>
+				<a class="nav-link active" id="disease-tab" data-toggle="tab" href="#disease" role="tab" aria-controls="disease" aria-selected="true">Associated & Inferred Diseases</a>
 			</li>
 			{% elif not 'disease' in subcategory_that_exist %}
 			{% else %}
 			<li class="nav-item">
-				<a class="nav-link" id="disease-tab" href="{{url_for('get_gene', gene_id=gene.gene_id ,subcategory='disease')}}">Associated Diseases</a>
+				<a class="nav-link" id="disease-tab" href="{{url_for('get_gene', gene_id=gene.gene_id ,subcategory='disease')}}">Associated & Inferred Diseases</a>
 			</li>
 			{% endif %}
 			
 			{% if subcategory == 'chemical' %}
 			<li class="nav-item">
-				<a class="nav-link active" id="chemical-tab" data-toggle="tab" href="#chemical" role="tab" aria-controls="chemical" aria-selected="true">Associated Chemicals</a>
+				<a class="nav-link active" id="chemical-tab" data-toggle="tab" href="#chemical" role="tab" aria-controls="chemical" aria-selected="true">Associated & Inferred Chemicals</a>
 			</li>
 			{% elif not 'chemical' in subcategory_that_exist %} 
 			{% else %}
 			<li class="nav-item">
-				<a class="nav-link" id="chemical-tab" href="{{url_for('get_gene', gene_id=gene.gene_id ,subcategory='chemical')}}">Associated Chemicals</a>
+				<a class="nav-link" id="chemical-tab" href="{{url_for('get_gene', gene_id=gene.gene_id ,subcategory='chemical')}}">Associated & Inferred Chemicals</a>
 			</li>
 			{% endif %}
 

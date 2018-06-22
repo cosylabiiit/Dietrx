@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title text-capitalize" id="myModalLabel">Associations between {{result.food.display_name}} & {{result.gene.gene_id}}</h4>
+                <h4 class="modal-title text-capitalize" id="myModalLabel">Associations between {{result.food.display_name}} & {{result.gene.gene_symbol}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -11,30 +11,28 @@
             <div class="modal-body">
                 
                 <div>
-                    <strong>{{result.via_chemicals|count}} chemical(s) linked with {{result.food.display_name}} & {{result.gene.gene_id}}</strong>
+                    <strong>{{result.via_chemicals|count}} Chemical(s) linked with {{result.food.display_name}} & {{result.gene.gene_symbol}}</strong>
                     <br> 
                     <div style="max-height: 400px; overflow: auto;">
-                        <table class="table table-hover" >
+                        <table class="table table-hover table-sm" >
                             <thead>
                                 <tr>
                                     <th>PubChem ID</th>
                                     <th>Common Name</th>
                                     <th>Functional Group</th>
-                                    <th>Details</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 
-                                {% for molecule in result.via_chemicals %}
+                                {% for chemical in result.via_chemicals %}
                                 <tr>
-                                    <td><a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/compound/{{molecule.pubchem_id}}">{{molecule.pubchem_id}}</a></td>
-                                    <td>{{molecule.common_name}}</td>
-                                    <td>{{molecule.functional_group}}</td>
-                                    <td><a target="_blank" href="{{url_for('get_chemical', pubchem_id=molecule.pubchem_id)}}" class="btn btn-primary">Details</a></td>
+                                    <td style="white-space:nowrap;"><a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/compound/{{chemical.pubchem_id}}">{{chemical.pubchem_id}}<i class="fas fa-external-link-alt" style="vertical-align: top; font-size: 12px;"></i></a></td>
+                                    <td><a target="_blank" href="{{url_for('get_chemical', pubchem_id=chemical.pubchem_id)}}">{{chemical.common_name or chemical.iupac_name}}</a></td>
+                                    <td>{{chemical.functional_group}}</td>
                                 </tr>
                                 {% else %}
                                 <td colspan="10">
-                                No chemical(s) were found linked with {{result.food.display_name}} & {{result.gene.gene_id}}.
+                                No Chemical(s) linked with {{result.food.display_name}} & {{result.gene.gene_symbol}} were found .
                                 </td>
                                 {% endfor %}
                             </tbody>
@@ -46,35 +44,31 @@
                 <hr />
 
                 <div>
-                    <strong>{{result.via_diseases|count}} disease(s) linked with {{result.food.display_name}} & {{result.gene.gene_id}}</strong>
+                    <strong>{{result.via_diseases|count}} Disease(s) linked with {{result.food.display_name}} & {{result.gene.gene_symbol}}</strong>
                     <br>
                 
                     <div style="max-height: 400px; overflow: auto;">
-                        <table class="table table-hover">
+                        <table class="table table-hover table-striped table-sm">
                             <thead>
                                 <tr>
                                     <th>MeSH Disease ID</th>
                                     <th>Disease Name</th>
                                     <th>Disease Category</th>
-                                    <th>Details</th>
                                 </tr>
                             </thead>
                             <tbody>
                 
                                 {% for disease in result.via_diseases %}
                                 <tr>
-                                    <td>
-                                        <a target="_blank" href="https://meshb.nlm.nih.gov/record/ui?ui={{disease.disease_id[5:]}}">{{disease.disease_id[5:]}}</a>
+                                    <td style="white-space:nowrap;">
+                                        <a target="_blank" href="https://meshb.nlm.nih.gov/record/ui?ui={{disease.disease_id[5:]}}">{{disease.disease_id[5:]}}<i class="fas fa-external-link-alt" style="vertical-align: top; font-size: 12px;"></i></a>
                                     </td>
-                                    <td>{{disease.disease_name}}</td>
-                                    <td>{{disease.disease_category}}</td>
-                                    <td>
-                                        <a target="_blank" href="{{url_for('get_disease', disease_id=disease.disease_id)}}" class="btn btn-primary">Details</a>
-                                    </td>
+                                    <td><a target="_blank" href="{{url_for('get_disease', disease_id=disease.disease_id)}}">{{disease.disease_name}}</a></td>
+                                    <td>{{disease.disease_category | replace('|', ' | ') }}</td>
                                 </tr>
                                 {% else %} 
                                 <td colspan="10">
-                                    No disease(s) were found linked with {{result.food.display_name}} & {{result.gene.gene_id}}.
+                                    No Disease(s) linked with {{result.food.display_name}} & {{result.gene.gene_symbol}} were found.
                                 </td>
                                 {% endfor %}
                             </tbody>

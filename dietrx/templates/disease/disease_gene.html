@@ -1,48 +1,63 @@
 <div class="pt-4">
-    <table class="table table-hover">
+    <table class="table table-hover table-striped table-sm">
         <thead>
             {% if disease %}
-            <th>Entrez Gene ID</th>
-            <th>Gene Name</th>
+                <th>Entrez Gene ID</th>
+                <th>Gene Name</th>
+                <th>Gene Symbol</th>
             {% else %}
-            <th>MeSH Disease ID</th>
-            <th>Disease Name</th>
-            <th>Disease Category</th>
+                <th>MeSH Disease ID</th>
+                <th>Disease Name</th>
+                <th>Disease Category</th>
+                <th>Reference</th>
             {% endif %}
             <th>Via Chemicals</th>
+            <th>Source</th>
             <th>Details</th>
         </thead>
         <tbody>
             {% for result in results %}
-            <tr>
-                {% if disease %}
-                <td>
-                    <a target="_blank" href="https://www.ncbi.nlm.nih.gov/gene/{{result.gene.gene_id}}">{{result.gene.gene_id}}</a>
-                </td>
-                <td>
-                    <a target="_blank" href="{{url_for('get_gene', gene_id=result.gene.gene_id)}}">Gene Name</a>
-                </td>
+                <tr>
+                    {% if disease %}
+
+                        <td style="white-space:nowrap;">
+                            {% if result.gene.gene_id %}
+                            <a target="_blank" href="https://www.ncbi.nlm.nih.gov/gene/{{result.gene.gene_id}}">{{result.gene.gene_id}}<i class="fas fa-external-link-alt" style="vertical-align: top; font-size: 12px;"></i></a>
+                            {% else %}
+                            <a target="_blank" href="https://www.ncbi.nlm.nih.gov/gene/{{result.gene.gene_id}}">{{result.gene.gene_id}}</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a target="_blank" href="{{url_for('get_gene', gene_id=result.gene.gene_id)}}">{{ result.gene.gene_name}}</a>
+                        </td>
+                        <td>
+                            {{ result.gene.gene_symbol}}
+                        </td>
                 {% else %}
-<td><a href="https://meshb.nlm.nih.gov/record/ui?ui={{result.disease.disease_id[5:]}}" target="_blank">{{result.disease.disease_id[5:]}}</a></td>
-                <td>
-                    <a target="_blank" href="{{url_for('get_disease', disease_id=result.disease.disease_id)}}">{{result.disease.disease_name}}</a>
-                </td>
-                <td>
-                    {{result.disease.disease_category}}
-                </td>
+                    <td style="white-space:nowrap;"><a href="https://meshb.nlm.nih.gov/record/ui?ui={{result.disease.disease_id[5:]}}" target="_blank">{{result.disease.disease_id[5:]}}<i class="fas fa-external-link-alt" style="vertical-align: top; font-size: 12px;"></i></a></td>
+                    <td>
+                        <a target="_blank" href="{{url_for('get_disease', disease_id=result.disease.disease_id)}}">{{result.disease.disease_name}}</a>
+                    </td>
+                    <td>
+                        {{result.disease.disease_category}}
+                    </td>
+                    <td>{{result.reference}}
                 {% endif %}
                 <td>
                     {{result.via_chemicals }}
                 </td>
                 <td>
-                    <button class="btn btn-primary associations_details" role="button" id="type=disease_gene&gene_id={{result.gene.gene_id}}&disease_id={{result.disease.disease_id}}"
-                        data-toggle="modal" data-target="#associations_details_modal">
-                        Details
+                    {{result.reference or 'Inferred'}}
+                </td>
+                <td>
+                    <button class="btn btn-primary btn-sm associations_details" role="button" id="type=disease_gene&gene_id={{result.gene.gene_id}}&disease_id={{result.disease.disease_id}}"
+                    data-toggle="modal" data-target="#associations_details_modal">
+                    Details
                     </button>
                 </td>
             </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-     {% include 'common/associations_details_ajax.html' %}
+        {% endfor %}
+    </tbody>
+</table>
+{% include 'common/associations_details_ajax.html' %}
 </div>

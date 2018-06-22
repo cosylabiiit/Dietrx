@@ -7,7 +7,7 @@
 		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 		<meta name="description" content="">
 		<meta name="author" content="">
-		<link rel="icon" href="{{url_for('static',filename='images/favicon.ico') }}">
+		<link rel="icon" type="image/png" href="{{url_for('static', filename='images/logo.png')}}">
 		<title>DietRx</title>
 		<!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
@@ -24,7 +24,20 @@
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 		<script type="application/javascript" src="{{ url_for('static', filename='Jmol/Jmol.js') }}"></script>
-		<!-- <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> -->
+
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap4.min.css">
+		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.bootstrap4.min.css"/>
+		<script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+		<script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap4.min.js"></script>
+		<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+		<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.bootstrap4.min.js"></script>
+
+		<script type="text/javascript"src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js"></script>
+		<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
+		<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
+
+		<script type="text/javascript" language="javascript" src="//cdn.datatables.net/plug-ins/1.10.18/dataRender/ellipsis.js"></script>
 		{% block extra_head %}
 		{% endblock %}
 	</head>
@@ -38,10 +51,11 @@
 		<nav class="navbar navbar-expand-md navbar-dark bg-dark">
 			<div class="container">
 				
-				<a  class="navbar-brand" href="{{ url_for('index') }}"><img src="{{url_for('static',filename='images/logo.png')}}"></a>
-				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_menu" aria-controls="navbar_menu" aria-expanded="false" aria-label="Toggle navigation">
+			<a class="navbar-brand" href="{{ url_for('index') }}">
+			<img src="{{url_for('static', filename='images/logo.png') }}" class="d-inline-block align-top" width="40" height="40">&nbsp;DietRx</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_menu" aria-controls="navbar_menu" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
-				</button>
+			</button>
 				<div class="collapse navbar-collapse" id="navbar_menu">
 					<ul class="navbar-nav ml-auto">
 						<li class="nav-item">
@@ -54,10 +68,10 @@
 							<a class="nav-link" href="{{ url_for('index') }}">How To Use</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="{{ url_for('index') }}">FAQs</a>
+							<a class="nav-link" href="{{ url_for('faq') }}">FAQs</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="{{ url_for('index') }}">Contact Us</a>
+							<a class="nav-link" href="{{ url_for('contact_us') }}">Contact Us</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="http://cosylab.iiitd.edu.in">CoSyLab</a>
@@ -77,6 +91,7 @@
 						<P>Copyright &copy; 2018 &nbsp All rights reserved.<br><br>
 							<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" /></a><br />This work is licensed under a <a style="font-weight: bold;" rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.
 						</P>
+						<p style="text-align: center;">All material on this website is a product of research and is provided for your information only and may not be construed as medical advice or instruction. <br> No action or inaction should be taken based solely on the contents of this information; instead, readers should consult appropriate health professionals on any matter relating to their health and well-being.</p>
 						<p><a href="https://iiitd.ac.in/" target="_blank"><strong>Indraprastha Institute of Information Technology Delhi (IIIT-Delhi)</strong></a> | <a       href="http://faculty.iiitd.ac.in/~bagler/" target="_blank">Dr. Ganesh Bagler</a></p>
 						<p><a target="_blank" href="https://www.facebook.com/ganesh.bagler"><img src="{{url_for('static', filename='images/facebook.png')}}" alt="facebook" /></a>
 						<a target="_blank" href="https://twitter.com/gansbags"><img src="{{url_for('static', filename='images/twwtter.png')}}" alt="tiwwter" /></a>
