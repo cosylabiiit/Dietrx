@@ -17,7 +17,7 @@
 {% block body %}
 	<div class="container pt-4">
 		<hr>
-		<h5><strong>Molecular Profile</strong></h5>
+		<h5><strong>{{ chemical['common_name'] or chemical['iupac_name'] }}</strong></h5>
 		<hr>
 		<div class="row">
 			<div class="col-md-8">

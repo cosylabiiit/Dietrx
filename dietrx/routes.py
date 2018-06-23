@@ -683,6 +683,11 @@ def faq():
 	return render_template('common/faq.html')
 
 
+@app.route('/dietrx/how_to_use', methods=['GET'])
+def how_to_use():
+	return render_template('common/how_to_use.html')
+
+
 @app.route('/dietrx/contact_us', methods=['GET'])
 def contact_us():
 	return render_template('common/contact_us.html')

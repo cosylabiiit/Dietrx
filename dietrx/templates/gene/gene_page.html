@@ -7,7 +7,7 @@
 <div class="container pt-4">
 	
 	<hr />
-	<h5 class="container"><strong>Gene Name</strong></h5>
+	<h5 class="container"><strong>{{ gene.gene_name | title}}</strong></h5>
 	<hr />
 	<div class="row">
 		<div class="col-md-12">
@@ -26,7 +26,7 @@
 
 	<div class="mb-4"></div>
 	<hr />
-	<h5 class="container"><strong>Associations</strong></h5>
+	<h5 class="container"><strong>DietRx Associations for {{ gene.gene_name | title }}</strong></h5>
 	<hr />
 	<img src="{{ url_for('static', filename='images/illustrations/gene.JPG')}}" class="img-fluid mb-5 pt-4" alt="Responsive image">
 
