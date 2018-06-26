@@ -23,11 +23,11 @@
 			} );
 		}
 		function search(){
-			$('#search_form').on('submit', function(event) {
+			$('.search-form').on('submit', function(event) {
 				event.preventDefault();
-				q = $(".query-field:visible")
+				q = $(event.currentTarget).find('.query-field')
 				$.get("{{ url_for('search') }}?table="+q.attr('table')+"&query="+q.val(), function(data){
-					$('#results').html(data);
+					$(q.attr('href')).html(data);
 				});
 			});
 		}
@@ -54,13 +54,18 @@
 				}
 			});
 		}
+		function show_chemical_structure_search(){
+			$('#chemical_structure_search_button').on('click', function(event){
+				$('#chemical_structure_search').toggle()
+			});
+		}
 		$(document).ready(function(){
-			search_loader('#search-options');
 			autocomplete('#food_query')
 			autocomplete('#disease_query')
 			autocomplete('#gene_query')
 			autocomplete('#chemical_query')
 			search()
+			show_chemical_structure_search()
 		});
 		$(document).ready(function(){
 			$(document).on('click', '.page-link', function(event){
@@ -104,6 +109,7 @@
 		}
 		// console.log(height, width)
 		jsmeAppletSearch = new JSApplet.JSME("jsme_container_search", Math.abs(width).toString()+'px', Math.abs(height).toString()+'px');
+		$('#chemical_structure_search').hide()
 	}
 </script>
 <script type="text/javascript">
@@ -160,74 +166,15 @@
 		</div>
 		<div id="search" class="pt-4">
 			<hr />
-			<h5 class="container"><span><img src="static/images/search_logo.png" class="d-inline-block align-top" style="max-width: 1em; max-height: 1em;"></span></span><strong>&nbsp;&nbsp;DietRx Search</strong></h5>
+			<h5 class="container"><span><img src="static/images/search_logo.png" class="d-inline-block align-top" style="max-width: 1em; max-height: 1em;"></span><strong>&nbsp;&nbsp;DietRx Search</strong></h5>
 			<hr />
 
+			{% include 'food/food_search.html' %}
 
-			<div>
-				<form id="search_form" class="input-group mb-3">
-					<div class="input-group-prepend">
-						<select id="search-options" class="search-options custom-select custom-select-lg">
-							<option class="search-options" selected value="food">Food</option>
-							<option class="search-options" value="disease">Disease</option>
-							<option class="search-options" value="gene">Gene</option>
-							<option class="search-options" value="chemical">Chemical</option>
-						</select>
-					</div>
+			{% include 'disease/disease_search.html' %}
 
-					<input table="food" type="text" name="query" class="form-control query-field" id="food_query" placeholder="Enter any Food's common or scientific name">
-					<input table="disease" type="text" name="query" class="form-control query-field" id="disease_query" placeholder="Enter any disease's name or category">
-					<input table="gene" type="text" name="query" class="form-control query-field" id="gene_query" placeholder="Enter any gene name">
-					<input table="chemical" type="text" name="query" class="form-control query-field" id="chemical_query" placeholder="Enter any chemical name">
-
-					<div class="input-group-btn input-group-append">
-						<input role="button" class="btn btn-primary" type="submit" type="submit">Search</input>
-					</div>
-
-				</form>
-				
-			</div>
-
-			<!-- <ul class="nav nav-tabs" id="myTab" role="tablist">
-				<li class="nav-item">
-					<a class="nav-link active" id="food-tab" data-toggle="tab" href="#food" role="tab" aria-controls="food" aria-selected="true">Food</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" id="diseases-tab" data-toggle="tab" href="#diseases" role="tab" aria-controls="diseases" aria-selected="false">Disease</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" id="gene-tab" data-toggle="tab" href="#gene" role="tab" aria-controls="gene" aria-selected="false">Gene</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" id="chemical-tab" data-toggle="tab" href="#chemical" role="tab" aria-controls="chemical" aria-selected="false">Chemical</a>
-				</li>
-			</ul>
-			<div class="tab-content" id="myTabContent">
-				<div class="tab-pane fade show active" id="food" role="tabpanel" aria-labelledby="food-tab">
-					{% include 'food/food_search.html' %}
-				</div>
-				<div class="tab-pane fade show" id="diseases" role="tabpanel" aria-labelledby="diseases-tab">
-					{% include 'disease/disease_search.html' %}
-				</div>
-				<div class="tab-pane fade show" id="gene" role="tabpanel" aria-labelledby="gene-tab">
-					{% include 'gene/gene_search.html' %}
-				</div>
-				<div class="tab-pane fade show" id="chemical" role="tabpanel" aria-labelledby="chemical-tab">
-					
-				</div>
-			</div> -->
-			<div id="results">
-			</div>
-
-			<hr />
-			<h5 class="container">
-				<span>
-					<img src="static/images/search_logo.png" class="d-inline-block align-top" style="max-width: 1em; max-height: 1em;">
-				</span>
-				</span>
-				<strong>&nbsp;&nbsp;Advanced Chemical Search</strong>
-			</h5>
-			<hr />
+			{% include 'gene/gene_search.html' %}
+			
 			{% include 'chemical/chemical_search.html' %}
 
 

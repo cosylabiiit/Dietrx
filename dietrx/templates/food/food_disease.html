@@ -1,39 +1,6 @@
 <div class="pt-4">
-	<table class="table table-hover table-striped table-sm">
-		<thead>
-			<th>MeSH Disease ID</th>
-			<th>Disease Name</th>
-			<th>Disease Category</th>
-			<th>(Positive, Negative, Chemical)
-				<br> Associations</th>
-			<th>Details</th>
-		</thead>
-		<tbody>
-			{% for result in results %}
-			<tr>
-				<td style="white-space:nowrap;"><a href="https://meshb.nlm.nih.gov/record/ui?ui={{result.disease.disease_id[5:]}}" target="_blank">{{result.disease.disease_id[5:]}}<i class="fas fa-external-link-alt" style="vertical-align: top; font-size: 12px;"></i></a></td>
-				<td>
-					<a target="_blank" href="{{url_for('get_disease', disease_id=result.disease.disease_id)}}">{{ result.disease.disease_name }}</a>
-				</td>
-				<td>
-					{{ result.disease.disease_category | replace('|', ' | ') }}
-				</td>
-				<td>
-					 (<strong style="color: green">{{result.positive_associations}}</strong>,
-					<strong style="color: red">{{result.negative_associations}}</strong>,
-					<strong>{{result.via_chemicals}}</strong>)
-				</td>
-				<td>
-					<button href="{{url_for('get_associations', type='food_disease', food_id=food.food_id, disease_id=result.disease.disease_id)}}" class="btn btn-primary btn-sm" role="button" data-toggle="modal" data-target="#modal">
-						Details
-					</button>
-				</td>
-			</tr>
-
-			{% endfor %}
-		</tbody>
-	</table>
-
+	
+	 {% include 'common/data_table_api.html' %}
 	 {% include 'common/associations_details_ajax.html' %}
 
 </div>

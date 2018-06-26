@@ -1,17 +1,21 @@
-<form id="gene_search" method="GET" action="{{url_for('search')}}">
-	
-	<div class="row pt-4">
-		
-		<div class="col-lg-12">
-			<div class="input-group">
-				<input type="text" name="query" class="form-control" id="gene_query" placeholder="Enter any gene name">
-				<span class="input-group-btn">
-					<input class="btn btn-primary" type="submit" type="submit">Search</input>
-				</span>
+<div id="search_gene">
+	<hr />
+	<h5 class="container">
+		<span>
+			<img src="static/images/search_logo.png" class="d-inline-block align-top" style="max-width: 1em; max-height: 1em;">
+		</span>
+		<strong>&nbsp;&nbsp;Gene Search</strong>
+	</h5>
+	<hr />
+	<form class="input-group mb-3 search-form">
+		<div class="input-group">
+			<input href="#gene-results" table="gene" type="text" name="query" class="form-control query-field" id="gene_query" placeholder="Enter any gene's name or symbol">
+			<div class="input-group-btn input-group-append">
+				<input role="button" class="btn btn-primary" type="submit" type="submit">Search</input>
 			</div>
-		</div>	
-		
-		
-	</div>	
-	
-</form>
+		</div>
+	</form>
+	<a href="{{url_for('view_all', type='gene')}}" target="_blank">View All Genes</a>
+
+	<div id="gene-results"></div>
+</div>

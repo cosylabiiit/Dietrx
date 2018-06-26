@@ -1,17 +1,21 @@
-<form id="food_search" method="GET" action="{{url_for('search')}}">
-	
-	<div class="row pt-4">
-		
-		<div class="col-lg-12">
-			<div class="input-group">
-				<input type="text" name="query" class="form-control" id="food_query" placeholder="Enter any food's common or scientific name">
-				<span class="input-group-btn">
-					<input class="btn btn-primary" type="submit" type="submit">Search</input>
-				</span>
+<div id="search_food">
+	<hr />
+	<h5 class="container">
+		<span>
+			<img src="static/images/search_logo.png" class="d-inline-block align-top" style="max-width: 1em; max-height: 1em;">
+		</span>
+		<strong>&nbsp;&nbsp;Food Search</strong>
+	</h5>
+	<hr />
+	<form class="input-group mb-3 search-form">
+		<div class="input-group">
+			<input href="#food-results" table="food" type="text" name="query" class="form-control query-field" id="food_query" placeholder="Enter any food's common, scientific name or food category">
+			<div class="input-group-btn input-group-append">
+				<input role="button" class="btn btn-primary" type="submit" type="submit">Search</input>
 			</div>
-		</div>	
-		
-		
-	</div>	
-	
-</form>
+		</div>
+	</form>
+	<a href="{{url_for('view_all', type='food')}}" target="_blank">View All Foods</a>
+
+	<div id="food-results"></div>
+</div>

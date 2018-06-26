@@ -5,7 +5,89 @@ from difflib import SequenceMatcher
 from .models import *
 
 
-def food_chemical(request, NUM_PER_PAGE, page, url, food_id=None, pubchem_id=None):
+def food_details(x, food):
+    x['NCBI Taxonomy ID'] = {'data': food.food_id,
+                             'extlink': 'https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=' + str(food.food_id)}
+    x['Food Name'] = {'data': food.display_name,
+                        'link': url_for('get_food', food_id=food.food_id)}
+    x['Food Category'] = {'data': food.food_category}
+
+    return x
+
+def chemical_details(x, chemical):
+    x['PubChem ID'] = {'data': chemical.pubchem_id,
+                       'extlink': 'https://pubchem.ncbi.nlm.nih.gov/compound/'+str(chemical.pubchem_id)}
+    x['Common Name'] = {'data': chemical.common_name,
+                        'link': url_for('get_chemical', pubchem_id=chemical.pubchem_id)}
+    x['Functional Group'] = {'data': chemical.functional_group}
+    
+    return x
+
+def gene_details(x, gene):
+    x['Entrez Gene ID'] = {'data': gene.gene_id,
+                           'extlink': 'https://www.ncbi.nlm.nih.gov/gene/'+str(gene.gene_id)}
+    x['Gene Name'] = {'data': gene.gene_name,
+                        'link': url_for('get_gene', gene_id=gene.gene_id)}
+    x['Gene Symbol'] = {'data': gene.gene_symbol}
+
+    return x
+
+def disease_details(x, disease):
+    x['MeSH Disease ID']= {'data': disease.disease_id,
+                         'extlink': 'https://meshb.nlm.nih.gov/record/ui?ui='+str(disease.disease_id)}
+    x['Disease Name']= {'data': disease.disease_name,
+                      'link': url_for('get_disease', disease_id=disease.disease_id)}
+    x['Disease Category']= {'data': disease.disease_category}
+
+    return x
+
+def food_disease(request, subcategory, food_id=None, disease_id=None):
+    q = Food_disease.query
+
+    if(food_id):
+        q = q.filter_by(food_id=food_id)
+    elif(disease_id):
+        q = q.filter_by(disease_id=disease_id)
+
+    results = q.order_by('weight DESC').all()
+
+    temp = []
+    for res in results:
+        x = {}
+        positive_associations = 0 if (res.positive_pmid == '') else len(
+            res.positive_pmid.split('|'))
+        negative_associations = 0 if (res.negative_pmid == '') else len(
+            res.negative_pmid.split('|'))
+        via_chemicals = 0 if res.pubchem_id == '' else len(
+            res.pubchem_id.split('|'))
+        disease = res.disease
+        food = res.food
+        if subcategory == 'food':
+            x = food_details(x, food)
+        elif subcategory == 'disease':
+            x = disease_details(x, disease)
+        
+         
+        x['(Positive, Negative, Chemical) Associations']= {'data': disease.disease_name,
+                                                        'fdassociation': True,
+                                                        'positive': positive_associations,
+                                                        'negative': negative_associations,
+                                                        'chemical': via_chemicals
+                                                        }
+
+        x['Details']= {'popup': url_for('get_associations', type='food_disease', food_id=food.food_id, disease_id=disease.disease_id)}
+        
+        x['mapping'] = {v: k for v, k in enumerate(list(x.keys()))}
+        temp.append(x)
+
+    results = temp
+    column_names = list(temp[0]['mapping'].values())
+
+    return (results, column_names)
+
+
+
+def food_chemical(request, subcategory, food_id=None, pubchem_id=None):
     q = Food_chemical.query
 
     if(food_id):
@@ -15,25 +97,32 @@ def food_chemical(request, NUM_PER_PAGE, page, url, food_id=None, pubchem_id=Non
 
     results = q.all()
 
-    results = Pagination(page, NUM_PER_PAGE, results, request, url)
+    temp=[]
+    for res in results:
+        x = {}
+        association = Food_chemical.query.filter_by(
+            pubchem_id=res.pubchem_id, food_id=res.food_id).first()
+        chemical = association.chemical
+        food = association.food
+        if subcategory == 'chemical':
+            x = chemical_details(x, chemical)
+        elif subcategory == 'food':
+            x = food_details(x, food)
 
-    temp = []
+        x['Content'] = {'data': association.content}
+        x['Source'] = {'data': association.references}
 
-    for res in results.items:
-        associations = Food_chemical.query.filter_by(
-            pubchem_id=res.pubchem_id, food_id=res.food_id)
-        if(food_id):
-            temp.append({'chemical': Chemical.query.filter_by(pubchem_id=res.pubchem_id).first(),
-                         'associations': associations.first()})
-        elif(pubchem_id):
-            temp.append({'food': Food.query.filter_by(food_id=res.food_id).first(),
-                         'associations': associations.first()})
-    results.items = temp
+        x['mapping'] = {v: k for v, k in enumerate(list(x.keys()))}
+        temp.append(x)
 
-    return results
+    results = temp
+    column_names = list(temp[0]['mapping'].values())
+
+    return (results, column_names)
 
 
-def disease_chemical(request, NUM_PER_PAGE, page, url, disease_id=None, pubchem_id=None):
+
+def disease_chemical(request, subcategory, disease_id=None, pubchem_id=None):
     q = Chemical_disease.query
 
     if(disease_id):
@@ -52,27 +141,39 @@ def disease_chemical(request, NUM_PER_PAGE, page, url, disease_id=None, pubchem_
                      })
 
     results = sorted(temp, key=lambda x: x['count'], reverse=True)
-    results = Pagination(page, NUM_PER_PAGE, results, request, url)
 
     temp = []
-
-    for res in results.items:
+    for res in results:
+        x = {}
         association = res['association']
         if(len(res['via_genes']) == 1 and res['via_genes'][0] == ''):
             res['via_genes'] = 0
         else:
             res['via_genes'] = len(res['via_genes'])
-        temp.append({'chemical': association.chemical,
-                     'disease': association.disease,
-                     'association': association,
-                     'via_genes': res['via_genes'],
-                     })
+        chemical = association.chemical
+        disease = association.disease
+        if subcategory == 'chemical':
+            x = chemical_details(x, chemical)
+        elif subcategory == 'disease':
+            x = disease_details(x, disease)
 
-    results.items = temp
-    return results
+        x['Type'] = {'data': association.type_relation}
+        x['Via Genes'] = {'data': res['via_genes']}
+        x['Source'] = {
+            'data': 'CTD' if association.type_relation else 'Inferred'}
+        x['Details'] = {'popup': url_for('get_associations', type='chemical_disease',
+                                         pubchem_id=chemical.pubchem_id, disease_id=disease.disease_id)}
 
+        x['mapping'] = {v: k for v, k in enumerate(list(x.keys()))}
+        temp.append(x)
 
-def chemical_gene(request, NUM_PER_PAGE, page, url, gene_id=None, pubchem_id=None):
+    results = temp
+    column_names = list(temp[0]['mapping'].values())
+
+    return (results, column_names)
+    
+
+def chemical_gene(request, subcategory, gene_id=None, pubchem_id=None):
     q = Chemical_gene.query
     if(pubchem_id):
         q = q.filter_by(pubchem_id=pubchem_id)
@@ -90,27 +191,38 @@ def chemical_gene(request, NUM_PER_PAGE, page, url, gene_id=None, pubchem_id=Non
                      })
 
     results = sorted(temp, key=lambda x: x['count'], reverse=True)
-    results = Pagination(page, NUM_PER_PAGE, results, request, url)
 
     temp = []
 
-    for res in results.items:
+    for res in results:
+        x = {}
         association = res['association']
+
         if(len(res['via_diseases']) == 1 and res['via_diseases'][0] == ''):
             res['via_diseases'] = 0
         else:
             res['via_diseases'] = len(res['via_diseases'])
-        temp.append({'chemical': association.chemical,
-                     'gene': association.gene,
-                     'association': association,
-                     'via_diseases': res['via_diseases'],
-                     })
+        gene = association.gene
+        chemical = association.chemical
+        if subcategory == 'gene':
+            x = gene_details(x, gene)
+        elif subcategory == 'chemical':
+            x = chemical_details(x, chemical)
 
-    results.items = temp
-    return results
+        x['Via Diseases'] = {'data': res['via_diseases']}
+        x['Details'] = {'popup': url_for('get_associations', type='chemical_gene',
+                                         pubchem_id=chemical.pubchem_id, gene_id=gene.gene_id)}
+
+        x['mapping'] = {v: k for v, k in enumerate(list(x.keys()))}
+        temp.append(x)
+
+    results = temp
+    column_names = list(temp[0]['mapping'].values())
+
+    return (results, column_names)
 
 
-def food_gene(request, NUM_PER_PAGE, page, url, gene_id=None, food_id=None):
+def food_gene(request, subcategory, gene_id=None, food_id=None):
     q = Food_gene.query
     if(food_id):
         q = q.filter_by(food_id=food_id)
@@ -129,24 +241,34 @@ def food_gene(request, NUM_PER_PAGE, page, url, gene_id=None, food_id=None):
                      'count': len(disease_ids) + len(pubchem_ids)})
 
     results = sorted(temp, key=lambda x: x['count'], reverse=True)
-    results = Pagination(page, NUM_PER_PAGE, results, request, url)
 
     temp = []
 
-    for res in results.items:
+    for res in results:
+        x = {}
         association = res['association']
-        temp.append({'gene': association.gene,
-                     'food': association.food,
-                     'associations': association,
-                     'via_diseases': res['via_diseases'],
-                     'via_chemicals': res['via_chemicals'],
-                     })
+        gene = association.gene
+        food = association.food
+        if subcategory == 'gene':
+            x = gene_details(x, gene)
+        elif subcategory == 'food':
+            x = food_details(x, food)
 
-    results.items = temp
-    return results
+        x['Via Diseases'] = {'data': len(res['via_diseases'])}
+        x['Via Chemicals'] = {'data': len(res['via_chemicals'])}
+        x['Details'] = {'popup': url_for(
+            'get_associations', type='food_gene', food_id=food.food_id, gene_id=gene.gene_id)}
+
+        x['mapping'] = {v: k for v, k in enumerate(list(x.keys()))}
+        temp.append(x)
+
+    results = temp
+    column_names = list(temp[0]['mapping'].values())
+
+    return (results, column_names)
 
 
-def disease_gene(request, NUM_PER_PAGE, page, url, gene_id=None, disease_id=None):
+def disease_gene(request, subcategory, gene_id=None, disease_id=None):
 
     q = Disease_gene.query
     if(disease_id):
@@ -163,26 +285,35 @@ def disease_gene(request, NUM_PER_PAGE, page, url, gene_id=None, disease_id=None
                      'via_chemicals': via_chemicals,
                      'count': len(via_chemicals)})
     results = sorted(temp, key=lambda x: x['count'], reverse=True)
-    results = Pagination(page, NUM_PER_PAGE, results, request, url)
 
     temp = []
 
-    for res in results.items:
+    for res in results:
+        x = {}
         association = res['association']
+        disease = association.disease
+        gene = association.gene
         if(len(res['via_chemicals']) == 1 and res['via_chemicals'][0] == ''):
             res['via_chemicals'] = 0
         else:
             res['via_chemicals'] = len(res['via_chemicals'])
-        temp.append({'gene': association.gene,
-                     'disease': association.disease,
-                     'association': association,
-                     'reference': association.reference,
-                     'via_chemicals': res['via_chemicals'],
-                     })
+        if subcategory == 'gene':
+            x = gene_details(x, gene)
+        elif subcategory == 'disease':
+            x = disease_details(x, disease)
 
-    results.items = temp
+        x['Via Chemicals'] = {'data': res['via_chemicals']}
+        x['Source'] = {'data': association.reference or 'Inferred'}
+        x['Details'] = {'popup': url_for('get_associations', type='disease_gene',
+                                         gene_id=gene.gene_id, disease_id=disease.disease_id)}
 
-    return results
+        x['mapping'] = {v: k for v, k in enumerate(list(x.keys()))}
+        temp.append(x)
+
+    results = temp
+    column_names = list(temp[0]['mapping'].values())
+
+    return (results, column_names)
 
 
 def search_elastic(index, query, fields, page, per_page):

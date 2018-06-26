@@ -31,7 +31,7 @@ def search():
 		results = search_elastic(table, query, Food.__searchboost__, page, NUM_PER_PAGE)
 		template = 'food/search_results.html'
 	elif(table == 'disease'):
-		results = search_elastic(table, query, Disease.__searchboost__, page, NUM_PER_PAGE)
+		results = search_elastic(table, query, Disease.__searchable__, page, NUM_PER_PAGE)
 		template = 'disease/search_results.html'
 	elif(table == 'gene'):
 		results = search_elastic(table, query, Gene.__searchboost__, page, NUM_PER_PAGE)
@@ -381,53 +381,29 @@ def get_food():
 			subcategory_that_exist.append('chemical')
 		if(len(subcategory_that_exist)==0):
 			return render_template('food/food_null_page.html', food=food)
-			abort(404)
 
 		subcategory = request.args.get('subcategory', subcategory_that_exist[0])
 		if(subcategory == 'disease'):
-			results = Food_disease.query.filter_by(food_id=food_id).order_by('weight DESC').all()
-
-			results = Pagination(page, NUM_PER_PAGE, results, request, 'get_food')
-
-			temp = []
-
-			for res in results.items:
-				positive_associations = 0 if (res.positive_pmid == '') else len(res.positive_pmid.split('|'))
-				negative_associations = 0 if (res.negative_pmid == '') else len(res.negative_pmid.split('|'))
-				via_chemicals = 0 if res.pubchem_id == '' else len(res.pubchem_id.split('|'))
-				temp.append({'disease': Disease.query.filter_by(disease_id = res.disease_id).first(),
-							'positive_associations':positive_associations,
-							'negative_associations':negative_associations,
-							'via_chemicals': via_chemicals
-							})
-
-
-			results.items = temp
+			results, column_names = food_disease(
+				request, subcategory, food_id=food_id, disease_id=None)
 			
 		elif(subcategory == 'gene'):
-			results = food_gene(
-				request, NUM_PER_PAGE, page, 'get_food', food_id=food_id, gene_id=None)
+			results, column_names = food_gene(
+				request, subcategory, food_id=food_id, gene_id=None)
 			
 		elif(subcategory == 'chemical'):
-			results = food_chemical(
-				request, NUM_PER_PAGE, page, 'get_food',food_id=food_id, pubchem_id=None)
+			results, column_names = food_chemical(
+				request, subcategory,food_id=food_id, pubchem_id=None)
 
 		else:
 			abort(404)
 
 		return render_template('food/food_page.html',
-							   subcategory=subcategory,
-							   subcategory_that_exist=subcategory_that_exist,
-							   food=food,
-							   results=results.items,
-							   next_url=results.next_url,
-							   last_url=results.last_url,
-							   prev_url=results.prev_url,
-							   first_url=results.first_url,
-							   has_next=results.has_next,
-							   has_prev=results.has_prev,
-							   page_number=results.page,
-							   total_pages=results.pages)
+                         subcategory=subcategory,
+                         subcategory_that_exist=subcategory_that_exist,
+                         food=food,
+                         results=results,
+						 column_names=column_names)
 	else:
 		abort(404)
 
@@ -455,52 +431,28 @@ def get_disease():
 		subcategory = request.args.get('subcategory', subcategory_that_exist[0])
 
 		if(subcategory == 'food'):
-			
-			results = Food_disease.query.filter_by(disease_id=disease_id).order_by('weight DESC').all()
-
-			results = Pagination(page, NUM_PER_PAGE, results, request, 'get_disease')
-
-			temp = []
-
-			for res in results.items:
-				positive_associations = 0 if res.positive_pmid == '' else len(res.positive_pmid.split('|'))
-				negative_associations = 0 if res.negative_pmid == '' else len(res.negative_pmid.split('|'))
-				via_chemicals = 0 if res.pubchem_id == '' else len(res.pubchem_id.split('|'))
-
-				temp.append({'food': Food.query.filter_by(food_id=res.food_id).first(),
-                                    'positive_associations': positive_associations,
-                                    'negative_associations': negative_associations,
-                                    'via_chemicals': via_chemicals
-                })
-
-			results.items = temp
+			results, column_names = food_disease(
+				request, subcategory, food_id=None, disease_id=disease_id)
 
 		elif(subcategory == 'gene'):
 
-			results = disease_gene(request, NUM_PER_PAGE, page,
-			                           'get_disease', disease_id=disease_id, gene_id=None)
+			results, column_names = disease_gene(request, subcategory, disease_id=disease_id, gene_id=None)
 			
 		elif(subcategory == 'chemical'):
 
-			results = disease_chemical(request, NUM_PER_PAGE, page, 'get_disease', disease_id=disease_id, pubchem_id=None)
+			results, column_names = disease_chemical(
+				request, subcategory, disease_id=disease_id, pubchem_id=None)
 
 		else:
 			abort(404)
 		
 		
 		return render_template('disease/disease_page.html',
-							   subcategory=subcategory,
-							   subcategory_that_exist=subcategory_that_exist,
-							   disease=disease,
-							   results=results.items,
-							   next_url=results.next_url,
-							   last_url=results.last_url,
-							   prev_url=results.prev_url,
-							   first_url=results.first_url,
-							   has_next=results.has_next,
-							   has_prev=results.has_prev,
-							   page_number=results.page,
-							   total_pages=results.pages)
+                         subcategory=subcategory,
+                         subcategory_that_exist=subcategory_that_exist,
+                         disease=disease,
+                         results=results,
+                         column_names=column_names)
 	else:
 		abort(404)
 
@@ -527,34 +479,25 @@ def get_chemical():
 		subcategory = request.args.get('subcategory', subcategory_that_exist[0])
 
 		if(subcategory == 'food'):
-
-			results = food_chemical(
-				request, NUM_PER_PAGE, page, 'get_chemical',food_id=None, pubchem_id=pubchem_id)
+			results, column_names = food_chemical(
+				request, subcategory, food_id=None, pubchem_id=pubchem_id)
 
 		elif(subcategory == 'disease'):
 
-			results = disease_chemical(request, NUM_PER_PAGE, page,
-			                           'get_chemical', disease_id=None, pubchem_id=pubchem_id)
+			results, column_names = disease_chemical(
+				request, subcategory, disease_id=None, pubchem_id=pubchem_id)
 		elif(subcategory == 'gene'):
 
-			results = chemical_gene(request, NUM_PER_PAGE, page,
-			                           'get_chemical', gene_id=None, pubchem_id=pubchem_id)
+			results, column_names = chemical_gene(request, subcategory, gene_id=None, pubchem_id=pubchem_id)
 
 		else:
 			abort(404)
 		return render_template('chemical/chemical_page.html',
-							   subcategory=subcategory,
-							   subcategory_that_exist=subcategory_that_exist,
-							   chemical=chemical,
-							   results=results.items,
-							   next_url=results.next_url,
-							   last_url=results.last_url,
-							   prev_url=results.prev_url,
-							   first_url=results.first_url,
-							   has_next=results.has_next,
-							   has_prev=results.has_prev,
-							   page_number=results.page,
-							   total_pages=results.pages)
+                         subcategory=subcategory,
+                         subcategory_that_exist=subcategory_that_exist,
+                         chemical=chemical,
+                         results=results,
+                         column_names=column_names)
 	else:
 		abort(404)
 
@@ -586,31 +529,25 @@ def get_gene():
 		
 		
 		if(subcategory == 'food'):
-			results = food_gene(request, NUM_PER_PAGE, page, 'get_gene', food_id=None, gene_id=gene_id)
+			results, column_names = food_gene(
+				request, subcategory, food_id=None, gene_id=gene_id)
 
 		elif(subcategory == 'disease'):
-			results = disease_gene(request, NUM_PER_PAGE, page,
-										'get_gene', disease_id=None, gene_id=gene_id)
-		
+			results, column_names = disease_gene(
+				request, subcategory, disease_id=None, gene_id=gene_id)
+
 		elif(subcategory == 'chemical'):
-			results = chemical_gene(request, NUM_PER_PAGE, page,
-                           'get_gene', gene_id=gene_id, pubchem_id=None)
+			results, column_names = chemical_gene(
+				request, subcategory, gene_id=gene_id, pubchem_id=None)
 
 		else:
 			abort(404)
 		return render_template('gene/gene_page.html',
-							   subcategory=subcategory,
-							   subcategory_that_exist = subcategory_that_exist,
-							   gene=gene,
-							   results=results.items,
-							   next_url=results.next_url,
-							   last_url=results.last_url,
-							   prev_url=results.prev_url,
-							   first_url=results.first_url,
-							   has_next=results.has_next,
-							   has_prev=results.has_prev,
-							   page_number=results.page,
-							   total_pages=results.pages)
+                         subcategory=subcategory,
+                         subcategory_that_exist=subcategory_that_exist,
+                         gene=gene,
+                         results=results,
+                         column_names=column_names)
 	else:
 		abort(404)
 
