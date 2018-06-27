@@ -593,7 +593,7 @@ def view_all():
 		]
 		results = [[getattr(r, field) or 'None' for _, field in fields] for r in res]
 		for r in results:
-			r[-1] = url_for('get_chemical', chemical_id=r[-1])
+			r[-1] = url_for('get_chemical', pubchem_id=r[-1])
 		sortidx = 1
 	elif entity_type == 'gene':
 		res = Gene.query.all()
