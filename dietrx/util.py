@@ -6,8 +6,8 @@ from .models import *
 
 
 def food_details(x, food):
-    x['NCBI Taxonomy ID'] = {'data': food.food_id,
-                             'extlink': 'https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=' + str(food.food_id)}
+    x['NCBI Taxonomy ID'] = {'data': str(food.food_id).split(':')[-1],
+                             'extlink': 'https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=' + str(food.food_id).split(':')[-1]}
     x['Food Name'] = {'data': food.display_name,
                         'link': url_for('get_food', food_id=food.food_id)}
     x['Food Category'] = {'data': food.food_category}
@@ -33,8 +33,8 @@ def gene_details(x, gene):
     return x
 
 def disease_details(x, disease):
-    x['MeSH Disease ID']= {'data': disease.disease_id,
-                         'extlink': 'https://meshb.nlm.nih.gov/record/ui?ui='+str(disease.disease_id)}
+    x['MeSH Disease ID'] = {'data': str(disease.disease_id).split(':')[-1],
+                           'extlink': 'https://meshb.nlm.nih.gov/record/ui?ui='+str(disease.disease_id).split(':')[-1]}
     x['Disease Name']= {'data': disease.disease_name,
                       'link': url_for('get_disease', disease_id=disease.disease_id)}
     x['Disease Category']= {'data': disease.disease_category}
