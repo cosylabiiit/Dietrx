@@ -12,12 +12,26 @@ import numpy as np
 NUM_PER_PAGE = 20
 NUM_PER_PAGE_CHEM = 100
 
+stats = dict(
+	fd_assoc=280328,
+	fd_foods=2337,
+	fc_foods=2337,
+	fcats=25,
+	fd_pmids=39348,
+	precision=0.87,
+	recall=0.8,
+	f1=0.84,
+	chems=6992,
+)
+
+
 @app.route('/dietrx/', methods=['GET'])
 @app.route('/dietrx/index', methods=['GET'])
 def index():
 	chemical_search_form = ChemicalSearchForm()
 	return render_template('search/search.html',
-						   chemical_search_form=chemical_search_form)
+                        chemical_search_form=chemical_search_form,
+                        stats=stats,)
 
 
 @app.route('/dietrx/search', methods=['GET'])
@@ -28,13 +42,16 @@ def search():
 	page = request.args.get('page', 1, type=int)
 	template = ''
 	if(table == 'food'):
-		results = search_elastic(table, query, Food.__searchboost__, page, NUM_PER_PAGE)
+		results = search_elastic(
+			table, query, Food.__searchboost__, page, NUM_PER_PAGE)
 		template = 'food/search_results.html'
 	elif(table == 'disease'):
-		results = search_elastic(table, query, Disease.__searchable__, page, NUM_PER_PAGE)
+		results = search_elastic(
+			table, query, Disease.__searchable__, page, NUM_PER_PAGE)
 		template = 'disease/search_results.html'
 	elif(table == 'gene'):
-		results = search_elastic(table, query, Gene.__searchboost__, page, NUM_PER_PAGE)
+		results = search_elastic(
+			table, query, Gene.__searchboost__, page, NUM_PER_PAGE)
 		template = 'gene/search_results.html'
 	elif(table == 'chemical'):
 		results = search_elastic(
@@ -43,19 +60,19 @@ def search():
 	else:
 		abort(404)
 
-	page_data = Pagination(page, NUM_PER_PAGE, [0]*results['hits']['total'], request, 'search') 
+	page_data = Pagination(
+		page, NUM_PER_PAGE, [0]*results['hits']['total'], request, 'search')
 
-	return render_template(template, 
-						   results=results,
-						   next_url=page_data.next_url,
-						   last_url=page_data.last_url,
-						   prev_url=page_data.prev_url,
-						   first_url=page_data.first_url,
-						   has_next=page_data.has_next,
-						   has_prev=page_data.has_prev,
-						   page_number=page_data.page,
-						   total_pages=page_data.pages)
-
+	return render_template(template,
+                        results=results,
+                        next_url=page_data.next_url,
+                        last_url=page_data.last_url,
+                        prev_url=page_data.prev_url,
+                        first_url=page_data.first_url,
+                        has_next=page_data.has_next,
+                        has_prev=page_data.has_prev,
+                        page_number=page_data.page,
+                        total_pages=page_data.pages)
 
 
 def find_similar(smiles):
@@ -64,8 +81,8 @@ def find_similar(smiles):
 
 	# Run shell command to find similar molecules and get results
 	check_call(['babel', 'allmol.fs', 'temp/results.sdf',
-				'-s' + smiles, '-at0.4'],
-			   cwd='dietrx/static')
+             '-s' + smiles, '-at0.4'],
+            cwd='dietrx/static')
 
 	results = readfile('sdf', 'dietrx/static/temp/results.sdf')
 
@@ -73,7 +90,6 @@ def find_similar(smiles):
 	mol_ids = [mol.data['pubchem_id'] for mol in results]
 
 	return mol_ids
-
 
 
 def process_search_query(formdata):
@@ -84,7 +100,8 @@ def process_search_query(formdata):
 	# Common identifiers / ids.
 	results = Chemical.query.filter()
 	for field in ['common_name', 'iupac_name', 'pubchem_id']:
-		key = formdata.get(field).strip()
+		key = formdata.get(field) or ''
+		key = key.strip()
 
 		if key:
 			results = results.filter(getattr(Chemical, field).ilike(key))
@@ -100,7 +117,7 @@ def process_search_query(formdata):
 
 	# Molecular properties.
 	for field in ['molecular_weight', 'hba_count', 'hbd_count', 'num_rings',
-				  'num_rotatablebonds', 'number_of_aromatic_bonds', 'alogp']:
+               'num_rotatablebonds', 'number_of_aromatic_bonds', 'alogp']:
 		if formdata.get(field):
 			field_query = formdata.get(field).strip()
 
@@ -116,7 +133,6 @@ def process_search_query(formdata):
 	if formdata.get('smiles'):
 		smiles = formdata.get('smiles').strip()
 		mol_ids = find_similar(smiles)
-		print(len(mol_ids))
 		results = results.filter(Chemical.pubchem_id.in_(mol_ids))
 		search_by_smiles = True
 
@@ -128,57 +144,36 @@ def chemical_search():
 	results, search_by_smiles = process_search_query(
 		request.args)
 
-	# Paginate results
-	# page = request.args.get('page', type=int) \
-	#     if (request.args.get('page') is not None) else 1
-	page = request.args.get('page', 1, type=int)
-
-	# Remove page from query
-	mod_Q = {argf: argv for argf, argv in request.args.items()
-			 if argf != 'page'}
-
-	# Create a pagination object from results
-	paginated_results = results.paginate(page, NUM_PER_PAGE_CHEM, False)
-
-	# If similarity search, pagination object is just a convenience wrapper.
+	fields = ['PubChem ID', 'Common Name', 'Functional Group(s)', 'Details']
 	if search_by_smiles:
-		res_items = results.all()
-		fps = [readstring("smi", res.smiles).calcfp()
-			   for res in res_items]
+		fields.append('Similarity')
 		query_fp = readstring("smi", request.args.get('smiles')).calcfp()
-		sim_coeffs = [np.round(query_fp | fp, 2) for fp in fps]
-		rsim = sorted(zip(res_items, sim_coeffs), key=lambda k: k[1])[
-			::-1][(page - 1) * NUM_PER_PAGE_CHEM: page * NUM_PER_PAGE_CHEM]
-		res_items = [r for r, sim in rsim]
-		sim_coeffs = [sim for r, sim in rsim]
-	else:
-		res_items = paginated_results.items
-		sim_coeffs = [0] * NUM_PER_PAGE_CHEM
 
-	first_url = url_for('chemical_search', page=1, **mod_Q) \
-		if (page != 1) else None
-	next_url = url_for('chemical_search', page=paginated_results.next_num, **mod_Q) \
-		if paginated_results.has_next else None
-	prev_url = url_for('chemical_search', page=paginated_results.prev_num, **mod_Q) \
-		if paginated_results.has_prev else None
-	last_url = url_for('chemical_search', page=paginated_results.pages, **mod_Q) \
-		if (page != paginated_results.pages) else None
+	res = list()
+	for r in results:
+		values = [r.pubchem_id, r.common_name or r.iupac_name, r.functional_group]
+
+		if search_by_smiles:
+			fp = readstring("smi", r.smiles).calcfp()
+			sim = np.round(query_fp | fp, 2)
+			values.append(sim)
+
+		values.append(url_for('get_chemical', pubchem_id=r.pubchem_id))
+		res.append(values)
 
 	return render_template('chemical/chemical_search_results.html',
-						   results=zip(res_items, sim_coeffs),
-						   search_by_smiles=search_by_smiles,
-						   first_url=first_url, next_url=next_url,
-						   prev_url=prev_url, last_url=last_url,
-						   request=request, page=page,
-						   total_pages=paginated_results.pages)
+                        fields=fields,
+                        results=res,
+                        search_by_smiles=search_by_smiles,
+                        request=request)
 
 
 @app.route('/dietrx/chemical_advanced_search', methods=['GET'])
 def chemical_advanced_search():
 	chemical_search_form = ChemicalSearchForm()
 	return render_template('chemical/chemical_advanced_search.html',
-						   chemical_search_form=chemical_search_form,
-						   advanced_search=True)
+                        chemical_search_form=chemical_search_form,
+                        advanced_search=True)
 
 
 @app.route('/dietrx/autocomplete', methods=['GET'])
@@ -190,20 +185,23 @@ def autocomplete():
 	if(table == 'food'):
 		for column in ['display_name', 'food_category', 'common_names']:
 			if(column in Food.__separators__):
-				results = results + autocomplete_search(table, column, query, Food.__separators__[column])
-			else:               
+				results = results + \
+					autocomplete_search(table, column, query, Food.__separators__[column])
+			else:
 				results = results + autocomplete_search(table, column, query)
 	elif(table == 'disease'):
 		for column in ['disease_name', 'disease_category']:
 			if(column in Disease.__separators__):
-				results = results + autocomplete_search(table, column, query, Disease.__separators__[column])
-			else:               
+				results = results + \
+					autocomplete_search(table, column, query, Disease.__separators__[column])
+			else:
 				results = results + autocomplete_search(table, column, query)
 	elif(table == 'gene'):
 		for column in Gene.__searchable__:
 			if(column in Gene.__separators__):
-				results = results + autocomplete_search(table, column, query, Gene.__separators__[column])
-			else:               
+				results = results + \
+					autocomplete_search(table, column, query, Gene.__separators__[column])
+			else:
 				results = results + autocomplete_search(table, column, query)
 	elif(table == 'chemical'):
 		for column in Chemical.__autocomplete__:
@@ -214,7 +212,7 @@ def autocomplete():
 				results = results + autocomplete_search(table, column, query)
 	else:
 		abort(404)
-	
+
 	results = list(set(results))
 	return jsonify(json.dumps(results))
 
@@ -244,13 +242,13 @@ def get_associations():
 		pubchem_ids = association.pubchem_id.split('|')
 
 		result = {'disease': disease,
-			'food': food,
-			'positive_associations': References.query.filter(References.pmid.in_(p)).all(),
-			'negative_associations': References.query.filter(References.pmid.in_(n)).all(),
-			'via_chemicals': Chemical.query.filter(Chemical.pubchem_id.in_(pubchem_ids)).all()}
+                    'food': food,
+                    'positive_associations': References.query.filter(References.pmid.in_(p)).all(),
+                    'negative_associations': References.query.filter(References.pmid.in_(n)).all(),
+                    'via_chemicals': Chemical.query.filter(Chemical.pubchem_id.in_(pubchem_ids)).all()}
 
 		return render_template('common/food_disease_associations_popup.html', result=result)
-	
+
 	elif(type_association == 'food_gene'):
 		if (not request.args.get('food_id')) or (not request.args.get('gene_id')):
 			return redirect(url_for('index'))
@@ -270,13 +268,13 @@ def get_associations():
 		via_chemicals = association.via_chemicals.split('|')
 
 		result = {'gene': gene,
-				'food': food,
-				'via_chemicals': Chemical.query.filter(Chemical.pubchem_id.in_(via_chemicals)).all(),
-				'via_diseases': Disease.query.filter(Disease.disease_id.in_(via_diseases)).all(),
-				}
+                    'food': food,
+                    'via_chemicals': Chemical.query.filter(Chemical.pubchem_id.in_(via_chemicals)).all(),
+                    'via_diseases': Disease.query.filter(Disease.disease_id.in_(via_diseases)).all(),
+            }
 
 		return render_template('common/food_gene_associations_popup.html', result=result)
-	
+
 	elif(type_association == 'chemical_disease'):
 
 		if (not request.args.get('pubchem_id')) or (not request.args.get('disease_id')):
@@ -298,10 +296,10 @@ def get_associations():
 		result = {'disease': disease,
                     'chemical': chemical,
                     'via_genes': Gene.query.filter(Gene.gene_id.in_(via_genes)).all()
-					}
+            }
 
 		return render_template('common/chemical_disease_associations_popup.html', result=result)
-	
+
 	elif(type_association == 'disease_gene'):
 
 		if (not request.args.get('gene_id')) or (not request.args.get('disease_id')):
@@ -322,12 +320,12 @@ def get_associations():
 
 		result = {'disease': disease,
                     'gene': gene,
-					'association': association,
+                    'association': association,
                     'via_chemicals': Chemical.query.filter(Chemical.pubchem_id.in_(via_chemicals)).all()
-            	}
+            }
 
 		return render_template('common/disease_gene_associations_popup.html', result=result)
-	
+
 	elif(type_association == 'chemical_gene'):
 
 		if (not request.args.get('gene_id')) or (not request.args.get('pubchem_id')):
@@ -345,20 +343,17 @@ def get_associations():
 		association = Chemical_gene.query.filter_by(
 			pubchem_id=pubchem_id, gene_id=gene_id).first()
 		via_diseases = association.via_diseases.split('|')
-		
+
 		result = {'chemical': chemical,
-                    'gene': gene,
-                    'association': association,
-                    'via_diseases': Disease.query.filter(Disease.disease_id.in_(via_diseases)).all()
-            	}
-		
+				  'gene': gene,
+				  'association': association,
+				  'via_diseases': Disease.query.filter(Disease.disease_id.in_(via_diseases)).all()
+            }
+
 		return render_template('common/chemical_gene_associations_popup.html', result=result)
 
 	else:
 		abort(404)
-
-
-	
 
 
 @app.route('/dietrx/get_food', methods=['GET'])
@@ -370,7 +365,6 @@ def get_food():
 	food = Food.query.filter_by(food_id=food_id).first()
 	page = request.args.get('page', 1, type=int)
 
-
 	if (food is not None):
 		subcategory_that_exist = []
 		if(len(food.food_disease) != 0):
@@ -379,21 +373,21 @@ def get_food():
 			subcategory_that_exist.append('gene')
 		if(len(food.food_chemical) != 0):
 			subcategory_that_exist.append('chemical')
-		if(len(subcategory_that_exist)==0):
+		if(len(subcategory_that_exist) == 0):
 			return render_template('food/food_null_page.html', food=food)
 
 		subcategory = request.args.get('subcategory', subcategory_that_exist[0])
 		if(subcategory == 'disease'):
 			results, column_names = food_disease(
 				request, subcategory, food_id=food_id, disease_id=None)
-			
+
 		elif(subcategory == 'gene'):
 			results, column_names = food_gene(
 				request, subcategory, food_id=food_id, gene_id=None)
-			
+
 		elif(subcategory == 'chemical'):
 			results, column_names = food_chemical(
-				request, subcategory,food_id=food_id, pubchem_id=None)
+				request, subcategory, food_id=food_id, pubchem_id=None)
 
 		else:
 			abort(404)
@@ -403,10 +397,9 @@ def get_food():
                          subcategory_that_exist=subcategory_that_exist,
                          food=food,
                          results=results,
-						 column_names=column_names)
+                         column_names=column_names)
 	else:
 		abort(404)
-
 
 
 @app.route('/dietrx/get_disease', methods=['GET'])
@@ -416,9 +409,8 @@ def get_disease():
 
 	disease_id = request.args.get('disease_id')
 	disease = Disease.query.filter_by(disease_id=disease_id).first()
-	
-	page = request.args.get('page', 1, type=int)
 
+	page = request.args.get('page', 1, type=int)
 
 	if(disease is not None):
 		subcategory_that_exist = []
@@ -436,8 +428,9 @@ def get_disease():
 
 		elif(subcategory == 'gene'):
 
-			results, column_names = disease_gene(request, subcategory, disease_id=disease_id, gene_id=None)
-			
+			results, column_names = disease_gene(
+				request, subcategory, disease_id=disease_id, gene_id=None)
+
 		elif(subcategory == 'chemical'):
 
 			results, column_names = disease_chemical(
@@ -445,8 +438,7 @@ def get_disease():
 
 		else:
 			abort(404)
-		
-		
+
 		return render_template('disease/disease_page.html',
                          subcategory=subcategory,
                          subcategory_that_exist=subcategory_that_exist,
@@ -488,7 +480,8 @@ def get_chemical():
 				request, subcategory, disease_id=None, pubchem_id=pubchem_id)
 		elif(subcategory == 'gene'):
 
-			results, column_names = chemical_gene(request, subcategory, gene_id=None, pubchem_id=pubchem_id)
+			results, column_names = chemical_gene(
+				request, subcategory, gene_id=None, pubchem_id=pubchem_id)
 
 		else:
 			abort(404)
@@ -502,9 +495,6 @@ def get_chemical():
 		abort(404)
 
 
-
-
-
 @app.route('/dietrx/get_gene', methods=['GET'])
 def get_gene():
 	if not request.args.get('gene_id'):
@@ -512,9 +502,8 @@ def get_gene():
 
 	gene_id = request.args.get('gene_id')
 	gene = Gene.query.filter_by(gene_id=gene_id).first()
-	
-	page = request.args.get('page', 1, type=int)
 
+	page = request.args.get('page', 1, type=int)
 
 	if (gene is not None):
 
@@ -526,8 +515,7 @@ def get_gene():
 		if(len(gene.chemical_gene) != 0):
 			subcategory_that_exist.append('chemical')
 		subcategory = request.args.get('subcategory', subcategory_that_exist[0])
-		
-		
+
 		if(subcategory == 'food'):
 			results, column_names = food_gene(
 				request, subcategory, food_id=None, gene_id=gene_id)
@@ -551,7 +539,8 @@ def get_gene():
 	else:
 		abort(404)
 
-	return 
+	return
+
 
 @app.route('/dietrx/view_all', methods=['GET'])
 def view_all():
@@ -567,7 +556,8 @@ def view_all():
 			['Explore', 'food_id']
 		]
 		results = [[getattr(r, field) or 'None' for _, field in fields] for r in res]
-		for r in results: r[-1] = url_for('get_food', food_id=r[-1])
+		for r in results:
+			r[-1] = url_for('get_food', food_id=r[-1])
 		sortidx = 2
 	elif entity_type == 'disease':
 		res = Disease.query.all()
@@ -591,7 +581,7 @@ def view_all():
 			['SMILES', 'smiles'],
 			['Explore', 'pubchem_id'],
 		]
-		results = [[getattr(r, field) or 'None' for _, field in fields] for r in res]
+		results = [[getattr(r, field) for _, field in fields] for r in res]
 		for r in results:
 			r[-1] = url_for('get_chemical', pubchem_id=r[-1])
 		sortidx = 1
@@ -613,11 +603,12 @@ def view_all():
 		abort(404)
 
 	return render_template('common/view_all.html', fields=fields, sortidx=sortidx,
-		         		   results=results, type=entity_type)
+                        results=results, type=entity_type)
+
 
 @app.route('/dietrx/faq', methods=['GET'])
 def faq():
-	return render_template('common/faq.html')
+	return render_template('common/faq.html', stats=stats)
 
 
 @app.route('/dietrx/how_to_use', methods=['GET'])
