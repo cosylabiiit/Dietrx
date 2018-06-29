@@ -1,132 +1,431 @@
-{% extends 'common/index.html' %}
-{% load staticfiles %}
-
-
-{% block body %}
+{% extends 'common/index.html' %} {% block body %}
 
 <div class="container">
-	
+
 	<div class="jumbotron text-center" style="margin: 0.80em; padding: 0.80em;">
-		<h3><strong>SpiceRx 101</strong></h3>
+		<h3>
+			<strong>DietRx 101</strong>
+		</h3>
 		<p>A guide to using this resource and its features</p>
 	</div>
 	<hr />
 
 
 	<div class="container">
-	<div class="row">
-		<div class="col-3">
-			<div class="list-group" id="list-tab" role="tablist">
-				<a class="list-group-item list-group-item-action active" data-toggle="list" href="#1" role="tab">SpiceRx Overview</a>
-				<a class="list-group-item list-group-item-action" data-toggle="list" href="#2" role="tab">Spice Search</a>
-				<a class="list-group-item list-group-item-action" data-toggle="list" href="#3" role="tab">Disease Search</a>
-				<a class="list-group-item list-group-item-action" data-toggle="list" href="#4" role="tab">Phytochemical Search</a>
+		<div class="row">
+			<div class="col-3">
+				<div class="list-group" id="list-tab" role="tablist">
+					<a class="list-group-item list-group-item-action active" data-toggle="list" href="#1" role="tab">Overview</a>
+					<a class="list-group-item list-group-item-action" data-toggle="list" href="#2" role="tab">DietRx Search</a>
+					<a class="list-group-item list-group-item-action" data-toggle="list" href="#3" role="tab">Food Search</a>
+					<a class="list-group-item list-group-item-action" data-toggle="list" href="#4" role="tab">Disease Search</a>
+					<a class="list-group-item list-group-item-action" data-toggle="list" href="#5" role="tab">Gene Search</a>
+					<a class="list-group-item list-group-item-action" data-toggle="list" href="#6" role="tab">Chemical Search</a>
+				</div>
 			</div>
-		</div>
-		<div class="col-9">
-			<div class="tab-content" id="nav-tabContent">
-				<div class="tab-pane fade show active" id="1" role="tabpanel" aria-labelledby="list-home-list">
+			<div class="col-9">
+				<div class="tab-content" id="nav-tabContent">
+					<div class="tab-pane fade show active" id="1" role="tabpanel" aria-labelledby="list-home-list">
 
 
-					<h4><strong>SpiceRx Overview</strong></h4><br><br>
-					<div>
-						<img src="{% static 'images/workflow.jpg' %}" height=450 width=600 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						<h4>
+							<strong>Overview</strong>
+						</h4>
+						<br>
+						<br>
+						<div>
+							<img src="{{ url_for('static', filename='images/how-to/overview/DietRx_Overview.JPG')}}" height=450 width=600 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<br>
+						<br>
+						<p>
+							DietRx provides a platform for exploring health impacts of dietary ingredients by integrating interrelationships among food
+							and key molecular agents. The resource assimilates dietary factors (food and chemicals), their health consequences
+							(diseases) and genetic mechanisms to facilitate queries for investigating associations among these entities. At the
+							core of the DietRx is the 280328 positive/negative food-disease associations for 2337 food entities belonging to 25
+							categories (plant, fruit, meat, etc.) text-mined from biomedical literature (27 million MEDLINE abstracts) using a
+							state-of-the-art deep learning based relation extraction model (Precision=0.87, Recall=0.8 and F1 Score = 0.84). These
+							data are further interlinked with those involving food chemicals and genes compiled from curated data sources. Thus,
+							DietRx is a seamless exploration platform for probing elements central to diet and their health consequences. DietRx
+							facilitates study of associations among food, disease, chemicals and genes to enable drawing data-driven inferences
+							to be used for culinary interventions as well as for drug discovery.
+						</p>
+						<div>
+							<img class='mt-5' src="{{ url_for('static', filename='images/how-to/overview/Figure_DietRx_Overview_VIdeo_1.jpg')}}" style="display: block; border: LightGray 3px solid; width: 100%">
+						</div>
 					</div>
-					<br><br>
-					<p>
-						Spices and herbs are key dietary ingredients in cuisines across the world. They have been reported to be of medicinal value for a wide variety of diseases through a large body of biomedical investigations. Their therapeutic potential as well as adverse effects could be pinned down to their phytochemicals. A systematic compilation of empirical data involving these aspects of culinary herbs and spices could help unravel molecular mechanisms underlying their health impact. 
-						<br><br>
-						SpiceRx provides a platform for exploring the potential health impact of spices and herbs used in food preparations through an exhaustive and structured database of tripartite associations between spices/herbs, their phytochemicals and diseases. Starting with an exhaustive dictionary of culinary herbs and spices, their disease associations were text mined from MEDLINE literature spanning over decades using a natural language processing protocol. These data were further integrated with evidence linking spices to their phytochemicals which were mapped back to diseases. We used Medical Subject Headings (MeSH) as the basis for ontological classification of disease terms. Thus SpiceRx provides a insights into therapeutic effects of culinary herbs and spices and facilitates exploration of underlying molecular mechanisms.
-						<br><br>
-						SpiceRx provides a platform for exploring the potential health impact of spices and herbs used in food preparations through an exhaustive and structured database of tripartite associations between spices/herbs, their phytochemicals and diseases. Starting with an exhaustive dictionary of culinary herbs and spices, their disease associations were text mined from MEDLINE literature spanning over decades using a natural language processing protocol. These data were further integrated with evidence linking spices to their phytochemicals which were mapped back to diseases. We used Medical Subject Headings (MeSH) as the basis for ontological classification of disease terms. Thus SpiceRx provides a insights into therapeutic effects of culinary herbs and spices and facilitates exploration of underlying molecular mechanisms.
-					</p>	
-				</div>
-				<div class="tab-pane fade" id="2" role="tabpanel" aria-labelledby="list-profile-list">
-					<h4><strong>Spice Search</strong></h4>
-					<br>
-						<h5><strong> Search by Spice Name </strong></h5><br>
+					<div class="tab-pane fade" id="2" role="tabpanel" aria-labelledby="list-profile-list">
+						<h4>
+							<strong>DietRx Search</strong>
+						</h4>
 						<div>
-							<img src="{% static 'images/spice-search.png' %}" style="width: 400px; display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
-						</div><br>
-							<p>
-								Spice search can be performed using the common name, scientific name as well as NCBI taxonomy ID of the spice/herb. For example a user can search with the common name ‘saffron’, scientific name ‘saffron crocus’ or NCBI Tax ID ‘82528’. The search box comes with an autocomplete option to assist you with any spice/herb name containing a string matching with two or more characters typed, greatly enabling the user’s ability to navigate the database.
-							</p>
-					<br>
-						<h5><strong>Spice Results Page</strong></h5><br>
+							<img class='mt-4' src="{{ url_for('static', filename='images/how-to/search/DietRx_Search_Page.jpg')}}" style="width: 100%; display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<br>
+						<p>
+							DietRx facilitates an elastic search to query food, disease, chemical and gene. Each of these could be flexibly queries using standard/scientific symbol/names and scientific names. The search results page for each of these entities provides all relevant associations with the remaining entities. 
+							Apart from search by common name, IUPAC, and SMILES, the Chemicals search also enabled for query by drawing the structure. 
+							The search results page for each of these entities provides all relevant associations with the remaining entities. 
+							The "Browse All” is a provision for viewing all food/disease/chemical/gene entities to further browse/filter/search them 
+							with any desired key. Data download options are provided for each entity
+							type.
+						</p>
+					</div>
+					<div class="tab-pane fade" id="3" role="tabpanel" aria-labelledby="list-profile-list">
+						<h4>
+							<strong>Food Search</strong>
+						</h4>
 						<div>
-							<img src="{% static 'images/spice-diseases.png' %}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
-						</div><br>
-						<p>
-							The search directs the user to the results for the spice ‘saffron’. It displays number of disease associations found for ‘saffron’, both positive and negative obtained through text mining PubMed abstracts. By clicking on the ‘Details’ tab, the user will be able to see the diseases with which ‘saffron’ is associated with. For each disease association, link to the relevant PubMed article is provided.
-						</p>
+							<img class='mt-3' src="{{url_for('static', filename='images/how-to/food-search/Entity-Food-Tomato.JPG')}}" style="width: 100%; display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<div>
+							<img class='mt-3' src="{{url_for('static', filename='images/how-to/food-search/Slide1.JPG')}}" style="width: 100%; display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<br>
 
-					<br>
-						<h5><strong>Phytochemicals in Spice</strong></h5>
-						<br><div>
-							<img src="{% static 'images/spice-phytochemicals.png' %}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
-						</div><br>
 						<p>
-							The phytochemicals present in a spice (for example ‘saffron’) is displayed in this panel. User can click on the ‘Explore’ button present against each phytochemical to obtain the its profile including chemical identifiers, 2D and 3D structure, Spices/Herbs containing the molecule and association with diseases. The ‘Phytochemical Profile’ window also facilitates finding similar molecules within SpiceRx as well as identification of those from commercially available from external resources (ZINC).
+							The user may search for the food using its common name, scientific name, category or NCBI Taxonomy ID. The results page for
+							the ‘Food’ presents with three types of relations with ‘Disease’, ‘Chemical’ and ‘Gene’: ‘Associated & Inferred Disease’,
+							‘Constituent Chemicals’ and ‘Inferred Gene Associations’. For example, the page for ‘Tomato’ shows up as following.
+							The graphics on the top of the page illustrate the nature of relationships made available in each of the tabs below.
+							All tables are easy to navigate and search for terms appearing in it. The number of records too could be customized
+							(default 10) for ease of viewing/browsing.
 						</p>
-				</div>
-				<div class="tab-pane fade" id="3" role="tabpanel" aria-labelledby="list-profile-list">
-					<h4><strong>Disease Search</strong></h4>
-					<br>
-						<h5><strong> Search by Disease Name </strong></h5>
-						<br><div>
-							<img src="{% static 'images/disease-search.png' %}" width=400 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
-						</div><br>
+						<br>
+						<h5>
+							<strong>Associated & Inferred Diseases</strong>
+						</h5>
+						<br>
+						<div>
+							<img src="{{url_for('static', filename='images/how-to/food-search/Tomato-Search-01.jpg')}}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<br>
+						<p>
+							Disease associations for the entity searched for are listed in the descending order of number of associations obtained from
+							text mining. The table provides details of ‘MeSH Disease ID’, ‘Disease Name’, ‘Disease Category’ and the number
+							of ‘Positive, Negative, Chemical Associations’.
 
-							<p>
-								Disease search in SpiceRx is integrated with MeSH hierarchical structure for diseases. Four types of search options are available in the disease search panel: MeSH Disease ID, MeSH Disease Category, MeSH Disease Sub Category, and MeSH Disease Title. The MeSH Disease category represents a broad classification of diseases such as ‘Cardiovascular Diseases’, ‘Endocrine System Diseases’ or ‘Neoplasms’. The option ‘Disease Sub Category” represents further refined categories of diseases such as ‘Heart Diseases’, ‘Metabolic Diseases”, ‘Liver Diseases’ etc. The option “MeSH Disease Title’ can be used to perform search for more specific disease types such as ‘Heart Attack’, ‘Diabetes Mellitus Type 1’ etc. Users can search for disease using its corresponding MeSH ID as well. For Example searching with MeSH ID ‘D003922’ will provide the disease information of Diabetes Mellitus, Type 1. The user can also perform a ‘null search’ which will display all diseases listed in the database.
-							</p>
-					<br>
-						<h5><strong>Disease Results Page</strong></h5>
-						<br><div>
-							<img src="{% static 'images/disease-results.png' %}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
-						</div><br>
-						<p>
-							By searching any disease qualifier, the results for the disease will appear to the right of the search page. By default the first 10 results will be displayed. By clicking on the respective MeSH ID, for instance ‘D00487’, you will be redirected to the results page for that disease, in this case ‘edema’. The results page for ‘edema’ contains the details of the disease such as its MeSH category as well subcategory information. By clicking on the MeSH ID, the user can navigate to the MeSH webpage of the particular disease.
 						</p>
-					<br>
-						<h5><strong>Spices/Herbs associated with Disease panel</strong></h5>
-						<br><div>
-							<img src="{% static 'images/disease-spice.png' %}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
-						</div><br>
 						<p>
-							This Panel provides the list of spices which are associated with the searched disease. The positive and negative associations are shown in green and red respectively. By clicking on the ‘Details’ tab, the details of relevant references for the association will be listed.
+							For example, Tomato has 103 positive and 4 negative associations for Neoplasms (Mesh ID ‘D009369’; Category: Cancer) in DietRx.
+							Further there are 21 chemicals from Tomato that are independently reported to be linked with this MeSH ID. Clicking
+							on the ‘DETAILS’ button presents a pop up window with details of these chemicals (PubChem ID, Common Name and Functional
+							Group) as well as research articles which were identified with the disease associations (PMID, Title, Journal and
+							Year). For the research articles, PubMed link-outs are provided and PubChem link-outs guide the user to the relevant
+							details of the chemicals. One may also explore DietRx associations for the MeSH ID (Disease) or a food chemical of
+							interest via the internal links provided.
 						</p>
-					<br>
-						<h5><strong>Linked Phytochemicals</strong></h5>
-						<br><div>
-							<img src="{% static 'images/disease-phyto.png' %}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
-						</div><br>
+						For a visual illustration of the relationships provided in the tab, please check the graphics on the top of the page.
+
+						</p>
+						<br>
+						<h5>
+							<strong>Constituent Chemicals</strong>
+						</h5>
+						<br>
+						<div>
+							<img src="{{url_for('static', filename='images/how-to/food-search/Tomato-Search-02.jpg')}}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<br>
 						<p>
-							The phytochemicals which are associated with the disease will be displayed here along with the references from PubMed. User can click on ‘Explore’ tab present against each phytochemical name to obtain the phytochemical profile and identifiers of each phytochemical.
+							The second tab provides details of chemicals reported to be found in the Food entity (compiled from KNApSAcK, Phenol Explorer,
+							Foodb, USDA and DUKE). For every chemical, its PubChem ID, Common Name, Functional Group and Details of Content (when
+ available) and Source details are provided.
 						</p>
-				</div>
-				<div class="tab-pane fade" id="4" role="tabpanel" aria-labelledby="list-settings-list">
-					<h4><strong>Phytochemical Search</strong></h4>
-					<br>
-						<h5><strong> Search by Phytochemical </strong></h5>
-						<br><div>
-							<img src="{% static 'images/phyto-search.png' %}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
-						</div><br>
-							<p>
-								Phytochemicals search is facilitated through various options. User can search a phytochemical with its common name, for example, ‘Piperene’, its IUPAC name, ‘(2E,4E)-5- (1,3-benzodioxol- 5-yl)- 1-piperidin- 1-ylpenta- 2,4-dien- 1-one’ or its PubChem ID ‘638024’. The query will display the page for searched phytochemical. Users can use the ‘Explore’ tab to obtain full phytochemical profile. You may also search for spice phytochemicals molecular weight, hydrogen bond donors/acceptors or partition coefficient (ALogP). If the user does not have any particular phytochemical to search, they can perform a null search which will display a list of all available phytochemicals in the database.
-							</p>
-					<br>
-						<h5><strong>Phytochemical Profile Panel</strong></h5>
-						<br><div>
-							<img src="{% static 'images/phyto-panel.png' %}" width=400 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
-						</div><br>
 						<p>
-							This panel provides the complete ‘Phytochemical Profile’ of the molecule searched. This includes molecular identities such as MeSH ID, PubChem ID, IUPAC Name, Canonical and Isomeric SMILES and the Molecular Formula. Using JSmol applet, the panel also provides 2D image of the molecule, which transforms into 3D view upon clicking ‘View JSmol’ button. Importantly, using structural similarity search one could either explore similar molecules within SpiceRx, or could identify commercially available molecules from ZINC. Further, an option is provided to download the molecule data in Mol2, SDF, 2D image, and JSON format. Below the ‘Downloads’ button, clicking the ‘Spice/Herb’ button will provide a list of spices/herbs in which the phytochemical is present. ‘Disease’ button will provide the list of all diseases with which the given phytochemical is linked. Physicochemical as well as ADMET properties of the compound can also be obtained by clicking respective tabs.
+ For example, Maneb is reported to be present in Tomato. The information is compiled from Foodb. Its PubChem link-outs guide
+the user to the relevant details.
 						</p>
+						<br>
+						<h5>
+							<strong>Inferred Gene Associations</strong>
+						</h5>
+						<br>
+						<div>
+							<img src="{{url_for('static', filename='images/how-to/food-search/Tomato-Search-03.jpg')}}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<br>
+						<p>
+							The third tab provides details of Gene Associations for the food inferred via their reported associations via diseases and
+							via their constituent chemicals. List of all genes and the statistics of number of such indirect inferences obtained
+							are displayed. Clicking on the DETAILS button opens a pop up in with list of chemicals (along with their PubChem ID,
+							Common Names and Functional Group) as well as list of MeSH Disease Terms (along with details of MeSH Disease ID, Disease
+							Name and Disease Category) along with appropriate link-outs as well as internals links.
+						</p>
+						<p>
+ For Example, Tumor necrosis Factor(ENtrez gene ID 7124;Official Gene Symbol 'TNF') is found to be associated with Tomato
+via 30 Disease terms and 29 constituent chemicals. The Details button will provide more information about disease and constituent
+chemical associations.
+
+						</p>
+					</div>
+
+					<div class="tab-pane fade" id="4" role="tabpanel" aria-labelledby="list-profile-list">
+						<h4>
+							<strong>Disease Search</strong>
+						</h4>
+						<div>
+							<img class='mt-3' src="{{url_for('static', filename='images/how-to/disease-search/Entity-Disease-Cardiovascular-Diseases.JPG')}}"
+							    style="width: 100%; display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<div>
+							<img class='mt-3' src="{{url_for('static', filename='images/how-to/disease-search/Slide2.JPG')}}" style="width: 100%; display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<br>
+
+						<p>
+							The user may search for a disease with its common name, category or MeSH Disease ID. The results page for the ‘Disease’ presents
+							with three types of relations with ‘Food’, ‘Chemical’ and ‘Gene’: ‘Associated & Inferred Foods’, ‘Associated & Inferred
+							Chemicals’ and ‘Associated & Inferred Genes’. For example, the page for ‘Cardiovascular Diseases’ presents the following
+							details. The graphics on the top of the page illustrate the nature of relationships made available in each of the
+							tabs below. All tables are easy to navigate and search for terms appearing in it. The number of records too could
+							be customized (default 10) for ease of viewing/browsing.
+						</p>
+						<br>
+						<h5>
+							<strong>Associated & Inferred Foods</strong>
+						</h5>
+						<br>
+						<div>
+							<img src="{{url_for('static', filename='images/how-to/disease-search/Cardiovascular-Diseases-Search-01.jpg')}}" width=700
+							    style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<br>
+						<p>
+							The food associations of a disease terms, that are obtained using the text mining protocol, are shown in the descending order
+							of number of associations??? The table provides details of ‘NCBI Taxonomy ID’, ‘Food Name’, ‘Food Category’ and the
+							number of ‘Positive, Negative, Chemical Associations’.
+
+						</p>
+						<p>
+							For example ‘Cardiovascular Disease’ has 109 positive and 3 negative associations for ‘Red wine’ (NCBI Taxonomy ID ‘32’;
+							Category ‘Alcoholic beverages’) in DietRx. Clicking on the ‘DETAILS’ button presents a pop up window with details
+							of linked chemicals (PubChem ID, Common Name and Functional Group) as well as research articles which were identified
+							with the disease associations (PMID, Title, Journal and Year). For the research articles, PubMed link-outs are provided
+							and PubChem link-outs guide the user to the relevant details of the chemicals. One may also explore DietRx associations
+							for the MeSH ID (Disease) or a food chemical of interest via the internal links provided.
+						</p>
+						For a visual illustration of the relationships provided in the tab, please check the graphics on the top of the page.
+
+						</p>
+						<br>
+						<h5>
+							<strong>Associated & Inferred Chemicals</strong>
+						</h5>
+						<br>
+						<div>
+							<img src="{{url_for('static', filename='images/how-to/disease-search/Cardiovascular-Diseases-Search-02.jpg')}}" width=700
+							    style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<br>
+						<p>
+							The second tab provides details of chemicals reported to be associated with the disease term (compiled from CTD) and those
+							inferred via Disease-Gene (DisGeNET) and Gene-Chemical (CTD) associations. For every chemical, thus identified, its
+							PubChem ID, Common Name, Functional Group, and Source details are provided. For the direct Disease-Chemical associations
+							obtained from CTD, the type of association is provided: therapeutic or marker/mechanism. The inferred associations
+							Disease-Chemical interactions by virtue of a chemical that reported to be associated with a gene which is further
+							linked to the disease are marked as ‘Inferred’. Clicking on the ‘DETAILS’ tab provides the details of genes through
+							which the disease-gene link was speculated.
+						</p>
+						<p>
+ For example, Cis-Resveratrol(PubChem CID '1548910') is inferred to be associated with Cardio Vascular Diseases(MeSH Disease
+ID 'D002318') via 27 gene associations.Also, CTD provides a direct therapeutic association. Clicking on the 'DETAILS' button
+provides PubChem ID, Common Name, Functional Group, and Source details.
+						</p>
+						<br>
+						<h5>
+							<strong>Associated & Inferred Gene</strong>
+						</h5>
+						<br>
+						<div>
+							<img src="{{url_for('static', filename='images/how-to/disease-search/Cardiovascular-Diseases-Search-03.jpg')}}" width=700
+							    style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<br>
+						<p>
+							The third tab provides details of genes that are associated with the disease term (compiled from DisGeNET) and those inferred
+							via Disease-Chemical (CTD) and Chemical-Gene associations (CTD). For every gene, thus identified, its Entrez Gene
+							ID, Gene Name, Gene Symbol, Type of Association, and number of chemicals through which the association is ascertained
+							are provided. In case of association curated from the source, the same is mentioned in the Type column; else it is
+							indicated as ‘Inferred’. Clicking on the ‘DETAILS’ tab provides the details of chemicals through which the disease-gene
+							link was speculated.
+						</p>
+						<p>
+ For Example, caspase 3(Entrez Gene ID '836';Official Gene Symbol;'CASP3') is inferred to be linked with Cardio Vascular
+Diseases(MeSH Disease ID 'D002318') via 31 chemical associations. These inferences are drawn using Disease-Chemical (CTD)
+and Chemical-Gene associations (CTD).
+						</p>
+					</div>
+					<div class="tab-pane fade" id="5" role="tabpanel" aria-labelledby="list-profile-list">
+						<h4>
+							<strong>Gene Search</strong>
+						</h4>
+						<div>
+							<img class='mt-3' src="{{url_for('static', filename='images/how-to/gene-search/Entity-Gene-TNFR.JPG')}}" style="width: 100%; display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<div>
+							<img class='mt-3' src="{{url_for('static', filename='images/how-to/gene-search/Slide4.JPG')}}" style="width: 100%; display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<br>
+
+						<p>
+							The user may search for a disease with its common name, category or MeSH Disease ID. The results page for the ‘Disease’ presents
+							with three types of relations with ‘Food’, ‘Chemical’ and ‘Gene’: ‘Associated & Inferred Foods’, ‘Associated & Inferred
+							Chemicals’ and ‘Associated & Inferred Genes’. For example, the page for ‘Cardiovascular Diseases’ presents the following
+							details. The graphics on the top of the page illustrate the nature of relationships made available in each of the
+							tabs below. All tables are easy to navigate and search for terms appearing in it. The number of records too could
+							be customized (default 10) for ease of viewing/browsing.
+						</p>
+						<br>
+						<h5>
+							<strong>Associated & Inferred Foods</strong>
+						</h5>
+						<br>
+						<div>
+							<img src="{{url_for('static', filename='images/how-to/gene-search/Gene-Search-TNFR-01.jpg')}}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<br>
+						<p>
+							The Gene-Food associations were inferred via diseases and chemicals. The former refers to putative food associations for
+							a gene by virtue of the food being linked with the disease term (DietRx text mining) which is further linked to the
+							gene (DisGeNET). The latter refers to putative food associations for a gene due the food having a chemical (KNApSAcK,
+							Phenol Explorer, Foodb, USDA and DUKE) which itself is linked to the disease (CTD). For every food entity, the table
+							provides details of ‘NCBI Taxonomy ID’, ‘Food Name’, and ‘Food Category’. The ‘Via Diseases’ and ‘Via Chemicals’ column
+							indicate the number of MeSH disease terms and food chemicals through which the association was inferred. Clicking
+							on the ‘DETAILS’ button presents a pop up window with details of these chemicals (PubChem ID, Common Name and Functional
+							Group) as well as disease terms (MeSH Disease ID, Disease Name, Disease Category).
+
+						</p>
+						<p>
+							For example, the gene ‘Tnf Receptor Superfamily Member 1a’ is associated with Ginger (NCBI Taxonomy ID: 94328) via 15 disease
+							terms and 5 chemicals of ginger. For a visual illustration of the relationships provided in the tab, please check
+							the graphics on the top of the page.
+						</p>
+						<br>
+						<h5>
+							<strong>Associated & Inferred Diseases</strong>
+						</h5>
+						<br>
+						<div>
+							<img src="{{url_for('static', filename='images/how-to/gene-search/Gene-Search-TNFR-02.jpg')}}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<br>
+						<p>
+							A gene may have been reported to linked a disease term from empirical evidence. Or an association may be inferred via Gene-Chemical
+							(CTD) and Chemical-Disease links (CTD). Both of these association types are presented along with details of details
+							of the MeSH Disease ID, Disease Name, and Disease Category. The ‘Source’ column mentions the source in case of curated
+							association, and is denoted as ‘Inferred’ otherwise. In case of inferred associations, the ‘Via Chemicals’ column
+							indicates the number of chemicals through which such an inference was drawn and the ‘DETAILS’ button provides the
+							details of such chemicals.
+						</p>
+						<p>
+							For example, Inflammation Disease term(MeSH Disease ID 'D007249';Category'Pathology(process)') is linked to 'TNF receptor superfamily member 1A' via 18 Gene-Chemical (CTD) and Chemical-Disease links (CTD) inferences.
+						</p>
+						<br>
+						<h5>
+							<strong>Associated & Inferred Chemicals</strong>
+						</h5>
+						<br>
+						<div>
+							<img src="{{url_for('static', filename='images/how-to/gene-search/Gene-Search-TNFR-03.jpg')}}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<br>
+						<p>
+							Similarly, the gene may have been reported with association with a chemical from empirical evidence. Or the association may
+							be inferred via Gene-Disease (DisGeNET) and Disease-Chemical (CTD) links. Both of these association types are presented
+							along with details of PubChem ID, Common Name, and Functional Group. For inferred associations the ‘Via Diseases’
+							column depicts the number of MeSH disease terms through which the gene-chemical association could be observed and
+							the ‘DETAILS’ button provides the details of such diseases apart from the type ‘Interaction Action’.
+						</p>
+						<p>
+ For example Indomethacin(PubChem CID '3715') is linked with TNFRSF1A via 15 Diseases and the interaction actions are curated
+from CTD. the details tab provides more information about diseases and interaction actions.
+						</p>
+					</div>
+
+					<div class="tab-pane fade" id="6" role="tabpanel" aria-labelledby="list-profile-list">
+						<h4>
+							<strong>Chemical Search</strong>
+						</h4>
+						<div>
+							<img class='mt-3' src="{{url_for('static', filename='images/how-to/chemical-search/Entity-Chemical-Quercetin.JPG')}}" style="width: 100%; display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<div>
+							<img class='mt-3' src="{{url_for('static', filename='images/how-to/chemical-search/Slide3.JPG')}}" style="width: 100%; display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<br>
+
+						<p>
+							The user may search for a chemical by its Common Name, PubChem CID, SMILES, IUPAC Name, or Functional Group. Additionally
+							one may use Chemical Structure Search using the JSME Molecular Editor, and may use the Advanced Search option for
+							more detailed query using refined molecular properties such as molecular weight, number of hydrogen bond acceptors/donors,
+							number of rings, number of rotatable/aromatic bonds or ALogP. For example, the page for ‘Quercetin’ presents the following
+							details. The graphics on the top of the page illustrate the nature of relationships made available in each of the
+							tabs below. All tables are easy to navigate and search for terms appearing in it. The number of records too could
+							be customized (default 10) for ease of viewing/browsing.
+						</p>
+						<br>
+						<h5>
+							<strong>Associated Foods</strong>
+						</h5>
+						<br>
+						<div>
+							<img src="{{url_for('static', filename='images/how-to/chemical-search/Chemical-Search-Quercetin-01.jpg')}}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<br>
+						<p>
+							This tab lists the food entities that are known to have the chemical being queried. Details of ‘NCBI Taxonomy ID’, ‘Food
+							Name’, ‘Food Category’, ‘Content’ and ‘Source’ are provided. For example, Quercetin is reported to be found in Cichorium
+							endivia (NCBI Taxonomy ID: 114280), Guava (NCBI Taxonomy ID: 120290) and Turmeric (NCBI Taxonomy ID: 136217) among
+							166 other food entities. The content column mentions the reported content of the molecules in the food (if available);
+							else as ‘Detected but not quantified’. One may also explore DietRx associations for the food (NCBI Taxonomy ID) of
+							interest via the internal links provided or visit the external link at NCBI. For a visual illustration of the relationships
+							provided in the tab, please check the graphics on the top of the page.
+						</p>
+						<br>
+						<h5>
+							<strong>Associated & Inferred Diseases</strong>
+						</h5>
+						<br>
+						<div>
+							<img src="{{url_for('static', filename='images/how-to/chemical-search/Chemical-Search-Quercetin-02.jpg')}}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<br>
+						<p>
+							A chemical may have been reported with therapeutic association with a disease term from empirical evidence. Or association
+							may be inferred via Chemical-Gene (CTD) and Gene-Disease links (DisGeNET). Both of these association types are presented
+							along with details of details of the MeSH Disease ID, Disease Name, and Disease Category. In case of curated association
+							the ‘Type’ column reflects ‘therapeutic’ or ‘marker/mechanism’. For inferred associations the ‘Via Genes’ column depicts
+							the number of genes through which the chemical-disease association could be observed and the ‘DETAILS’ button provides
+							the details of such genes.
+						</p>
+						<p>
+ For example, Quercetin (PubChem CID '5280343') has been reported with therapeutic association with Liver Cirrhosis, Experimental(MeSH
+Disease ID 'D008106';Category 'Digestive system disease') from CTD as well as via 292 Genes associations.
+						</p>
+						<br>
+						<h5>
+							<strong>Associated & Inferred Genes</strong>
+						</h5>
+						<br>
+						<div>
+							<img src="{{url_for('static', filename='images/how-to/chemical-search/Chemical-Search-Quercetin-03.jpg')}}" width=700 style="display: block; margin-left: auto; margin-right: auto; border: LightGray 3px solid;">
+						</div>
+						<br>
+						<p>
+							Similarly, the chemical may have been reported with association with a gene from empirical evidence. Or the association may
+							be inferred via Chemical-Disease (CTD) and Disease-Gene links (DisGeNET).Both of these association types are presented
+							along with details of the Entrez Gene ID, Gene Name and Gene Symbol. For inferred associations the ‘Via Diseases’
+							column depicts the number of MeSH disease terms through which the chemical-gene association could be observed and
+							the ‘DETAILS’ button provides the details of such diseases.
+						</p>
+						<p>
+							For Example, Quercetin (PubChem CID '5280343') has been found to be associated with Tumor Necrosis Factor(Entrez Gene ID '7124';Official Gene Symbol 'TNF') via 46 MeSH disease terms.
+						</p>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-    </div>
 </div>
 {% endblock %}

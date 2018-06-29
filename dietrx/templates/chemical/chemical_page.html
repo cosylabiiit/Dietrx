@@ -21,12 +21,16 @@
 		<hr>
 		<div class="row">
 			<div class="col-md-8">
-				<table class="table table-hover table-striped table-expandable no-footer table-sm">
+			<table class="table table-hover table-striped table-expandable no-footer table-sm" style="table-layout: fixed; word-wrap: break-word;">
 
 					{% if chemical['pubchem_id'] %}
 					<tr>
 			    		<th scope="row" class="text-danger">PubChem CID</th>
-			    		<td class="is-breakable"><a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/compound/{{ chemical.pubchem_id }}">{{ chemical.pubchem_id }}<i class="fas fa-external-link-alt" style="vertical-align: top; font-size: 12px;"></i></a></td class="is-breakable">
+						<td style="word-break: break-all;">
+							<a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/compound/{{ chemical.pubchem_id }}">{{ chemical.pubchem_id }}
+								<i class="fas fa-external-link-alt" style="vertical-align: top; font-size: 12px;"></i>
+							</a>
+						</td>
 			    	</tr>
 			    	{% endif %}
 
@@ -36,7 +40,7 @@
 					{% if chemical[attribute] %}
 					<tr>
 			    		<th scope="row" class="text-danger">{{display_name}}</th>
-			    		<td class="is-breakable">{{ chemical[attribute] }}</td class="is-breakable">
+			    		<td>{{ chemical[attribute] }}</td>
 			    	</tr>
 					{% endif %}
 					{% endfor %}
@@ -53,7 +57,7 @@
 				<div id="jsmol_div">
 					<button id="view_jsmol" class="btn btn-primary" role="button" style="width: 100%; margin-top: 1em;">View JSmol</button>
 				</div>
-				<a target="_blank" href="#" class="btn btn-primary mt-1" role="button" style="width: 100%;">Search Similar in DietRx</a>
+				<a target="_blank" href="{{ url_for('chemical_search', smiles=chemical.smiles)}}" class="btn btn-primary mt-1" role="button" style="width: 100%;">Search Similar in DietRx</a>
 				<a target="_blank" href="http://zinc15.docking.org/substances/subsets/world/?ecfp4_fp-dice-30={{ chemical.smiles }}&amp;highlight={{ chemical.smiles }}" class="btn btn-primary mt-1" role="button" style="width: 100%">ZINC Similarity Search <i class="fas fa-external-link-alt"></i></a>
 			</div>
 		</div>

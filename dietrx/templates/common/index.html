@@ -38,10 +38,60 @@
 		<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
 
 		<script type="text/javascript" language="javascript" src="//cdn.datatables.net/plug-ins/1.10.18/dataRender/ellipsis.js"></script>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-102869016-3"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+
+		function gtag() {
+			dataLayer.push(arguments);
+		}
+		gtag('js', new Date());
+
+		gtag('config', 'UA-102869016-3');
+	</script>
+
+	<script>	
+	jQuery(window).load(function() {
+			// will first fade out the loading animation
+		jQuery("#status").fadeOut();
+			// will fade out the whole DIV that covers the website.
+		jQuery("#preloader").delay(1000).fadeOut("slow");
+	})
+	</script>
+	<style>
+	#preloader {
+		 position: absolute;
+		 top: 0;
+		 left: 0;
+		 right: 0;
+		 bottom: 0;
+		 background-color: #fefefe;
+		 z-index: 99;
+		 height: 100%;
+	} 
+	#status { 
+		width: 200px;
+		height: 200px;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+ background-image: url(https://cdn-images-1.medium.com/max/1600/0*cWpsf9D3g346Va20.gif);
+		background-repeat: no-repeat;
+	    background-position: center;
+	    margin: -100px 0 0 -100px;
+ 	}
+	</style>
 		{% block extra_head %}
 		{% endblock %}
 	</head>
 	<body>
+		<div id="preloader">
+
+			<div id="status">&nbsp;</div>
+
+		</div>
 		<script type="text/javascript">
 			function table_overflow(){
 				$('.table_overflow').css('max-height','500px')
@@ -65,7 +115,10 @@
 							<a class="nav-link" href="{{ url_for('index') }}#search">Search</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="{{ url_for('index') }}">How To Use</a>
+							<a class="nav-link" href="http://cosylab.iiitd.edu.in/dietrx/analytics/">Analytics</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{{ url_for('how_to_use') }}">How To Use</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="{{ url_for('faq') }}">FAQs</a>
