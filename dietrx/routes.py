@@ -9,6 +9,8 @@ from subprocess import check_call
 from pybel import readfile
 import numpy as np
 
+from datetime import date
+
 NUM_PER_PAGE = 20
 NUM_PER_PAGE_CHEM = 100
 
@@ -29,9 +31,11 @@ stats = dict(
 @app.route('/dietrx/index', methods=['GET'])
 def index():
 	chemical_search_form = ChemicalSearchForm()
+	food_of_the_day = Food.query.limit(100).all()[date.today().day]
 	return render_template('search/search.html',
                         chemical_search_form=chemical_search_form,
-                        stats=stats,)
+                        stats=stats,
+						food=food_of_the_day)
 
 
 @app.route('/dietrx/search', methods=['GET'])
