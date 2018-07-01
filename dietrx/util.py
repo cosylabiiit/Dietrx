@@ -33,8 +33,13 @@ def gene_details(x, gene):
     return x
 
 def disease_details(x, disease):
-    x['MeSH Disease ID'] = {'data': str(disease.disease_id).split(':')[-1],
+    if disease.disease_id[0] == 'M':
+        x['Disease ID'] = {'data': str(disease.disease_id).split(':')[-1],
                            'extlink': 'https://meshb.nlm.nih.gov/record/ui?ui='+str(disease.disease_id).split(':')[-1]}
+    else:
+        x['Disease ID'] = {'data': str(disease.disease_id).split(':')[-1],
+                           'extlink': 'https://www.omim.org/entry/'+str(disease.disease_id).split(':')[-1]}
+
     x['Disease Name']= {'data': disease.disease_name,
                       'link': url_for('get_disease', disease_id=disease.disease_id)}
     x['Disease Category']= {'data': disease.disease_category}
@@ -67,13 +72,12 @@ def food_disease(request, subcategory, food_id=None, disease_id=None):
         elif subcategory == 'disease':
             x = disease_details(x, disease)
         
-         
-        x['(Positive, Negative, Chemical) Associations']= {'data': disease.disease_name,
-                                                        'fdassociation': True,
-                                                        'positive': positive_associations,
-                                                        'negative': negative_associations,
-                                                        'chemical': via_chemicals
-                                                        }
+        x['(<span style="color: green">Positive</span>, <span style="color: red">Negative</span>, Chemical) Associations'] = {'data': disease.disease_name,
+                'fdassociation': True,
+                'positive': positive_associations,
+                'negative': negative_associations,
+                'chemical': via_chemicals
+                }
 
         x['Details']= {'popup': url_for('get_associations', type='food_disease', food_id=food.food_id, disease_id=disease.disease_id)}
         
