@@ -148,15 +148,17 @@
 					<div class="row text-center btn-group btn-block pt-3 mb-0 pb-0">
 						<a href="#search" class="col-xs-12 col-md-3 btn btn-primary" role="button">Search</a>
 						<!-- <a href="#stats" class="col-xs-12 col-md-3 btn btn-primary" role="button">Statistics</a> -->
-						<a href="http://cosylab.iiitd.edu.in/dietrx/analytics" class="col-xs-12 col-md-3 btn btn-primary" role="button">Analytics</a>
+						<a href="#analytics" class="col-xs-12 col-md-3 btn btn-primary" role="button">Analytics</a>
 						<a href="{{ url_for('how_to_use') }}" class="col-xs-12 col-md-3 btn btn-primary" role="button">How to Use</a>
 						<a href="{{ url_for('faq') }}" class="col-xs-12 col-md-3 btn btn-primary" role="button">FAQs</a>
 					</div>
 				</div>
 			</div>
 		</div>
+
 		
-		<hr />
+		
+		<hr /><hr />
 		<h5 class="container"><strong>DietRx Summary</strong></h5>
 		<hr />
 		<div class="row">
@@ -173,27 +175,104 @@ consequences. DietRx facilitates study of associations among food, disease, chem
 inferences to be used for culinary interventions as well as for drug discovery.
 			</blockquote>
 		</div>
-		<div class="row">
-			<div class="col-md-8">
-				<img class="img-thumbnail" src={{url_for( 'static', filename='images/how-to/overview/Figure_DietRx_Overview_VIdeo_1.jpg')}}>
+		<div>
+<img class="img-thumbnail" src={{url_for( 'static', filename='images/how-to/overview/Figure_DietRx_Overview_VIdeo_1.jpg'
+    )}}>
+		</div>
+
+				
+		<hr /><h5 class="container"><strong>DietRx Entities of the Month</strong></h5><hr />
+		<div class="container">
+			<div class="row">
+
+				<div class="col-md-6 card">
+					<div class="card-body">
+						<h5 class="card-title">Ginger</h5>
+						<h6 class="card-subtitle mb-2 text-muted">Food</h6>
+						<p class="card-text">
+							<span class="text-danger">NCBI Taxonomy ID: </span>
+								<a target="_blank" href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=4682">{{4682}}
+								<i class="fas fa-external-link-alt" style="vertical-align: top; font-size: 12px;"></i>
+							</a>
+							<br>
+							<span class="text-danger">Common Names: </span> Garlic
+							<br>
+							<span class="text-danger">Scientific Name: </span>
+							<span style="font-style: italic;">Allium sativum</span>
+							<br>
+							<span class="text-danger">Category: </span>
+							<span>Herbs and Spices</span>
+							<br>
+						</p>
+						<a href="http://cosylab.iiitd.edu.in/dietrx/get_food?food_id=Plant+ID%3A94328" class="btn btn-primary">Details</a>
+					</div>
+				</div>
+				<div class="col-md-6 card">
+					<div class="card-body">
+						<h5 class="card-title">Interleukin 6</h5>
+						<h6 class="card-subtitle mb-2 text-muted">Gene</h6>
+						<p class="card-text">
+							<span class="text-danger">Entrez Gene ID: </span>
+							<a target="_blank" href="https://www.ncbi.nlm.nih.gov/gene/3569">3569
+							<i class="fas fa-external-link-alt" style="vertical-align: top; font-size: 12px;"></i>
+							</a>
+							<br>
+							<span class="text-danger">Official Gene Symbol: </span> IL6
+							<br>
+							<span class="text-danger">Official Gene Name: </span>
+							<span>interleukin 6</span>
+							<br>
+							<span class="text-danger">Organism: </span>
+							<span>Homo sapiens</span>
+							<br>
+						</p>
+						<a href="http://cosylab.iiitd.edu.in/dietrx/get_gene?gene_id=3569" class="btn btn-primary">Details</a>
+					</div>
+				</div>
 			</div>
-			<div class="col-md-4">
-				<p class="card-text border border-dark">
-					<h3>Entity Of The Day</h3>
-					<span class="text-danger">NCBI Taxonomy ID: </span>
-					<a target="_blank" href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{food.tax_id}}">{{ food.tax_id|upper }}
-						<i class="fas fa-external-link-alt" style="vertical-align: top; font-size: 12px;"></i>
-					</a>
-					<br>
-					<span class="text-danger">Common Names: </span> {{ food.common_names | replace(';', ',') | title }}
-					<br>
-					<span class="text-danger">Scientific Name: </span>
-					<span style="font-style: italic;">{{ food.scientific_name }}</span>
-					<br>
-					<span class="text-danger">Category: </span>
-					<span>{{ food.food_category|title }}</span>
-					<br>
-				</p>
+			<div class="row">
+				<div class="col-md-6 card">
+					<div class="card-body">
+						<h5 class="card-title">Obesity</h5>
+						<h6 class="card-subtitle mb-2 text-muted">Disease</h6>
+						<p class="card-text">
+							<span class="text-danger">Disease ID: </span>
+							<a target="_blank" href="https://meshb.nlm.nih.gov/record/ui?ui=D009765">MESH:D009765
+								<i class="fas fa-external-link-alt" style="vertical-align: top; font-size: 12px;"></i>
+							</a>
+							<br>
+							<span class="text-danger">Disease Name: </span> Obesity
+							<br>
+							<span class="text-danger">Synonyms: </span>
+							<span>Leanness, Included</span>
+							<br>
+							<span class="text-danger">Category: </span>
+							<span>Nutrition disorder, Signs and symptoms</span>
+							<br>
+						</p>
+						<a href="http://cosylab.iiitd.edu.in/dietrx/get_disease?disease_id=MESH%3AD009765" class="btn btn-primary">Details</a>
+					</div>
+				</div>
+				<div class="col-md-6 card">
+					<div class="card-body">
+						<h5 class="card-title">Flavanone</h5>
+						<h6 class="card-subtitle mb-2 text-muted">Chemical</h6>
+						<p class="card-text">
+							<span class="text-danger">PubChem CID: </span>
+							<a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/compound/10251">10251
+								<i class="fas fa-external-link-alt" style="vertical-align: top; font-size: 12px;"></i>
+							</a>
+							<br>
+							<span class="text-danger">Common Name: </span> Flavanone
+							<br>
+							<span class="text-danger">IUPAC Name: </span>
+							<span>2-phenyl-2,3-dihydrochromen-4-one</span>
+							<br>
+							<br>
+						</p>
+							<a href="http://cosylab.iiitd.edu.in/dietrx/get_chemical?pubchem_id=10251" class="btn btn-primary">Details</a>
+					</div>
+				</div>
 			</div>
 		</div>
 
@@ -229,9 +308,16 @@ inferences to be used for culinary interventions as well as for drug discovery.
  					{% include 'chemical/chemical_advanced_search.html' %}
 				</div>
 			</div>
-
 			
 		</div>
+
 		
+		<div id="analytics">
+		<hr /><hr /><h5 class="container"><strong>DietRx Analytics</strong></h5><hr />
+			<div class="embed-responsive embed-responsive-16by9 border">
+				<iframe class="embed-responsive-item" src="http://cosylab.iiitd.edu.in/dietrx/analytics/" allowfullscreen></iframe>
+			</div>
+			<a class="btn btn-primary mt-2" href="http://cosylab.iiitd.edu.in/dietrx/analytics/">Go To DietRx Analytics</a>
+		</div>
 	</div>
 {% endblock %}

@@ -86,8 +86,9 @@
       </div>
       <div id="5" class="collapse" data-parent="#accordion">
         <div class="card-body">
-          DietRx includes data of {{ stats.chems }} chemicals from {{ stats.fc_foods }} foods and were compiled from KNApSAcK, PhenolExlorer,
-          USDA, DUKE, and FooDB.
+          DietRx includes data of {{ stats.chems }} chemicals from {{ stats.fc_foods }} foods and were compiled from <a href="http://kanaya.naist.jp/KNApSAcK/" target="_blank">KNApSAcK</a>, <a href="http://phenol-explorer.eu/" target="_blank">PhenolExlorer</a>,
+<a href="https://www.ars.usda.gov/northeast-area/beltsville-md-bhnrc/beltsville-human-nutrition-research-center/nutrient-data-laboratory/docs/sr21-home-page/"
+  target="_blank">USDA</a>,  <a href="https://phytochem.nal.usda.gov/phytochem/search" target="_blank">DUKE</a>, and <a href="http://foodb.ca/" target="_blank">FooDB</a>.
           <br>
           <br>Click
           <a href="{{ url_for('view_all', type='chemical')}}" target="_blank">here</a> to view all the chemicals present in DietRx.
@@ -160,8 +161,14 @@
       <div id="9" class="collapse" data-parent="#accordion">
         <div class="card-body">
           The data of food-disease associations was text-mined from biomedical literature. Food-chemical associations were curated from 
-          KNApSAcK, PhenolExlorer, USDA, DUKE, and FooDB. Disease-Chemical and Chemical-Gene associations were curated from CTD. 
-          Disease-Gene associations were obtained through DisGeNET. Further, we used one-hop-relations to infer associations between the entities.
+          <a href="http://kanaya.naist.jp/KNApSAcK/" target="_blank">KNApSAcK</a>, <a href="http://phenol-explorer.eu/" target="_blank">PhenolExlorer</a>, 
+          <a href="https://www.ars.usda.gov/northeast-area/beltsville-md-bhnrc/beltsville-human-nutrition-research-center/nutrient-data-laboratory/docs/sr21-home-page/" 
+ target="_blank">USDA</a>,
+<a href="https://phytochem.nal.usda.gov/phytochem/search" target="_blank">DUKE</a>, and
+<a href="http://foodb.ca/" target="_blank">FooDB</a>. Disease-Chemical and Chemical-Gene associations were curated from
+<a href="http://ctdbase.org/" target="_blank">CTD (The Comparative Toxicogenomics Database)</a>.
+ Disease-Gene associations were obtained through
+<a href="http://www.disgenet.org/" target="_blank">DisGeNET</a>. Further, we used one-hop-relations to infer associations between the entities.
         </div>
       </div>
     </div>
@@ -383,7 +390,7 @@ present in the table.
       <div class="card-header" id="headingFifteen">
         <h5 class="mb-0">
           <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#22" aria-expanded="false">
-            Q22: How can I cite DietRx?
+            Q22: How do I cite DietRx?
           </button>
         </h5>
       </div>
